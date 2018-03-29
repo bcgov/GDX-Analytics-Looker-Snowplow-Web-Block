@@ -1,2 +1,2 @@
-# analytics
-A place to store analytics tracking code
+# GDX-Analytics-Looker
+The LookerML project
