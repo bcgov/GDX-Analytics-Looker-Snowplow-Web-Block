@@ -16,6 +16,8 @@
 # License:     Apache License Version 2.0
 
 connection: "redshift"
+# Set the week start day to Sunday. Default is Monday
+week_start_day: sunday
 
 # include all views in this project
 include: "sp_wt_*.view"

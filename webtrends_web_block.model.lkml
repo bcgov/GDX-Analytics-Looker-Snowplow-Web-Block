@@ -16,6 +16,8 @@
 # License:     Apache License Version 2.0
 
 connection: "redshift"
+# Set the week start day to Sunday. Default is Monday
+week_start_day: sunday
 
 # include only WebTrends historic data in this project
 include: "wt_*.view"
