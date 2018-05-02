@@ -23,7 +23,7 @@ week_start_day: sunday
 include: "wt_*.view"
 
 # include all dashboards in this project
-include: "*.dashboard"
+#include: "*.dashboard"
 
 explore: wt_page_views {
   label: "Page Views"

@@ -23,7 +23,8 @@ week_start_day: sunday
 include: "sp_wt_*.view"
 
 # include all dashboards in this project
-include: "*.dashboard"
+#include: "*.dashboard"
+include: "web_sp_wt.dashboard"
 
 label: "Combined Web Block"
 
