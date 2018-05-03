@@ -1,7 +1,9 @@
 - dashboard: bcgov_web_analytics
   title: BCGov Web Analytics
   layout: newspaper
+
   elements:
+
   - title: Unique Visits Trend
     name: Unique Visits Trend
     model: snowplow_web_block
@@ -81,6 +83,7 @@
     col: 6
     width: 8
     height: 7
+
   - title: Unique Visits
     name: Unique Visits
     model: snowplow_web_block
@@ -178,6 +181,7 @@
     col: 0
     width: 6
     height: 7
+
   - title: Previous Sessions per Users
     name: Previous Sessions per Users
     model: snowplow_web_block
@@ -228,6 +232,7 @@
     col: 14
     width: 10
     height: 7
+
   - title: Page Views
     name: Page Views
     model: snowplow_web_block
