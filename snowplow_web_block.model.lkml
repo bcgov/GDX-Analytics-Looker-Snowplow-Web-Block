@@ -85,3 +85,5 @@ explore: users {
 explore: aggregated_table_sample_citizens {}
 
 explore: wait_time_table_sample_citizens {}
+
+explore: cfms_poc {}
