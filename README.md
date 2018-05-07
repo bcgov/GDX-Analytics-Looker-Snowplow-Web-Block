@@ -11,11 +11,11 @@ Currently this project is still in development.
 
 # Getting Help
 
-Please Contact the GDX Service desk for any analytics service help, for inquiries about starting a new analytics account for Government please contact The GDX Analytics team
+Please Contact the GDX Service desk for any analytics service help, for inquiries about starting a new analytics account for Government please contact The GDX Analytics team or Dan Pollock.
 
 # Contributors
 
-The GDX analytics team will be the main contributors to this project currently.  They will also maintain the code as well. 
+The GDX analytics team will be the main contributors to this project currently.  They will also maintain the code as well.
 
 # License
 
