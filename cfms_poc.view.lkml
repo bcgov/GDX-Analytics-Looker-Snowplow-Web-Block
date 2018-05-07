@@ -157,8 +157,8 @@ view: cfms_poc {
       LEFT JOIN start_table ON welcome_table.client_id = start_table.client_id
       LEFT JOIN finish_table ON welcome_table.client_id = finish_table.client_id
       LEFT JOIN chooseservice_table ON welcome_table.client_id = chooseservice_table.client_id
-      JOIN static.service_info ON static.service_info.id = chooseservice_table.program_id
-      JOIN static.service_bc_office_info ON static.service_bc_office_info.id = chooseservice_table.office_id
+      LEFT JOIN static.service_info ON static.service_info.id = chooseservice_table.program_id
+      LEFT JOIN static.service_bc_office_info ON static.service_bc_office_info.id = chooseservice_table.office_id
     )
     SELECT * FROM (
       SELECT *, ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY welcome_time) AS client_id_ranked
