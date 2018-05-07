@@ -144,6 +144,7 @@ view: cfms_poc {
       SELECT
       welcome_table.client_id,
       welcome_table.office_id,
+      service_bc_office_info.name AS office_name,
       welcome_table.agent_id,
       chooseservice_table.program_id,
       static.service_info.name AS program_name,
@@ -157,6 +158,7 @@ view: cfms_poc {
       LEFT JOIN finish_table ON welcome_table.client_id = finish_table.client_id
       LEFT JOIN chooseservice_table ON welcome_table.client_id = chooseservice_table.client_id
       JOIN static.service_info ON static.service_info.id = chooseservice_table.program_id
+      JOIN static.service_bc_office_info ON static.service_bc_office_info.id = chooseservice_table.office_id
     )
     SELECT * FROM (
       SELECT *, ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY welcome_time) AS client_id_ranked
@@ -205,6 +207,11 @@ view: cfms_poc {
   dimension: office_id {
     type: number
     sql: ${TABLE}.office_id ;;
+  }
+
+  dimension: office_name {
+    type:  string
+    sql:  ${TABLE}.office_name ;;
   }
 
   dimension: agent_id {
