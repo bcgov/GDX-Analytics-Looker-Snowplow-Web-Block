@@ -225,7 +225,7 @@ view: cfms_poc {
   }
 
   dimension: program_name {
-    type: number
+    type: string
     sql: ${TABLE}.program_name ;;
   }
 
@@ -244,8 +244,10 @@ view: cfms_poc {
     fields: [
       client_id,
       office_id,
+      office_name,
       agent_id,
       program_id,
+      program_name,
       channel,
       inaccurate_time,
       welcome_time,
