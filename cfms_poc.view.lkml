@@ -41,7 +41,7 @@ view: cfms_poc {
         event_time welcome_time
       FROM step1
       WHERE event_name in ('addcitizen')
-      ORDER BY event_time, service_count
+      ORDER BY event_time
       ),
     stand_table AS(
       SELECT
@@ -54,7 +54,7 @@ view: cfms_poc {
         event_time stand_time
       FROM step1
       WHERE event_name in ('addtoqueue','beginservice')
-      ORDER BY event_time, service_count
+      ORDER BY event_time
       ),
     invite_table AS(
       SELECT
@@ -67,7 +67,7 @@ view: cfms_poc {
         event_time invite_time
       FROM step1
       WHERE event_name in ('beginservice','invitecitizen')
-      ORDER BY event_time, service_count
+      ORDER BY event_time
       ),
     start_table AS(
       SELECT
@@ -80,7 +80,7 @@ view: cfms_poc {
         event_time start_time
       FROM step1
       WHERE event_name in ('beginservice')
-      ORDER BY event_time, service_count
+      ORDER BY event_time
       ),
     finish_table AS(
       SELECT
@@ -95,7 +95,7 @@ view: cfms_poc {
         event_time finish_time
       FROM step1
       WHERE event_name in ('finish','customerleft')
-      ORDER BY event_time, service_count
+      ORDER BY event_time
       ),
     chooseservice_table AS(
       SELECT
@@ -113,10 +113,14 @@ view: cfms_poc {
         event_time chooseservice_time
       FROM step1
       WHERE event_name in ('chooseservice')
-      ORDER BY event_time DESC, service_count
+      ORDER BY event_time DESC
       ),
     calculations AS (
       SELECT
+      welcome_time AS t1,
+      stand_time AS t2,
+      invite_time AS t3,
+      start_time AS t4,
       welcome_table.client_id,
       finish_table.service_count,
       CASE WHEN (welcome_time IS NOT NULL and stand_time IS NOT NULL) THEN DATEDIFF(seconds, welcome_time, stand_time)
@@ -134,6 +138,16 @@ view: cfms_poc {
       LEFT JOIN finish_table ON welcome_table.client_id = finish_table.client_id
       LEFT JOIN invite_table ON welcome_table.client_id = invite_table.client_id AND finish_table.service_count = invite_table.service_count
       LEFT JOIN start_table ON welcome_table.client_id = start_table.client_id AND finish_table.service_count = start_table.service_count
+      ORDER BY welcome_time, stand_time, invite_time, start_time
+    ),
+    finalcalc AS (
+      SELECT ranked.*
+      FROM (
+        SELECT *, ROW_NUMBER() OVER (PARTITION BY client_id, service_count ORDER BY t1, t2, t3, t4) AS client_id_ranked
+        FROM calculations
+        ORDER BY client_id, t1, t2, t3, t4
+      ) AS ranked
+      WHERE ranked.client_id_ranked = 1
     ),
     combined AS (
       SELECT
@@ -158,15 +172,37 @@ view: cfms_poc {
       LEFT JOIN chooseservice_table ON welcome_table.client_id = chooseservice_table.client_id AND finish_table.service_count = chooseservice_table.service_count
       LEFT JOIN static.service_info ON static.service_info.id = chooseservice_table.program_id
       LEFT JOIN static.service_bc_office_info ON static.service_bc_office_info.id = chooseservice_table.office_id
-      JOIN calculations AS c1 ON welcome_table.client_id = c1.client_id AND finish_table.service_count = c1.service_count
-      JOIN calculations AS c2 ON c2.client_id = c1.client_id AND c2.service_count = c1.service_count
+      JOIN finalcalc AS c1 ON welcome_table.client_id = c1.client_id AND finish_table.service_count = c1.service_count
+    ),
+    finalset AS (
+      SELECT ranked.*
+      FROM (
+        SELECT *, ROW_NUMBER() OVER (PARTITION BY client_id, service_count ORDER BY welcome_time) AS client_id_ranked
+        FROM combined
+        ORDER BY client_id, welcome_time
+      ) AS ranked
+      WHERE ranked.client_id_ranked = 1
     )
-    SELECT * FROM (
-      SELECT *, ROW_NUMBER() OVER (PARTITION BY client_id, service_count ORDER BY welcome_time) AS client_id_ranked
-      FROM combined
-      ORDER BY client_id, welcome_time
-    ) AS ranked
-    WHERE ranked.client_id_ranked = 1
+    SELECT finalset.*,
+      SUM(c2.waiting_time) AS waiting_time_sum,
+      SUM(c2.prep_time) AS prep_time_sum
+    FROM finalset
+    JOIN finalcalc AS c2 ON c2.client_id = finalset.client_id
+    WHERE finalset.client_id_ranked = 1
+    GROUP BY finalset.client_id,
+      finalset.service_count,
+      finalset.office_id,
+      office_name,
+      agent_id,
+      program_id,
+      program_name,
+      channel,
+      inaccurate_time,
+      welcome_time, stand_time, invite_time, start_time, finish_time, chooseservice_time,
+      finalset.reception_time,
+      finalset.waiting_time,
+      finalset.prep_time,
+      finalset.client_id_ranked
     ;;
   }
 
@@ -175,7 +211,7 @@ view: cfms_poc {
     drill_fields: [detail*]
   }
 
- measure: average_reception_time {
+ measure: reception_time_average {
   type:  average
   sql: ${TABLE}.reception_time ;;
   value_format: "0.00\"s\""
@@ -192,12 +228,56 @@ view: cfms_poc {
     sql: ${TABLE}.waiting_time ;;
     value_format: "0.00\"s\""
   }
-  measure: waiting_time_measure {
-    type:  sum
-    sql: ${waiting_time} ;;
+  measure: waiting_time_per_issue_sum {
+    type: sum
+    sql: ${TABLE}.waiting_time ;;
+    value_format: "0.00\"s\""
+  }
+  measure: waiting_time_per_issue_average {
+    type:  average
+    sql: ${TABLE}.waiting_time ;;
+    value_format: "0.00\"s\""
+  }
+  measure: waiting_time_sum {
+    type: sum_distinct
+    sql_distinct_key: ${TABLE}.client_id;;
+    sql: ${TABLE}.waiting_time_sum ;;
+    value_format: "0.00\"s\""
+  }
+  measure: waiting_time_average_sum {
+    type: average_distinct
+    sql: ${TABLE}.waiting_time_sum ;;
+    sql_distinct_key: ${TABLE}.client_id;;
     value_format: "0.00\"s\""
   }
 
+  dimension: prep_time {
+    type:  number
+    sql: ${TABLE}.prep_time ;;
+    value_format: "0.00\"s\""
+  }
+  measure: prep_time_per_issue_sum {
+    type: sum
+    sql: ${TABLE}.prep_time ;;
+    value_format: "0.00\"s\""
+  }
+  measure: prep_time_per_issue_average {
+    type:  average
+    sql: ${TABLE}.prep_time ;;
+    value_format: "0.00\"s\""
+  }
+  measure: prep_time_sum {
+    type: sum_distinct
+    sql_distinct_key: ${TABLE}.client_id;;
+    sql: ${TABLE}.prep_time_sum ;;
+    value_format: "0.00\"s\""
+  }
+  measure: prep_time_average_sum {
+    type: average_distinct
+    sql: ${TABLE}.prep_time_sum ;;
+    sql_distinct_key: ${TABLE}.client_id;;
+    value_format: "0.00\"s\""
+  }
 
   dimension: welcome_time {
     type: date_time
@@ -316,7 +396,7 @@ view: cfms_poc {
       finish_time,
       date,
       reception_time,
-      average_reception_time,
+      reception_time_average,
       waiting_time
     ]
   }
