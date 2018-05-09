@@ -13,7 +13,6 @@ view: cfms_poc {
         parent_id,
         program_name,
         transaction_name,
-        hold,
         count,
         inaccurate_time
       FROM atomic.events AS ev
