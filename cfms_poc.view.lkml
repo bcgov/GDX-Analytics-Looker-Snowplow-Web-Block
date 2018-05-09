@@ -14,7 +14,7 @@ view: cfms_poc {
       FROM atomic.events AS ev
       LEFT JOIN atomic.ca_bc_gov_cfmspoc_agent_2 AS a
           ON ev.event_id = a.root_id
-      LEFT JOIN atomic.ca_bc_gov_cfmspoc_citizen_2 AS c
+      LEFT JOIN atomic.ca_bc_gov_cfmspoc_citizen_3 AS c
           ON ev.event_id = c.root_id
       LEFT JOIN atomic.ca_bc_gov_cfmspoc_office_1 AS o
           ON ev.event_id = o.root_id
