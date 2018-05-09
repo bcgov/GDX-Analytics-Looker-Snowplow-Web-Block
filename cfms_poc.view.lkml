@@ -296,6 +296,11 @@ view: cfms_poc {
     type:  date_month_name
     sql:  ${TABLE}.welcome_time ;;
   }
+  dimension: year {
+    type:  date_year
+    sql:  ${TABLE}.welcome_time ;;
+  }
+
   dimension: day_of_month {
     type:  date_day_of_month
     sql:  ${TABLE}.welcome_time ;;
