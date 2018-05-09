@@ -4,12 +4,17 @@ view: cfms_poc {
       SELECT
         event_name,
         derived_tstamp AS event_time,
-        DATEDIFF(seconds, LAG(derived_tstamp) OVER (PARTITION BY client_id ORDER BY event_time), derived_tstamp) AS wait_time,
         client_id,
+        service_count,
         office_id,
         agent_id,
-        program_id,
         channel,
+        program_id,
+        parent_id,
+        program_name,
+        transaction_name,
+        hold,
+        count,
         inaccurate_time
       FROM atomic.events AS ev
       LEFT JOIN atomic.ca_bc_gov_cfmspoc_agent_2 AS a
@@ -48,15 +53,12 @@ view: cfms_poc {
     SELECT
         event_name,
         event_time,
-        wait_time,
-        inaccurate_time,
         client_id,
+        service_count,
         office_id,
         agent_id,
-        program_id,
-        channel,
         event_time welcome_time
-      FROM step1
+      FROM atomic.ca_bc_gov_cfmspoc_addcitizen_1
       WHERE event_name in ('addcitizen')
       ORDER BY event_time
       ),
@@ -64,13 +66,10 @@ view: cfms_poc {
       SELECT
         event_name,
         event_time,
-        wait_time,
-        inaccurate_time,
         client_id,
+        service_count,
         office_id,
         agent_id,
-        program_id,
-        channel,
         event_time stand_time
       FROM step1
       WHERE event_name in ('addtoqueue','beginservice')
@@ -80,13 +79,10 @@ view: cfms_poc {
       SELECT
         event_name,
         event_time,
-        wait_time,
-        inaccurate_time,
         client_id,
+        service_count,
         office_id,
         agent_id,
-        program_id,
-        channel,
         event_time invite_time
       FROM step1
       WHERE event_name in ('beginservice','invitecitizen')
@@ -96,13 +92,10 @@ view: cfms_poc {
       SELECT
         event_name,
         event_time,
-        wait_time,
-        inaccurate_time,
         client_id,
+        service_count,
         office_id,
         agent_id,
-        program_id,
-        channel,
         event_time start_time
       FROM step1
       WHERE event_name in ('beginservice')
@@ -112,13 +105,10 @@ view: cfms_poc {
       SELECT
         event_name,
         event_time,
-        wait_time,
-        inaccurate_time,
         client_id,
+        service_count,
         office_id,
         agent_id,
-        program_id,
-        channel,
         event_time finish_time
       FROM step1
       WHERE event_name in ('finish','customerleft')
@@ -128,13 +118,10 @@ view: cfms_poc {
       SELECT
         event_name,
         event_time,
-        wait_time,
-        inaccurate_time,
         client_id,
+        service_count,
         office_id,
         agent_id,
-        program_id,
-        channel,
         event_time chooseservice_time
       FROM step1
       WHERE event_name in ('chooseservice')
