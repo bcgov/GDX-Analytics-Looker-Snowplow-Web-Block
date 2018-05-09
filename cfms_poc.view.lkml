@@ -288,7 +288,14 @@ view: cfms_poc {
     type:  date
     sql:  ${TABLE}.welcome_time ;;
   }
-
+  dimension: week {
+    type:  date_week
+    sql:  ${TABLE}.welcome_time ;;
+  }
+  dimension: month {
+    type:  date_month_name
+    sql:  ${TABLE}.welcome_time ;;
+  }
   dimension: day_of_month {
     type:  date_day_of_month
     sql:  ${TABLE}.welcome_time ;;
