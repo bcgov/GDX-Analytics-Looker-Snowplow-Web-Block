@@ -1,179 +1,179 @@
 view: cfms_poc {
   derived_table: {
-    sql: WITH step1 AS(
-      SELECT
-        event_name,
-        derived_tstamp AS event_time,
-        client_id,
-        service_count,
-        office_id,
-        agent_id,
-        channel,
-        program_id,
-        parent_id,
-        program_name,
-        transaction_name,
-        count,
-        inaccurate_time
-      FROM atomic.events AS ev
-      LEFT JOIN atomic.ca_bc_gov_cfmspoc_agent_2 AS a
-          ON ev.event_id = a.root_id
-      LEFT JOIN atomic.ca_bc_gov_cfmspoc_citizen_3 AS c
-          ON ev.event_id = c.root_id
-      LEFT JOIN atomic.ca_bc_gov_cfmspoc_office_1 AS o
-          ON ev.event_id = o.root_id
-      LEFT JOIN atomic.ca_bc_gov_cfmspoc_chooseservice_2 AS cs
-          ON ev.event_id = cs.root_id
-      LEFT JOIN atomic.ca_bc_gov_cfmspoc_finish_1 AS fi
-          ON ev.event_id = fi.root_id
-      LEFT JOIN atomic.ca_bc_gov_cfmspoc_hold_1 AS ho
-          ON ev.event_id = ho.root_id
-      WHERE name_tracker = 'CFMS_poc' AND client_id IS NOT NULL -- AND service_count = 1
-      ),
-  welcome_table AS(
+  sql: WITH step1 AS(
     SELECT
-        event_name,
-        event_time,
-        client_id,
-        service_count,
-        office_id,
-        agent_id,
-        event_time welcome_time
-      FROM step1
-      WHERE event_name in ('addcitizen')
-      ORDER BY event_time
-      ),
-    stand_table AS(
-      SELECT
-        event_name,
-        event_time,
-        client_id,
-        service_count,
-        office_id,
-        agent_id,
-        event_time stand_time
-      FROM step1
-      WHERE event_name in ('addtoqueue','beginservice')
-      ORDER BY event_time
-      ),
-    invite_table AS(
-      SELECT
-        event_name,
-        event_time,
-        client_id,
-        service_count,
-        office_id,
-        agent_id,
-        event_time invite_time
-      FROM step1
-      WHERE event_name in ('beginservice','invitecitizen')
-      ORDER BY event_time
-      ),
-    start_table AS(
-      SELECT
-        event_name,
-        event_time,
-        client_id,
-        service_count,
-        office_id,
-        agent_id,
-        event_time start_time
-      FROM step1
-      WHERE event_name in ('beginservice')
-      ORDER BY event_time
-      ),
-    finish_table AS(
-      SELECT
-        event_name,
-        event_time,
-        client_id,
-        service_count,
-        office_id,
-        agent_id,
-        count,
-        inaccurate_time,
-        event_time finish_time
-      FROM step1
-      WHERE event_name in ('finish','customerleft')
-      ORDER BY event_time
-      ),
-    chooseservice_table AS(
-      SELECT
-        event_name,
-        event_time,
-        client_id,
-        service_count,
-        office_id,
-        agent_id,
-        channel,
-        program_id,
-        parent_id,
-        program_name,
-        transaction_name,
-        event_time chooseservice_time
-      FROM step1
-      WHERE event_name in ('chooseservice')
-      ORDER BY event_time DESC
-      ),
-    calculations AS (
-      SELECT
-      welcome_time AS t1,
-      stand_time AS t2,
-      invite_time AS t3,
-      start_time AS t4,
-      welcome_table.client_id,
-      finish_table.service_count,
-      CASE WHEN (welcome_time IS NOT NULL and stand_time IS NOT NULL) THEN DATEDIFF(seconds, welcome_time, stand_time)
-          ELSE NULL
-          END AS reception_time,
-      CASE WHEN (stand_time IS NOT NULL and invite_time IS NOT NULL) THEN DATEDIFF(seconds, stand_time, invite_time)
-          ELSE NULL
-          END AS waiting_time,
-      CASE WHEN (invite_time IS NOT NULL and start_time IS NOT NULL) THEN DATEDIFF(seconds, invite_time, start_time)
-          ELSE NULL
-          END AS prep_time
+      event_name,
+      derived_tstamp AS event_time,
+      client_id,
+      service_count,
+      office_id,
+      agent_id,
+      channel,
+      program_id,
+      parent_id,
+      program_name,
+      transaction_name,
+      count,
+      inaccurate_time
+    FROM atomic.events AS ev
+    LEFT JOIN atomic.ca_bc_gov_cfmspoc_agent_2 AS a
+        ON ev.event_id = a.root_id
+    LEFT JOIN atomic.ca_bc_gov_cfmspoc_citizen_3 AS c
+        ON ev.event_id = c.root_id
+    LEFT JOIN atomic.ca_bc_gov_cfmspoc_office_1 AS o
+        ON ev.event_id = o.root_id
+    LEFT JOIN atomic.ca_bc_gov_cfmspoc_chooseservice_2 AS cs
+        ON ev.event_id = cs.root_id
+    LEFT JOIN atomic.ca_bc_gov_cfmspoc_finish_1 AS fi
+        ON ev.event_id = fi.root_id
+    LEFT JOIN atomic.ca_bc_gov_cfmspoc_hold_1 AS ho
+        ON ev.event_id = ho.root_id
+    WHERE name_tracker = 'CFMS_poc' AND client_id IS NOT NULL -- AND service_count = 1
+    ),
+welcome_table AS(
+  SELECT
+      event_name,
+      event_time,
+      client_id,
+      service_count,
+      office_id,
+      agent_id,
+      event_time welcome_time
+    FROM step1
+    WHERE event_name in ('addcitizen')
+    ORDER BY event_time
+    ),
+  stand_table AS(
+    SELECT
+      event_name,
+      event_time,
+      client_id,
+      service_count,
+      office_id,
+      agent_id,
+      event_time stand_time
+    FROM step1
+    WHERE event_name in ('addtoqueue','beginservice')
+    ORDER BY event_time
+    ),
+  invite_table AS(
+    SELECT
+      event_name,
+      event_time,
+      client_id,
+      service_count,
+      office_id,
+      agent_id,
+      event_time invite_time
+    FROM step1
+    WHERE event_name in ('beginservice','invitecitizen')
+    ORDER BY event_time
+    ),
+  start_table AS(
+    SELECT
+      event_name,
+      event_time,
+      client_id,
+      service_count,
+      office_id,
+      agent_id,
+      event_time start_time
+    FROM step1
+    WHERE event_name in ('beginservice')
+    ORDER BY event_time
+    ),
+  finish_table AS(
+    SELECT
+      event_name,
+      event_time,
+      client_id,
+      service_count,
+      office_id,
+      agent_id,
+      count,
+      inaccurate_time,
+      event_time finish_time
+    FROM step1
+    WHERE event_name in ('finish','customerleft')
+    ORDER BY event_time
+    ),
+  chooseservice_table AS(
+    SELECT
+      event_name,
+      event_time,
+      client_id,
+      service_count,
+      office_id,
+      agent_id,
+      channel,
+      program_id,
+      parent_id,
+      program_name,
+      transaction_name,
+      event_time chooseservice_time
+    FROM step1
+    WHERE event_name in ('chooseservice')
+    ORDER BY event_time DESC
+    ),
+  calculations AS (
+    SELECT
+    welcome_time AS t1,
+    stand_time AS t2,
+    invite_time AS t3,
+    start_time AS t4,
+    welcome_table.client_id,
+    finish_table.service_count,
+    CASE WHEN (welcome_time IS NOT NULL and stand_time IS NOT NULL) THEN DATEDIFF(seconds, welcome_time, stand_time)
+        ELSE NULL
+        END AS reception_time,
+    CASE WHEN (stand_time IS NOT NULL and invite_time IS NOT NULL) THEN DATEDIFF(seconds, stand_time, invite_time)
+        ELSE NULL
+        END AS waiting_time,
+    CASE WHEN (invite_time IS NOT NULL and start_time IS NOT NULL) THEN DATEDIFF(seconds, invite_time, start_time)
+        ELSE NULL
+        END AS prep_time
 
-      FROM welcome_table
-      LEFT JOIN stand_table ON welcome_table.client_id = stand_table.client_id
-      LEFT JOIN finish_table ON welcome_table.client_id = finish_table.client_id
-      LEFT JOIN invite_table ON welcome_table.client_id = invite_table.client_id AND finish_table.service_count = invite_table.service_count
-      LEFT JOIN start_table ON welcome_table.client_id = start_table.client_id AND finish_table.service_count = start_table.service_count
-      ORDER BY welcome_time, stand_time, invite_time, start_time
-    ),
-    finalcalc AS (
-      SELECT ranked.*
-      FROM (
-        SELECT *, ROW_NUMBER() OVER (PARTITION BY client_id, service_count ORDER BY t1, t2, t3, t4) AS client_id_ranked
-        FROM calculations
-        ORDER BY client_id, t1, t2, t3, t4
-      ) AS ranked
-      WHERE ranked.client_id_ranked = 1
-    ),
-    combined AS (
-      SELECT
-      welcome_table.client_id,
-      finish_table.service_count,
-      welcome_table.office_id,
-      service_bc_office_info.name AS office_name,
-      welcome_table.agent_id,
-      chooseservice_table.program_id,
-      static.service_info.name AS program_name,
-      chooseservice_table.channel,
-      finish_table.inaccurate_time,
-      welcome_time, stand_time, invite_time, start_time, finish_time, chooseservice_time,
-      c1.reception_time,
-      c1.waiting_time,
-      c1.prep_time
-      FROM welcome_table
-      LEFT JOIN stand_table ON welcome_table.client_id = stand_table.client_id
-      LEFT JOIN finish_table ON welcome_table.client_id = finish_table.client_id
-      LEFT JOIN invite_table ON welcome_table.client_id = invite_table.client_id AND finish_table.service_count = invite_table.service_count
-      LEFT JOIN start_table ON welcome_table.client_id = start_table.client_id AND finish_table.service_count = start_table.service_count
-      LEFT JOIN chooseservice_table ON welcome_table.client_id = chooseservice_table.client_id AND finish_table.service_count = chooseservice_table.service_count
-      LEFT JOIN static.service_info ON static.service_info.id = chooseservice_table.program_id
-      LEFT JOIN static.service_bc_office_info ON static.service_bc_office_info.id = chooseservice_table.office_id
-      JOIN finalcalc AS c1 ON welcome_table.client_id = c1.client_id AND finish_table.service_count = c1.service_count
-    ),
+    FROM welcome_table
+    LEFT JOIN stand_table ON welcome_table.client_id = stand_table.client_id
+    LEFT JOIN finish_table ON welcome_table.client_id = finish_table.client_id
+    LEFT JOIN invite_table ON welcome_table.client_id = invite_table.client_id AND finish_table.service_count = invite_table.service_count
+    LEFT JOIN start_table ON welcome_table.client_id = start_table.client_id AND finish_table.service_count = start_table.service_count
+    ORDER BY welcome_time, stand_time, invite_time, start_time
+  ),
+  finalcalc AS (
+    SELECT ranked.*
+    FROM (
+      SELECT *, ROW_NUMBER() OVER (PARTITION BY client_id, service_count ORDER BY t1, t2, t3, t4) AS client_id_ranked
+      FROM calculations
+      ORDER BY client_id, t1, t2, t3, t4
+    ) AS ranked
+    WHERE ranked.client_id_ranked = 1
+  ),
+  combined AS (
+    SELECT
+    welcome_table.client_id,
+    finish_table.service_count,
+    welcome_table.office_id,
+    service_bc_office_info.name AS office_name,
+    welcome_table.agent_id,
+    chooseservice_table.program_id,
+    static.service_info.name AS program_name,
+    chooseservice_table.channel,
+    finish_table.inaccurate_time,
+    welcome_time, stand_time, invite_time, start_time, finish_time, chooseservice_time,
+    c1.reception_time,
+    c1.waiting_time,
+    c1.prep_time
+    FROM welcome_table
+    LEFT JOIN stand_table ON welcome_table.client_id = stand_table.client_id
+    LEFT JOIN finish_table ON welcome_table.client_id = finish_table.client_id
+    LEFT JOIN invite_table ON welcome_table.client_id = invite_table.client_id AND finish_table.service_count = invite_table.service_count
+    LEFT JOIN start_table ON welcome_table.client_id = start_table.client_id AND finish_table.service_count = start_table.service_count
+    LEFT JOIN chooseservice_table ON welcome_table.client_id = chooseservice_table.client_id AND finish_table.service_count = chooseservice_table.service_count
+    LEFT JOIN static.service_info ON static.service_info.id = chooseservice_table.program_id
+    LEFT JOIN static.service_bc_office_info ON static.service_bc_office_info.id = chooseservice_table.office_id
+    JOIN finalcalc AS c1 ON welcome_table.client_id = c1.client_id AND finish_table.service_count = c1.service_count
+  ),
     finalset AS (
       SELECT ranked.*
       FROM (
@@ -310,7 +310,6 @@ view: cfms_poc {
     sql:  ${TABLE}.welcome_time ;;
   }
 
-
   dimension: stand_time {
     type: date_time
     sql: ${TABLE}.stand_time ;;
@@ -385,7 +384,6 @@ view: cfms_poc {
     type: yesno
     sql: ${TABLE}.inaccurate_time ;;
   }
-
 
 
   set: detail {
