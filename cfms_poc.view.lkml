@@ -28,7 +28,7 @@ view: cfms_poc {
         ON ev.event_id = fi.root_id
     LEFT JOIN atomic.ca_bc_gov_cfmspoc_hold_1 AS ho
         ON ev.event_id = ho.root_id
-    WHERE name_tracker = 'CFMS_poc' AND client_id IS NOT NULL
+    WHERE name_tracker = 'CFMS_poc' AND client_id IS NOT NULL AND office_id IS NOT NULL
     ),
 welcome_table AS(
   SELECT
