@@ -173,7 +173,6 @@ welcome_table AS(
     LEFT JOIN static.service_info ON static.service_info.id = chooseservice_table.program_id
     LEFT JOIN static.service_bc_office_info ON static.service_bc_office_info.id = chooseservice_table.office_id
     JOIN finalcalc AS c1 ON welcome_table.client_id = c1.client_id AND finish_table.service_count = c1.service_count
-    AND welcome_table.office_id IS NOT NULL
   ),
     finalset AS (
       SELECT ranked.*
@@ -214,70 +213,70 @@ welcome_table AS(
 
  measure: reception_time_average {
   type:  average
-  sql: ${TABLE}.reception_time ;;
-  value_format: "0.00\"s\""
+  sql: (1.00 * ${TABLE}.reception_time)/(60*60*24) ;;
+  value_format: "[h]:mm:ss"
   }
 
   dimension: reception_time {
     type:  number
-    sql: ${TABLE}.reception_time ;;
-    value_format: "0.00\"s\""
+    sql: (1.00 * ${TABLE}.reception_time)/(60*60*24) ;;
+    value_format: "[h]:mm:ss"
   }
 
   dimension: waiting_time {
     type:  number
-    sql: ${TABLE}.waiting_time ;;
-    value_format: "0.00\"s\""
+    sql: (1.00 * ${TABLE}.waiting_time)/(60*60*24) ;;
+    value_format: "[h]:mm:ss"
   }
   measure: waiting_time_per_issue_sum {
     type: sum
-    sql: ${TABLE}.waiting_time ;;
-    value_format: "0.00\"s\""
+    sql: (1.00 * ${TABLE}.waiting_time)/(60*60*24) ;;
+    value_format: "[h]:mm:ss"
   }
   measure: waiting_time_per_issue_average {
     type:  average
-    sql: ${TABLE}.waiting_time ;;
-    value_format: "0.00\"s\""
+    sql: (1.00 * ${TABLE}.waiting_time)/(60*60*24) ;;
+    value_format: "[h]:mm:ss"
   }
   measure: waiting_time_sum {
     type: sum_distinct
     sql_distinct_key: ${TABLE}.client_id;;
-    sql: ${TABLE}.waiting_time_sum ;;
-    value_format: "0.00\"s\""
+    sql: (1.00 * ${TABLE}.waiting_time_sum)/(60*60*24) ;;
+    value_format: "[h]:mm:ss"
   }
   measure: waiting_time_average {
     type: average_distinct
-    sql: ${TABLE}.waiting_time_sum ;;
+    sql: (1.00 * ${TABLE}.waiting_time_sum)/(60*60*24) ;;
     sql_distinct_key: ${TABLE}.client_id;;
-    value_format: "0.00\"s\""
+    value_format: "[h]:mm:ss"
   }
 
   dimension: prep_time {
     type:  number
-    sql: ${TABLE}.prep_time ;;
-    value_format: "0.00\"s\""
+    sql: (1.00 * ${TABLE}.prep_time)/(60*60*24) ;;
+    value_format: "[h]:mm:ss"
   }
   measure: prep_time_per_issue_sum {
     type: sum
-    sql: ${TABLE}.prep_time ;;
-    value_format: "0.00\"s\""
+    sql: (1.00 * ${TABLE}.prep_time)/(60*60*24) ;;
+    value_format: "[h]:mm:ss"
   }
   measure: prep_time_per_issue_average {
     type:  average
-    sql: ${TABLE}.prep_time ;;
-    value_format: "0.00\"s\""
+    sql: (1.00 * ${TABLE}.prep_time)/(60*60*24) ;;
+    value_format: "[h]:mm:ss"
   }
   measure: prep_time_sum {
     type: sum_distinct
     sql_distinct_key: ${TABLE}.client_id;;
-    sql: ${TABLE}.prep_time_sum ;;
-    value_format: "0.00\"s\""
+    sql: (1.00 * ${TABLE}.prep_time_sum)/(60*60*24) ;;
+    value_format: "[h]:mm:ss"
   }
   measure: prep_time_average {
     type: average_distinct
-    sql: ${TABLE}.prep_time_sum ;;
+    sql: (1.00 * ${TABLE}.prep_time_sum)/(60*60*24) ;;
     sql_distinct_key: ${TABLE}.client_id;;
-    value_format: "0.00\"s\""
+    value_format: "[h]:mm:ss"
   }
 
   dimension: welcome_time {
