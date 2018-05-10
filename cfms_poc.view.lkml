@@ -244,7 +244,7 @@ welcome_table AS(
     sql: ${TABLE}.waiting_time_sum ;;
     value_format: "0.00\"s\""
   }
-  measure: waiting_time_average_sum {
+  measure: waiting_time_average {
     type: average_distinct
     sql: ${TABLE}.waiting_time_sum ;;
     sql_distinct_key: ${TABLE}.client_id;;
@@ -272,7 +272,7 @@ welcome_table AS(
     sql: ${TABLE}.prep_time_sum ;;
     value_format: "0.00\"s\""
   }
-  measure: prep_time_average_sum {
+  measure: prep_time_average {
     type: average_distinct
     sql: ${TABLE}.prep_time_sum ;;
     sql_distinct_key: ${TABLE}.client_id;;
