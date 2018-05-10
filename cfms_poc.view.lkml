@@ -28,7 +28,7 @@ view: cfms_poc {
         ON ev.event_id = fi.root_id
     LEFT JOIN atomic.ca_bc_gov_cfmspoc_hold_1 AS ho
         ON ev.event_id = ho.root_id
-    WHERE name_tracker = 'CFMS_poc' AND client_id IS NOT NULL AND office_id IS NOT NULL
+    WHERE name_tracker = 'CFMS_poc' AND client_id IS NOT NULL
     ),
 welcome_table AS(
   SELECT
@@ -173,6 +173,7 @@ welcome_table AS(
     LEFT JOIN static.service_info ON static.service_info.id = chooseservice_table.program_id
     LEFT JOIN static.service_bc_office_info ON static.service_bc_office_info.id = chooseservice_table.office_id
     JOIN finalcalc AS c1 ON welcome_table.client_id = c1.client_id AND finish_table.service_count = c1.service_count
+    AND welcome_table.office_id IS NOT NULL
   ),
     finalset AS (
       SELECT ranked.*
