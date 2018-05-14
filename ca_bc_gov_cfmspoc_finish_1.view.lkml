@@ -65,8 +65,5 @@ view: ca_bc_gov_cfmspoc_finish_1 {
     sql: ${TABLE}.schema_version ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: [schema_name]
-  }
+
 }

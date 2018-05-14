@@ -48,8 +48,5 @@ view: snplow_monitor_detail {
     sql: ${TABLE}.min ;;
   }
 
-  measure: count {
-    type: count
-    drill_fields: []
-  }
+
 }

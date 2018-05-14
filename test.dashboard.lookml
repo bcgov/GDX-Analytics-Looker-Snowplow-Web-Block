@@ -62,14 +62,3 @@
     col: 0
     width: 8
     height: 6
-  filters:
-  - name: Browser
-    title: Browser
-    type: field_filter
-    default_value: ''
-    allow_multiple_values: true
-    required: false
-    model: snowplow_web_block
-    explore: page_views
-    listens_to_filters: []
-    field: page_views.browser_name

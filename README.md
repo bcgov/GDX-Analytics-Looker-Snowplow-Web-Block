@@ -11,7 +11,7 @@ Currently this project is still in development.
 
 # Getting Help
 
-Please Contact the GDX Service desk for any analytics service help, for inquiries about starting a new analytics account for Government please contact The GDX Analytics team or Dan Pollock.
+Please Contact the GDX Service desk for any analytics service help, for inquiries about starting a new analytics account for Government please contact The GDX Analytics team.
 
 # Contributors
 
