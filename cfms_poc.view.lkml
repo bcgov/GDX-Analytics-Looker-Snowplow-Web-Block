@@ -360,6 +360,17 @@ view: cfms_poc {
     sql: ${TABLE}.agent_id ;;
   }
 
+  dimension: channel {
+    type: string
+    sql: ${TABLE}.channel ;;
+  }
+
+  dimension: inaccurate_time {
+    type: yesno
+    sql: ${TABLE}.inaccurate_time ;;
+  }
+
+
   dimension: program_id {
     type: number
     sql: ${TABLE}.program_id ;;
@@ -372,19 +383,8 @@ view: cfms_poc {
 
   dimension: transaction_name {
     type: string
-    sql: ${TABLE}.transaction_name ;;
+    sql:  ${TABLE}.transaction_name ;;
   }
-
-  dimension: channel {
-    type: string
-    sql: ${TABLE}.channel ;;
-  }
-
-  dimension: inaccurate_time {
-    type: yesno
-    sql: ${TABLE}.inaccurate_time ;;
-  }
-
 
   set: detail {
     fields: [
