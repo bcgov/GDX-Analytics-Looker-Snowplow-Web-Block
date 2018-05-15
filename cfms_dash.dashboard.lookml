@@ -2,118 +2,9 @@
   title: CFMS
   layout: newspaper
   elements:
-  - title: Offices by Date
-    name: Offices by Date
-    model: cfms_poc
-    explore: cfms_poc
-    type: looker_line
-    fields:
-    - cfms_poc.office_name
-    - cfms_poc.date
-    - cfms_poc.count
-    pivots:
-    - cfms_poc.office_name
-    fill_fields:
-    - cfms_poc.date
-    filters:
-      cfms_poc.office_name: "-NULL"
-    sorts:
-    - cfms_poc.count desc 0
-    - cfms_poc.date
-    - cfms_poc.office_name
-    limit: 500
-    stacking: ''
-    show_value_labels: false
-    label_density: 25
-    legend_position: center
-    x_axis_gridlines: false
-    y_axis_gridlines: true
-    show_view_names: true
-    limit_displayed_rows: false
-    y_axis_combined: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    show_x_axis_ticks: true
-    x_axis_scale: ordinal
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    show_null_points: true
-    point_style: none
-    interpolation: linear
-    ordering: none
-    show_null_labels: false
-    show_totals_labels: false
-    show_silhouette: false
-    totals_color: "#808080"
-    series_types: {}
-    listen:
-      Office Name: cfms_poc.office_name
-      Program Name: cfms_poc.program_name
-    row: 9
-    col: 0
-    width: 12
-    height: 5
-  - title: Programs by Date
-    name: Programs by Date
-    model: cfms_poc
-    explore: cfms_poc
-    type: looker_column
-    fields:
-    - cfms_poc.program_name
-    - cfms_poc.count
-    - cfms_poc.date
-    pivots:
-    - cfms_poc.program_name
-    fill_fields:
-    - cfms_poc.date
-    filters:
-      cfms_poc.program_name: "-NULL"
-    sorts:
-    - cfms_poc.date
-    - cfms_poc.program_name 0
-    limit: 500
-    stacking: normal
-    show_value_labels: false
-    label_density: 25
-    legend_position: center
-    x_axis_gridlines: false
-    y_axis_gridlines: true
-    show_view_names: true
-    limit_displayed_rows: false
-    y_axis_combined: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    show_x_axis_ticks: true
-    x_axis_scale: ordinal
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    ordering: none
-    show_null_labels: false
-    show_totals_labels: false
-    show_silhouette: false
-    totals_color: "#808080"
-    show_null_points: true
-    point_style: none
-    interpolation: linear
-    series_types: {}
-    listen:
-      Office Name: cfms_poc.office_name
-      Program Name: cfms_poc.program_name
-    row: 0
-    col: 12
-    width: 12
-    height: 9
   - title: Programs by Office
     name: Programs by Office
-    model: cfms_poc
+    model: snowplow_web_block
     explore: cfms_poc
     type: looker_column
     fields:
@@ -183,9 +74,118 @@
     col: 0
     width: 12
     height: 9
+  - title: Offices by Date
+    name: Offices by Date
+    model: snowplow_web_block
+    explore: cfms_poc
+    type: looker_line
+    fields:
+    - cfms_poc.office_name
+    - cfms_poc.date
+    - cfms_poc.count
+    pivots:
+    - cfms_poc.office_name
+    fill_fields:
+    - cfms_poc.date
+    filters:
+      cfms_poc.office_name: "-NULL"
+    sorts:
+    - cfms_poc.count desc 0
+    - cfms_poc.date
+    - cfms_poc.office_name
+    limit: 500
+    stacking: ''
+    show_value_labels: false
+    label_density: 25
+    legend_position: center
+    x_axis_gridlines: false
+    y_axis_gridlines: true
+    show_view_names: true
+    limit_displayed_rows: false
+    y_axis_combined: true
+    show_y_axis_labels: true
+    show_y_axis_ticks: true
+    y_axis_tick_density: default
+    y_axis_tick_density_custom: 5
+    show_x_axis_label: true
+    show_x_axis_ticks: true
+    x_axis_scale: ordinal
+    y_axis_scale_mode: linear
+    x_axis_reversed: false
+    y_axis_reversed: false
+    show_null_points: true
+    point_style: none
+    interpolation: linear
+    ordering: none
+    show_null_labels: false
+    show_totals_labels: false
+    show_silhouette: false
+    totals_color: "#808080"
+    series_types: {}
+    listen:
+      Office Name: cfms_poc.office_name
+      Program Name: cfms_poc.program_name
+    row: 9
+    col: 0
+    width: 12
+    height: 5
+  - title: Programs by Date
+    name: Programs by Date
+    model: snowplow_web_block
+    explore: cfms_poc
+    type: looker_column
+    fields:
+    - cfms_poc.program_name
+    - cfms_poc.count
+    - cfms_poc.date
+    pivots:
+    - cfms_poc.program_name
+    fill_fields:
+    - cfms_poc.date
+    filters:
+      cfms_poc.program_name: "-NULL"
+    sorts:
+    - cfms_poc.date
+    - cfms_poc.program_name 0
+    limit: 500
+    stacking: normal
+    show_value_labels: false
+    label_density: 25
+    legend_position: center
+    x_axis_gridlines: false
+    y_axis_gridlines: true
+    show_view_names: true
+    limit_displayed_rows: false
+    y_axis_combined: true
+    show_y_axis_labels: true
+    show_y_axis_ticks: true
+    y_axis_tick_density: default
+    y_axis_tick_density_custom: 5
+    show_x_axis_label: true
+    show_x_axis_ticks: true
+    x_axis_scale: ordinal
+    y_axis_scale_mode: linear
+    x_axis_reversed: false
+    y_axis_reversed: false
+    ordering: none
+    show_null_labels: false
+    show_totals_labels: false
+    show_silhouette: false
+    totals_color: "#808080"
+    show_null_points: true
+    point_style: none
+    interpolation: linear
+    series_types: {}
+    listen:
+      Office Name: cfms_poc.office_name
+      Program Name: cfms_poc.program_name
+    row: 0
+    col: 12
+    width: 12
+    height: 9
   - title: Times by Office
     name: Times by Office
-    model: cfms_poc
+    model: snowplow_web_block
     explore: cfms_poc
     type: table
     fields:
@@ -244,7 +244,7 @@
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: cfms_poc
+    model: snowplow_web_block
     explore: cfms_poc
     listens_to_filters: []
     field: cfms_poc.office_name
@@ -254,7 +254,7 @@
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: cfms_poc
+    model: snowplow_web_block
     explore: cfms_poc
     listens_to_filters: []
     field: cfms_poc.program_name
