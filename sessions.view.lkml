@@ -179,6 +179,12 @@ view: sessions {
         ON a.session_id = b.session_id
 
       WHERE a.page_view_in_session_index = 1
+
+      UNION
+
+      SELECT
+        *
+      FROM derived.sessions_webtrends
        ;;
     sql_trigger_value: SELECT COUNT(*) FROM ${page_views.SQL_TABLE_NAME} ;;
     distribution: "user_snowplow_domain_id"
