@@ -213,6 +213,12 @@ view: page_views {
         -- AND a.app_id IN ('demo-app')
         -- AND a.page_urlhost IN ('website.com', 'another.website.com')
         -- AND a.name_tracker = 'namespace'
+
+      UNION
+
+      SELECT
+        *
+      FROM derived.page_views_webtrends
        ;;
     sql_trigger_value: SELECT COUNT(*) FROM ${scratch_pv_05.SQL_TABLE_NAME} ;;
     distribution: "user_snowplow_domain_id"
