@@ -121,12 +121,6 @@ view: users {
         ON a.user_snowplow_domain_id = b.user_snowplow_domain_id
 
       WHERE a.session_index = 1
-
-      UNION
-
-      SELECT
-        *
-      FROM derived.users_webtrends
        ;;
     sql_trigger_value: SELECT COUNT(*) FROM ${sessions.SQL_TABLE_NAME} ;;
     distribution: "user_snowplow_domain_id"
