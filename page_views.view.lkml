@@ -644,7 +644,7 @@ view: page_views {
 
   dimension: is_government {
     type: yesno
-    sql: ${ip_address} LIKE '%142%' ;;
+    sql: ${ip_address} LIKE '142%' ;;
   }
 
   dimension: ip_address {
