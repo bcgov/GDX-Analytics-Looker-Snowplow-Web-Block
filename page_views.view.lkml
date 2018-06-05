@@ -643,8 +643,10 @@ view: page_views {
   # IP
 
   dimension: is_government {
+    # the filter is put in this view because the IP is defined here in this view
     type: yesno
-    sql: ${ip_address} LIKE '%142%' ;;
+    # the filter is using the frist part of the gov ip - 142.xxx.xxx.xxx to see if the IP is in the gov network
+    sql: ${ip_address} LIKE '142%' ;;
   }
 
   dimension: ip_address {
