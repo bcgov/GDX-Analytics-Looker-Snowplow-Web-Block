@@ -117,42 +117,42 @@ view: page_views {
     value_format: "0\"s\""
   }
 
-  # dimension: x_pixels_scrolled {
-    # type: number
-    # sql: ${TABLE}.horizontal_pixels_scrolled ;;
-    # group_label: "Engagement"
-    # value_format: "0\"px\""
-  # }
+  dimension: x_pixels_scrolled {
+    type: number
+    sql: ${TABLE}.horizontal_pixels_scrolled ;;
+    group_label: "Engagement"
+    value_format: "0\"px\""
+  }
 
-  # dimension: y_pixels_scrolled {
-    # type: number
-    # sql: ${TABLE}.vertical_pixels_scrolled ;;
-    # group_label: "Engagement"
-    # value_format: "0\"px\""
-  # }
+  dimension: y_pixels_scrolled {
+    type: number
+    sql: ${TABLE}.vertical_pixels_scrolled ;;
+    group_label: "Engagement"
+    value_format: "0\"px\""
+  }
 
-  # dimension: x_percentage_scrolled {
-    # type: number
-    # sql: ${TABLE}.horizontal_percentage_scrolled ;;
-    # group_label: "Engagement"
-    # value_format: "0\%"
-  # }
+  dimension: x_percentage_scrolled {
+    type: number
+    sql: ${TABLE}.horizontal_percentage_scrolled ;;
+    group_label: "Engagement"
+    value_format: "0\%"
+  }
 
-  # dimension: y_percentage_scrolled {
-    # type: number
-    # sql: ${TABLE}.vertical_percentage_scrolled ;;
-    # group_label: "Engagement"
-    # value_format: "0\%"
-  # }
+  dimension: y_percentage_scrolled {
+    type: number
+    sql: ${TABLE}.vertical_percentage_scrolled ;;
+    group_label: "Engagement"
+    value_format: "0\%"
+  }
 
-  # dimension: y_percentage_scrolled_tier {
-    # type: tier
-    # tiers: [0, 25, 50, 75, 101]
-    # style: integer
-    # sql: ${y_percentage_scrolled} ;;
-    # group_label: "Engagement"
-    # value_format: "0\%"
-  # }
+  dimension: y_percentage_scrolled_tier {
+    type: tier
+    tiers: [0, 25, 50, 75, 101]
+    style: integer
+    sql: ${y_percentage_scrolled} ;;
+    group_label: "Engagement"
+    value_format: "0\%"
+  }
 
   dimension: user_bounced {
     type: yesno
@@ -249,8 +249,7 @@ view: page_views {
 
   dimension: search_field {
     type: string
-#     sql: decode(split_part(${page_url},'/search/',2),'%20', ' ');;
-
+    # sql: decode(split_part(${page_url},'/search/',2),'%20', ' ');;
     sql: REPLACE(split_part(${page_url},'/search/',2), '%20', ' ')
  ;;
   }
@@ -753,10 +752,10 @@ view: page_views {
 
   # Engagement
 
-#   measure: page_2_count {
-#     type: count_distinct
-#     sql: ${page_views_2.page_title} ;;
-#   }
+  # measure: page_2_count {
+    # type: count_distinct
+    # sql: ${page_views_2.page_title} ;;
+  # }
 
   measure: total_time_engaged {
     type: sum
