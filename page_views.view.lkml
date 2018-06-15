@@ -67,17 +67,17 @@ view: page_views {
 
   # Page View Time
 
-  dimension_group: page_view_start_time {
+  dimension_group: page_view_start {
     type: time
     timeframes: [time, minute10, hour, date, week, month, quarter, year]
-    sql: ${TABLE}.page_view_start ;;
+    sql: ${TABLE}.page_view_start_time ;;
     #X# group_label:"Page View Time"
   }
 
-  dimension_group: page_view_end_time {
+  dimension_group: page_view_end {
     type: time
     timeframes: [time, minute10, hour, date, week, month, quarter, year]
-    sql: ${TABLE}.page_view_end ;;
+    sql: ${TABLE}.page_view_end_time ;;
     #X# group_label:"Page View Time"
     hidden: yes
   }
