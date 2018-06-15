@@ -88,7 +88,7 @@ view: users {
 
         -- referer
 
-        a.page_referer,
+        a.page_referrer,
 
         a.refr_urlscheme,
         a.refr_urlhost,
@@ -273,7 +273,7 @@ view: users {
 
   dimension: page_referer {
     type: string
-    sql: ${TABLE}.page_referer ;;
+    sql: ${TABLE}.page_referrer ;;
     group_label: "Referer"
   }
 
