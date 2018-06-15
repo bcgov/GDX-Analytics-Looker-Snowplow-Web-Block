@@ -34,7 +34,7 @@ explore: page_views {
   }
 
   join: users {
-    sql_on: ${page_views.domain_userid} = ${users.user_snowplow_domain_id} ;;
+    sql_on: ${page_views.domain_userid} = ${users.domain_userid} ;;
     relationship: many_to_one
   }
 
