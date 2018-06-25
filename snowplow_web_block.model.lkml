@@ -16,6 +16,8 @@
 # License:     Apache License Version 2.0
 
 connection: "redshift"
+# Set the week start day to Sunday. Default is Monday
+week_start_day: sunday
 
 # include all views in this project
 include: "*.view"
@@ -43,7 +45,7 @@ explore: page_views {
 
   join: sessions_rollup {
     sql_on: ${sessions_rollup.session_id} = ${sessions.session_id}
-            AND ${page_views.page_view_index} = ${sessions_rollup.max_page_view_index} ;;
+      AND ${page_views.page_view_index} = ${sessions_rollup.max_page_view_index} ;;
     type: left_outer
     relationship: many_to_many
   }
