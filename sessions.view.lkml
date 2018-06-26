@@ -247,14 +247,14 @@ view: sessions {
 
   dimension_group: session_start {
     type: time
-    timeframes: [raw, time, minute10, hour_of_day, hour, date, day_of_week, week, month, quarter, year]
+    timeframes: [raw, time, minute10, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
     sql: ${TABLE}.session_start ;;
     #X# group_label:"Session Time"
   }
 
   dimension_group: session_end {
     type: time
-    timeframes: [time, minute10, hour, date, week, month, quarter, year]
+    timeframes: [raw, time, minute10, hour, date, week, month, quarter, year]
     sql: ${TABLE}.session_end ;;
     #X# group_label:"Session Time"
 #     hidden: yes
@@ -758,7 +758,20 @@ view: sessions {
     group_label: "Device"
   }
 
+  dimension: session_length {
+    type: number
+    sql: DATEDIFF(SECONDS, ${session_start_raw}, ${session_end_raw}) ;;
+  }
+
   # MEASURES
+
+  measure: average_session_length {
+    type: average
+    sql: ${session_length} / 86400.0;;
+    value_format: "h:mm:ss"
+#     to_char(${session_length}::interval, 'HH24:MI:SS') ;;
+  }
+#   to_char(${session_length})
 
   measure: row_count {
     type: count
