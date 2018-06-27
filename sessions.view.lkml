@@ -76,23 +76,22 @@ view: sessions {
     # hidden: yes
   }
 
-  # dimension: session_start_window {
-    # case: {
-      # when: {
-        # sql: ${session_start_time} >= DATEADD(day, -7, GETDATE()) ;;
-        # label: "current_period"
-      # }
+  dimension: session_start_window {
+    case: {
+      when: {
+        sql: ${TABLE}.session_start >= DATEADD(day, -7, GETDATE()) ;;
+        label: "current_period"
+      }
 
-      # when: {
-        # sql: ${session_start_time} >= DATEADD(day, -14, GETDATE()) AND ${session_start_time} < DATEADD(day, -7, GETDATE()) ;;
-        # label: "previous_period"
-      # }
+      when: {
+        sql: ${TABLE}.session_start >= DATEADD(day, -14, GETDATE()) AND ${TABLE}.session_start < DATEADD(day, -7, GETDATE()) ;;
+        label: "previous_period"
+      }
 
-      # else: "unknown"
-    # }
-
-    # hidden: yes
-  # }
+      else: "unknown"
+    }
+    hidden: yes
+  }
 
   # Session Time (User Timezone)
 
