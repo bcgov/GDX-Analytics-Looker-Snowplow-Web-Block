@@ -53,7 +53,7 @@ view: page_views {
 
   dimension: page_view_index {
      type: number
-     index across all sessions
+     # index across all sessions
      sql: ${TABLE}.page_view_index ;;
      group_label: "Page View"
   }
