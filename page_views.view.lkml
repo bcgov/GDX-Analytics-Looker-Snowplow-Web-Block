@@ -451,8 +451,6 @@ view: page_views {
 
   dimension: search_field {
     type: string
-#     sql: decode(split_part(${page_url},'/search/',2),'%20', ' ');;
-
     sql: REPLACE(split_part(${page_url},'/search/',2), '%20', ' ')
  ;;
   }
@@ -893,6 +891,11 @@ view: page_views {
     group_label: "Page Performance"
   }
 
+  dimension: exit_page_flag {
+    type: yesno
+    sql: ${page_view_index} = ${max_page_view_rollup.max_page_view_index} ;;
+  }
+
   # MEASURES
 
   measure: row_count {
@@ -909,12 +912,10 @@ view: page_views {
   measure: bounced_page_view_count {
     type: count_distinct
     sql: ${page_view_id} ;;
-
     filters: {
       field: user_bounced
       value: "yes"
     }
-
     group_label: "Counts"
   }
 
@@ -926,18 +927,34 @@ view: page_views {
   measure: engaged_page_view_count {
     type: count_distinct
     sql: ${page_view_id} ;;
-
     filters: {
       field: user_engaged
       value: "yes"
     }
-
     group_label: "Counts"
+  }
+
+  measure: landing_page_count {
+    type: count_distinct
+    sql: ${page_view_id} ;;
+    filters: {
+      field: page_view_index
+      value: "1"
+    }
+  }
+
+  measure: exit_page_count {
+    type: count_distinct
+    sql: ${page_view_id} ;;
+    filters: {
+      field: exit_page_flag
+      value: "Yes"
+    }
   }
 
   measure: session_count {
     type: count_distinct
-    sql: ${session_id} ;;
+    sql: COALESCE(${session_id},0) ;;
     group_label: "Counts"
   }
 
@@ -1023,5 +1040,27 @@ view: page_views {
     sql: ${total_time} ;;
     value_format: "#,##0\"ms\""
     group_label: "Page Performance"
+  }
+}
+
+# If necessary, uncomment the line below to include explore_source.
+# include: "snowplow_web_block.model.lkml"
+explore: max_page_view_rollup {}
+view: max_page_view_rollup {
+  derived_table: {
+    explore_source: page_views {
+      column: page_view_id {}
+      column: page_title {}
+      column: max_page_view_index {}
+      derived_column: p_key {
+        sql: ROW_NUMBER() OVER (order by true) ;;
+      }
+    }
+  }
+  dimension: p_key {primary_key:yes}
+  dimension: page_view_id {}
+  dimension: page_title {}
+  dimension: max_page_view_index {
+    type: number
   }
 }

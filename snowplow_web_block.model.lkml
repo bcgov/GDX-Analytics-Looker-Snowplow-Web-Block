@@ -33,6 +33,12 @@ explore: page_views {
     relationship: many_to_many
   }
 
+  join: max_page_view_rollup {
+    type: left_outer
+    sql_on: ${max_page_view_rollup.page_view_id} = ${page_views.page_view_id} ;;
+    relationship: many_to_one
+  }
+
   join: users {
     sql_on: ${page_views.user_snowplow_domain_id} = ${users.user_snowplow_domain_id} ;;
     relationship: many_to_one
