@@ -63,36 +63,60 @@ view: sessions {
 
   dimension_group: session_start {
     type: time
-    timeframes: [time, minute10, hour, date, week, month, quarter, year]
+    timeframes: [raw, time, minute10, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
     sql: ${TABLE}.session_start ;;
     #X# group_label:"Session Time"
   }
 
   dimension_group: session_end {
     type: time
-    timeframes: [time, minute10, hour, date, week, month, quarter, year]
+    timeframes: [raw, time, minute10, hour, date, week, month, quarter, year]
     sql: ${TABLE}.session_end ;;
     #X# group_label:"Session Time"
     # hidden: yes
   }
 
-  # dimension: session_start_window {
-    # case: {
-      # when: {
-        # sql: ${session_start_time} >= DATEADD(day, -7, GETDATE()) ;;
-        # label: "current_period"
-      # }
+  filter: date_range {
+    type: date
+  }
 
-      # when: {
-        # sql: ${session_start_time} >= DATEADD(day, -14, GETDATE()) AND ${session_start_time} < DATEADD(day, -7, GETDATE()) ;;
-        # label: "previous_period"
-      # }
+  dimension: current_period {
+    group_label: "Flexible Filter"
+    type: yesno
+    sql: ${session_start_raw} >= {% date_start date_range %} ;;
+  }
 
-      # else: "unknown"
-    # }
+  dimension: period_difference {
+    group_label: "Flexible Filter"
+    type: number
+    sql: DATEDIFF(DAY, {% date_start date_range %}, {% date_end date_range %})  ;;
+  }
 
-    # hidden: yes
-  # }
+  filter: is_in_range {
+    type: yesno
+    sql:  ${session_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start date_range %}) AND ${session_start_raw}< {% date_end date_range %}    ;;
+  }
+
+  dimension: last_period {
+    group_label: "Flexible Filter"
+    type: yesno
+    sql: ${session_start_raw} < {% date_start date_range %} AND ${session_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start date_range %}) ;;
+    required_fields: [is_in_range]
+  }
+
+  dimension: session_start_window {
+    required_fields: [is_in_range]
+    case: {
+      when: {
+        sql: ${current_period} ;;
+        label: "current_period"
+      }
+
+      when: {
+        sql: ${last_period} ;;
+        label: "previous_period"
+      }
+  }
 
   # Session Time (User Timezone)
 
@@ -114,6 +138,31 @@ view: sessions {
   # }
 
   # Engagement
+
+  parameter: date_granularity {
+    type: string
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Month" }
+    allowed_value: { value: "Quarter" }
+    allowed_value: { value: "Year" }
+  }
+
+  dimension: date {
+    label_from_parameter: date_granularity
+    sql:
+       CASE
+         WHEN {% parameter date_granularity %} = 'Day' THEN
+           ${session_start_date}::VARCHAR
+         WHEN {% parameter date_granularity %} = 'Month' THEN
+           ${session_start_month}::VARCHAR
+         WHEN {% parameter date_granularity %} = 'Quarter' THEN
+           ${session_start_quarter}::VARCHAR
+         WHEN {% parameter date_granularity %} = 'Year' THEN
+           ${session_start_year}::VARCHAR
+         ELSE
+           NULL
+       END ;;
+  }
 
   dimension: page_views {
     type: number
@@ -526,7 +575,20 @@ view: sessions {
     group_label: "Device"
   }
 
+  dimension: session_length {
+    type: number
+    sql: DATEDIFF(SECONDS, ${session_start_raw}, ${session_end_raw}) ;;
+  }
+
   # MEASURES
+
+  measure: average_session_length {
+    type: average
+    sql: ${session_length} / 86400.0;;
+    value_format: "h:mm:ss"
+#     to_char(${session_length}::interval, 'HH24:MI:SS') ;;
+  }
+#   to_char(${session_length})
 
   measure: row_count {
     type: count
@@ -540,8 +602,8 @@ view: sessions {
   }
 
   measure: session_count {
-    type: count_distinct
-    sql: ${session_id} ;;
+    type: number
+    sql: COALESCE(COUNT (DISTINCT ${session_id}),0) ;;
     group_label: "Counts"
     drill_fields: [session_count]
   }
