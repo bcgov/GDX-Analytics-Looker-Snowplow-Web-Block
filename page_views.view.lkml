@@ -51,12 +51,12 @@ view: page_views {
     group_label: "Page View"
   }
 
-  # dimension: page_view_index {
-    # type: number
-    # index across all sessions
-    # sql: ${TABLE}.page_view_index ;;
-    # group_label: "Page View"
-  # }
+  dimension: page_view_index {
+     type: number
+     # index across all sessions
+     sql: ${TABLE}.page_view_index ;;
+     group_label: "Page View"
+  }
 
   dimension: page_view_in_session_index {
     type: number
