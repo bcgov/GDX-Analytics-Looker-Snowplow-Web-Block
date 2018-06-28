@@ -40,7 +40,7 @@ explore: page_views {
   }
 
   join: users {
-    sql_on: ${page_views.user_snowplow_domain_id} = ${users.user_snowplow_domain_id} ;;
+    sql_on: ${page_views.domain_userid} = ${users.domain_userid} ;;
     relationship: many_to_one
   }
 
@@ -49,12 +49,12 @@ explore: page_views {
     relationship: one_to_many
   }
 
-  join: sessions_rollup {
-    sql_on: ${sessions_rollup.session_id} = ${sessions.session_id}
-      AND ${page_views.page_view_index} = ${sessions_rollup.max_page_view_index} ;;
-    type: left_outer
-    relationship: many_to_many
-  }
+  # join: sessions_rollup {
+    # sql_on: ${sessions_rollup.session_id} = ${sessions.session_id}
+      # AND ${page_views.page_view_index} = ${sessions_rollup.max_page_view_index} ;;
+    # type: left_outer
+    # relationship: many_to_many
+  # }
 }
 
 # explore: sessions {
@@ -79,7 +79,7 @@ explore: page_views {
 
 explore: sessions {
   join: users {
-    sql_on: ${sessions.user_snowplow_domain_id} = ${users.user_snowplow_domain_id} ;;
+    sql_on: ${sessions.domain_userid} = ${users.domain_userid} ;;
     relationship: many_to_one
   }
 }

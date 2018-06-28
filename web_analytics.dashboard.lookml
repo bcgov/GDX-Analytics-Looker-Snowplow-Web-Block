@@ -24,7 +24,7 @@
       height: 200
     - elements: [referer_breakdown, map]
       height: 450
-    - elements: [sessions_per_referer_medium, page_performance_per_browser]
+    - elements: [sessions_per_referer_medium]
       height: 450
     - elements: [devices_per_hour]
       height: 450
@@ -153,18 +153,18 @@
     x_axis_label: Date
     y_axis_labels: Sessions
 
-  - name: page_performance_per_browser
-    title: Page performance per browser
-    type: looker_column
-    model: snowplow_web_block
-    explore: page_views
-    dimensions: page_views.browser_name
-    measures: [page_views.average_request_time, page_views.average_response_time, page_views.average_onload_time, page_views.average_time_to_dom_interactive, page_views.average_time_to_dom_complete]
-    filters:
-      page_views.page_view_count: '>2500'
-    sorts: page_views.browser_name
-    stacking: normal
-    hide_legend: true
+  # - name: page_performance_per_browser
+    # title: Page performance per browser
+    # type: looker_column
+    # model: snowplow_web_block
+    # explore: page_views
+    # dimensions: page_views.browser_name
+    # measures: [page_views.average_request_time, page_views.average_response_time, page_views.average_onload_time, page_views.average_time_to_dom_interactive, page_views.average_time_to_dom_complete]
+    # filters:
+      # page_views.page_view_count: '>2500'
+    # sorts: page_views.browser_name
+    # stacking: normal
+    # hide_legend: true
 
     # Row 4
 
@@ -173,14 +173,14 @@
     type: looker_column
     model: snowplow_web_block
     explore: page_views
-    dimensions: [page_views.page_view_start_local_hour_of_day, page_views.device_type]
+    dimensions: [page_views.page_view_start_hour_of_day, page_views.device_type]
     pivots: [page_views.device_type]
     measures: [page_views.page_view_count]
     filters:
       page_views.device_type: -Game console,-Unknown
-      page_views.page_view_start_local_hour_of_day: NOT NULL
+      page_views.page_view_start_hour_of_day: NOT NULL
       sessions.session_start_time: 28 days
-    sorts: [page_views.page_view_start_local_hour_of_day, page_views.device_type]
+    sorts: [page_views.page_view_start_hour_of_day, page_views.device_type]
     limit: '500'
     column_limit: '50'
     stacking: normal
