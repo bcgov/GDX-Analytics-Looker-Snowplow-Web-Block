@@ -1,25 +1,209 @@
 view: sessions {
-  sql_table_name: derived.sessions ;;
+  derived_table: {
+    sql: WITH prep AS (
+
+        SELECT
+          session_id,
+          -- time
+          MIN(page_view_start) AS session_start,
+          MAX(page_view_end) AS session_end,
+          MIN(page_view_start_local) AS session_start_local,
+          MAX(page_view_end_local) AS session_end_local,
+          -- engagement
+          COUNT(*) AS page_views,
+          -- SUM(CASE WHEN user_bounced THEN 1 ELSE 0 END) AS bounced_page_views,
+          -- SUM(CASE WHEN user_engaged THEN 1 ELSE 0 END) AS engaged_page_views,
+          SUM(time_engaged_in_s) AS time_engaged_in_s
+
+        FROM ${page_views.SQL_TABLE_NAME}
+        GROUP BY 1
+        ORDER BY 1
+      )
+
+      SELECT
+
+        -- user
+
+        a.user_custom_id,
+        a.user_snowplow_domain_id,
+        a.user_snowplow_crossdomain_id,
+
+        -- sesssion
+
+        a.session_id,
+        a.session_index,
+
+        -- session: time
+
+        b.session_start,
+        b.session_end,
+
+          -- example derived dimensions
+
+          -- TO_CHAR(b.session_start, 'YYYY-MM-DD HH24:MI:SS') AS session_time,
+          -- TO_CHAR(b.session_start, 'YYYY-MM-DD HH24:MI') AS session_minute,
+          -- TO_CHAR(b.session_start, 'YYYY-MM-DD HH24') AS session_hour,
+          -- TO_CHAR(b.session_start, 'YYYY-MM-DD') AS session_date,
+          -- TO_CHAR(DATE_TRUNC('week', b.session_start), 'YYYY-MM-DD') AS session_week,
+          -- TO_CHAR(b.session_start, 'YYYY-MM') AS session_month,
+          -- TO_CHAR(DATE_TRUNC('quarter', b.session_start), 'YYYY-MM') AS session_quarter,
+          -- DATE_PART(Y, b.session_start)::INTEGER AS session_year,
+
+        -- session: time in the user's local timezone
+
+        b.session_start_local,
+        b.session_end_local,
+
+          -- example derived dimensions
+
+          -- TO_CHAR(b.session_start_local, 'YYYY-MM-DD HH24:MI:SS') AS session_local_time,
+          -- TO_CHAR(b.session_start_local, 'HH24:MI') AS session_local_time_of_day,
+          -- DATE_PART(hour, b.session_start_local)::INTEGER AS session_local_hour_of_day,
+          -- TRIM(TO_CHAR(b.session_start_local, 'd')) AS session_local_day_of_week,
+          -- MOD(EXTRACT(DOW FROM b.session_start_local)::INTEGER - 1 + 7, 7) AS session_local_day_of_week_index,
+
+        -- engagement
+
+        b.page_views,
+
+        -- b.bounced_page_views,
+        -- b.engaged_page_views,
+
+        b.time_engaged_in_s,
+
+          -- CASE
+            -- WHEN b.time_engaged_in_s BETWEEN 0 AND 9 THEN '0s to 9s'
+            -- WHEN b.time_engaged_in_s BETWEEN 10 AND 29 THEN '10s to 29s'
+            -- WHEN b.time_engaged_in_s BETWEEN 30 AND 59 THEN '30s to 59s'
+            -- WHEN b.time_engaged_in_s BETWEEN 60 AND 119 THEN '60s to 119s'
+            -- WHEN b.time_engaged_in_s BETWEEN 120 AND 239 THEN '120s to 239s'
+            -- WHEN b.time_engaged_in_s > 239 THEN '240s or more'
+            -- ELSE NULL
+          -- END AS time_engaged_in_s_tier,
+
+          -- CASE WHEN (b.page_views = 1 AND b.bounced_page_views = 1) THEN TRUE ELSE FALSE END AS user_bounced,
+          -- CASE WHEN (b.page_views > 2 AND b.time_engaged_in_s > 59) OR b.engaged_page_views > 0 THEN TRUE ELSE FALSE END AS user_engaged,
+
+        -- first page
+
+        a.page_url AS first_page_url,
+
+        a.page_url_scheme AS first_page_url_scheme,
+        a.page_url_host AS first_page_url_host,
+        a.page_url_port AS first_page_url_port,
+        a.page_url_path AS first_page_url_path,
+        a.page_url_query AS first_page_url_query,
+        a.page_url_fragment AS first_page_url_fragment,
+
+        a.page_title AS first_page_title,
+
+        -- referer
+
+        a.referer_url,
+
+        a.referer_url_scheme,
+        a.referer_url_host,
+        a.referer_url_port,
+        a.referer_url_path,
+        a.referer_url_query,
+        a.referer_url_fragment,
+
+        a.referer_medium,
+        a.referer_source,
+        a.referer_term,
+
+        -- marketing
+
+        a.marketing_medium,
+        a.marketing_source,
+        a.marketing_term,
+        a.marketing_content,
+        a.marketing_campaign,
+        a.marketing_click_id,
+        a.marketing_network,
+
+        -- location
+
+        a.geo_country,
+        a.geo_region,
+        a.geo_region_name,
+        a.geo_city,
+        a.geo_zipcode,
+        a.geo_latitude,
+        a.geo_longitude,
+        a.geo_timezone, -- can be NULL
+
+        -- IP
+
+        a.ip_address,
+
+        a.ip_isp,
+        a.ip_organization,
+        a.ip_domain,
+        a.ip_net_speed,
+
+        -- application
+
+        a.app_id,
+
+        -- browser
+
+        a.browser,
+        a.browser_name,
+        a.browser_major_version,
+        a.browser_minor_version,
+        a.browser_build_version,
+        a.browser_engine,
+
+        a.browser_language,
+
+        -- OS
+
+        a.os,
+        a.os_name,
+        a.os_major_version,
+        a.os_minor_version,
+        a.os_build_version,
+        a.os_manufacturer,
+        a.os_timezone,
+
+        -- device
+
+        a.device,
+        a.device_type,
+        a.device_is_mobile
+
+      FROM ${page_views.SQL_TABLE_NAME} AS a
+
+      INNER JOIN prep AS b
+        ON a.session_id = b.session_id
+
+      WHERE a.page_view_in_session_index = 1
+       ;;
+    sql_trigger_value: SELECT COUNT(*) FROM ${page_views.SQL_TABLE_NAME} ;;
+    distribution: "user_snowplow_domain_id"
+    sortkeys: ["session_start"]
+  }
 
   # DIMENSIONS
 
   # User
 
-  dimension: user_id {
+  dimension: user_custom_id {
     type: string
-    sql: ${TABLE}.user_id ;;
+    sql: ${TABLE}.user_custom_id ;;
     group_label: "User"
   }
 
-  dimension: domain_userid {
+  dimension: user_snowplow_domain_id {
     type: string
-    sql: ${TABLE}.domain_userid ;;
+    sql: ${TABLE}.user_snowplow_domain_id ;;
     group_label: "User"
   }
 
-  dimension: network_userid {
+  dimension: user_snowplow_crossdomain_id {
     type: string
-    sql: ${TABLE}.network_userid ;;
+    sql: ${TABLE}.user_snowplow_crossdomain_id ;;
     group_label: "User"
     hidden: yes
   }
@@ -73,7 +257,7 @@ view: sessions {
     timeframes: [raw, time, minute10, hour, date, week, month, quarter, year]
     sql: ${TABLE}.session_end ;;
     #X# group_label:"Session Time"
-    # hidden: yes
+#     hidden: yes
   }
 
   filter: date_range {
@@ -116,26 +300,31 @@ view: sessions {
         sql: ${last_period} ;;
         label: "previous_period"
       }
+
+      else: "unknown"
+    }
+
+#     hidden: yes
   }
 
   # Session Time (User Timezone)
 
-  # dimension_group: session_start_local {
-    # type: time
-    # timeframes: [time, time_of_day, hour_of_day, day_of_week]
-    # sql: ${TABLE}.session_start_local ;;
+  dimension_group: session_start_local {
+    type: time
+    timeframes: [time, time_of_day, hour_of_day, day_of_week]
+    sql: ${TABLE}.session_start_local ;;
     #X# group_label:"Session Time (User Timezone)"
-    # convert_tz: no
-  # }
+    convert_tz: no
+  }
 
-  # dimension_group: session_end_local {
-    # type: time
-    # timeframes: [time, time_of_day, hour_of_day, day_of_week]
-    # sql: ${TABLE}.session_end_local ;;
+  dimension_group: session_end_local {
+    type: time
+    timeframes: [time, time_of_day, hour_of_day, day_of_week]
+    sql: ${TABLE}.session_end_local ;;
     #X# group_label:"Session Time (User Timezone)"
-    # convert_tz: no
-    # hidden: yes
-  # }
+    convert_tz: no
+    hidden: yes
+  }
 
   # Engagement
 
@@ -206,43 +395,43 @@ view: sessions {
     group_label: "First Page"
   }
 
-  # dimension: first_page_url_scheme {
-    # type: string
-    # sql: ${TABLE}.first_page_url_scheme ;;
-    # group_label: "First Page"
-    # hidden: yes
-  # }
-
-  dimension: first_page_urlhost {
+  dimension: first_page_url_scheme {
     type: string
-    sql: ${TABLE}.first_page_urlhost ;;
+    sql: ${TABLE}.first_page_url_scheme ;;
+    group_label: "First Page"
+    hidden: yes
+  }
+
+  dimension: first_page_url_host {
+    type: string
+    sql: ${TABLE}.first_page_url_host ;;
     group_label: "First Page"
   }
 
-  # dimension: first_page_url_port {
-    # type: number
-    # sql: ${TABLE}.first_page_url_port ;;
-    # group_label: "First Page"
-    # hidden: yes
-  # }
+  dimension: first_page_url_port {
+    type: number
+    sql: ${TABLE}.first_page_url_port ;;
+    group_label: "First Page"
+    hidden: yes
+  }
 
-  dimension: first_page_urlpath {
+  dimension: first_page_url_path {
     type: string
-    sql: ${TABLE}.first_page_urlpath ;;
+    sql: ${TABLE}.first_page_url_path ;;
     group_label: "First Page"
   }
 
-  dimension: first_page_urlquery {
+  dimension: first_page_url_query {
     type: string
-    sql: ${TABLE}.first_page_urlquery ;;
+    sql: ${TABLE}.first_page_url_query ;;
     group_label: "First Page"
   }
 
-  # dimension: first_page_url_fragment {
-    # type: string
-    # sql: ${TABLE}.first_page_url_fragment ;;
-    # group_label: "First Page"
-  # }
+  dimension: first_page_url_fragment {
+    type: string
+    sql: ${TABLE}.first_page_url_fragment ;;
+    group_label: "First Page"
+  }
 
   dimension: first_page_title {
     type: string
@@ -252,65 +441,65 @@ view: sessions {
 
   # Referer
 
-  dimension: page_referer {
+  dimension: referer_url {
     type: string
-    sql: ${TABLE}.page_referrer ;;
+    sql: ${TABLE}.referer_url ;;
     group_label: "Referer"
   }
 
-  dimension: referer_urlscheme {
+  dimension: referer_url_scheme {
     type: string
-    sql: ${TABLE}.refr_urlscheme ;;
+    sql: ${TABLE}.referer_url_scheme ;;
     group_label: "Referer"
     hidden: yes
   }
 
-  dimension: referer_urlhost {
+  dimension: referer_url_host {
     type: string
-    sql: ${TABLE}.refr_urlhost ;;
+    sql: ${TABLE}.referer_url_host ;;
     group_label: "Referer"
   }
 
-  # dimension: referer_urlport {
-    # type: number
-    # sql: ${TABLE}.referer_url_port ;;
-    # group_label: "Referer"
-    # hidden: yes
-  # }
+  dimension: referer_url_port {
+    type: number
+    sql: ${TABLE}.referer_url_port ;;
+    group_label: "Referer"
+    hidden: yes
+  }
 
-  dimension: referer_urlpath {
+  dimension: referer_url_path {
     type: string
-    sql: ${TABLE}.refr_urlpath ;;
+    sql: ${TABLE}.referer_url_path ;;
     group_label: "Referer"
   }
 
-  dimension: referer_urlquery {
+  dimension: referer_url_query {
     type: string
-    sql: ${TABLE}.refr_urlquery ;;
+    sql: ${TABLE}.referer_url_query ;;
     group_label: "Referer"
   }
 
-  # dimension: referer_url_fragment {
-    # type: string
-    # sql: ${TABLE}.referer_url_fragment ;;
-    # group_label: "Referer"
-  # }
+  dimension: referer_url_fragment {
+    type: string
+    sql: ${TABLE}.referer_url_fragment ;;
+    group_label: "Referer"
+  }
 
   dimension: referer_medium {
     type: string
-    sql: ${TABLE}.refr_medium ;;
+    sql: ${TABLE}.referer_medium ;;
     group_label: "Referer"
   }
 
   dimension: referer_source {
     type: string
-    sql: ${TABLE}.refr_source ;;
+    sql: ${TABLE}.referer_source ;;
     group_label: "Referer"
   }
 
   dimension: referer_term {
     type: string
-    sql: ${TABLE}.refr_term ;;
+    sql: ${TABLE}.referer_term ;;
     group_label: "Referer"
   }
 
@@ -318,49 +507,43 @@ view: sessions {
 
   dimension: marketing_medium {
     type: string
-    sql: ${TABLE}.mkt_medium ;;
+    sql: ${TABLE}.marketing_medium ;;
     group_label: "Marketing"
   }
 
   dimension: marketing_source {
     type: string
-    sql: ${TABLE}.mkt_source ;;
+    sql: ${TABLE}.marketing_source ;;
     group_label: "Marketing"
   }
 
   dimension: marketing_term {
     type: string
-    sql: ${TABLE}.mkt_term ;;
+    sql: ${TABLE}.marketing_term ;;
     group_label: "Marketing"
   }
 
-  dimension: mkt_content {
+  dimension: marketing_content {
     type: string
     sql: ${TABLE}.marketing_content ;;
     group_label: "Marketing"
   }
 
-  dimension: mkt_campaign {
+  dimension: marketing_campaign {
     type: string
     sql: ${TABLE}.marketing_campaign ;;
     group_label: "Marketing"
   }
 
-  dimension: marketing_clickid {
+  dimension: marketing_click_id {
     type: string
-    sql: ${TABLE}.mkt_clickid ;;
+    sql: ${TABLE}.marketing_click_id ;;
     group_label: "Marketing"
   }
 
   dimension: marketing_network {
     type: string
-    sql: ${TABLE}.mkt_network ;;
-    group_label: "Marketing"
-  }
-
-  dimension: marketing_channel {
-    type: string
-    sql: ${TABLE}.channel ;;
+    sql: ${TABLE}.marketing_network ;;
     group_label: "Marketing"
   }
 
@@ -431,33 +614,33 @@ view: sessions {
 
   dimension: ip_address {
     type: string
-    sql: ${TABLE}.user_ipaddress ;;
+    sql: ${TABLE}.ip_address ;;
     group_label: "IP"
   }
 
-  # dimension: ip_isp {
-    # type: string
-    # sql: ${TABLE}.ip_isp ;;
-    # group_label: "IP"
-  # }
+  dimension: ip_isp {
+    type: string
+    sql: ${TABLE}.ip_isp ;;
+    group_label: "IP"
+  }
 
-  # dimension: ip_organization {
-    # type: string
-    # sql: ${TABLE}.ip_organization ;;
-    # group_label: "IP"
-  # }
+  dimension: ip_organization {
+    type: string
+    sql: ${TABLE}.ip_organization ;;
+    group_label: "IP"
+  }
 
-  # dimension: ip_domain {
-    # type: string
-    # sql: ${TABLE}.ip_domain ;;
-    # group_label: "IP"
-  # }
+  dimension: ip_domain {
+    type: string
+    sql: ${TABLE}.ip_domain ;;
+    group_label: "IP"
+  }
 
-  # dimension: ip_net_speed {
-    # type: string
-    # sql: ${TABLE}.ip_net_speed ;;
-    # group_label: "IP"
-  # }
+  dimension: ip_net_speed {
+    type: string
+    sql: ${TABLE}.ip_net_speed ;;
+    group_label: "IP"
+  }
 
   # Application
 
@@ -469,55 +652,55 @@ view: sessions {
 
   # Browser
 
-  dimension: useragent {
+  dimension: browser {
     type: string
-    sql: ${TABLE}.useragent ;;
+    sql: ${TABLE}.browser ;;
     group_label: "Browser"
   }
 
   dimension: browser_name {
     type: string
-    sql: ${TABLE}.br_name ;;
+    sql: ${TABLE}.browser_name ;;
     group_label: "Browser"
   }
 
-  dimension: browser_family {
+  dimension: browser_major_version {
     type: string
-    sql: ${TABLE}.br_family ;;
+    sql: ${TABLE}.browser_major_version ;;
     group_label: "Browser"
   }
 
-  dimension: browser_version {
+  dimension: browser_minor_version {
     type: string
-    sql: ${TABLE}.br_version ;;
+    sql: ${TABLE}.browser_minor_version ;;
     group_label: "Browser"
   }
 
-  dimension: browser_type {
+  dimension: browser_build_version {
     type: string
-    sql: ${TABLE}.br_type ;;
+    sql: ${TABLE}.browser_build_version ;;
     group_label: "Browser"
   }
 
   dimension: browser_engine {
     type: string
-    sql: ${TABLE}.br_renderengine ;;
+    sql: ${TABLE}.browser_engine ;;
     group_label: "Browser"
   }
 
   dimension: browser_language {
     type: string
-    sql: ${TABLE}.br_lang ;;
+    sql: ${TABLE}.browser_language ;;
     group_label: "Browser"
   }
 
   # OS
 
-  # dimension: os {
-    # type: string
-    # sql: ${TABLE}.os ;;
-    # group_label: "OS"
-  # }
+  dimension: os {
+    type: string
+    sql: ${TABLE}.os ;;
+    group_label: "OS"
+  }
 
   dimension: os_name {
     type: string
@@ -525,23 +708,23 @@ view: sessions {
     group_label: "OS"
   }
 
-  dimension: os_family {
+  dimension: os_major_version {
     type: string
-    sql: ${TABLE}.os_family ;;
+    sql: ${TABLE}.os_major_version ;;
     group_label: "OS"
   }
 
-  # dimension: os_version {
-    # type: string
-    # sql: ${TABLE}.os_version ;;
-    # group_label: "OS"
-  # }
+  dimension: os_minor_version {
+    type: string
+    sql: ${TABLE}.os_minor_version ;;
+    group_label: "OS"
+  }
 
-  # dimension: os_type {
-    # type: string
-    # sql: ${TABLE}.os_type ;;
-    # group_label: "OS"
-  # }
+  dimension: os_build_version {
+    type: string
+    sql: ${TABLE}.os_build_version ;;
+    group_label: "OS"
+  }
 
   dimension: os_manufacturer {
     type: string
@@ -557,21 +740,21 @@ view: sessions {
 
   # Device
 
-  # dimension: device {
-    # type: string
-    # sql: ${TABLE}.device ;;
-    # group_label: "Device"
-  # }
-
-  dimension: device_type {
+  dimension: device {
     type: string
-    sql: ${TABLE}.dvce_type ;;
+    sql: ${TABLE}.device ;;
     group_label: "Device"
   }
 
-  dimension: device_ismobile {
+  dimension: device_type {
+    type: string
+    sql: ${TABLE}.device_type ;;
+    group_label: "Device"
+  }
+
+  dimension: device_is_mobile {
     type: yesno
-    sql: ${TABLE}.dvce_ismobile ;;
+    sql: ${TABLE}.device_is_mobile ;;
     group_label: "Device"
   }
 
@@ -613,17 +796,17 @@ view: sessions {
 
   measure: user_count {
     type: count_distinct
-    sql: ${domain_userid} ;;
+    sql: ${user_snowplow_domain_id} ;;
     group_label: "Counts"
     drill_fields: [user_count]
   }
   set: user_count{
-    fields: [domain_userid, users.first_page_url, session_count, average_time_engaged, total_time_engaged]
+    fields: [user_snowplow_domain_id, users.first_page_url, session_count, average_time_engaged, total_time_engaged]
   }
 
   measure: new_user_count {
     type: count_distinct
-    sql: ${domain_userid} ;;
+    sql: ${user_snowplow_domain_id} ;;
 
     filters: {
       field: session_index
@@ -634,12 +817,12 @@ view: sessions {
     drill_fields: [new_user_count]
     }
   set: new_user_count{
-    fields: [domain_userid, users.first_page_url, session_count, average_time_engaged, total_time_engaged]
+    fields: [user_snowplow_domain_id, users.first_page_url, session_count, average_time_engaged, total_time_engaged]
   }
 
   measure: bounced_user_count {
     type: count_distinct
-    sql: ${domain_userid} ;;
+    sql: ${user_snowplow_domain_id} ;;
 
     filters: {
       field: user_bounced
@@ -651,7 +834,7 @@ view: sessions {
 
   measure: engaged_user_count {
     type: count_distinct
-    sql: ${domain_userid} ;;
+    sql: ${user_snowplow_domain_id} ;;
 
     filters: {
       field: user_engaged
