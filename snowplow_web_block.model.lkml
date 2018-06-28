@@ -33,6 +33,12 @@ explore: page_views {
     relationship: many_to_many
   }
 
+  join: max_page_view_rollup {
+    type: left_outer
+    sql_on: ${max_page_view_rollup.page_view_id} = ${page_views.page_view_id} ;;
+    relationship: many_to_one
+  }
+
   join: users {
     sql_on: ${page_views.domain_userid} = ${users.domain_userid} ;;
     relationship: many_to_one
@@ -51,34 +57,32 @@ explore: page_views {
   # }
 }
 
+# explore: sessions {
+#   join: page_views_2 {
+#     fields: [page_views_2.page_title, page_views_2.session_count]
+#     from: page_views
+#     type: left_outer
+#     sql_on: ${sessions.session_id} = ${page_views_2.session_id}
+#             and ${page_views_2.page_view_in_session_index} = 2
+#             and ${page_views_2.page_title} != ${sessions.first_page_title};;
+#   }
+#   join: page_views_3 {
+#     fields: [page_views_3.page_title, page_views_3.session_count]
+#     from: page_views
+#     type: left_outer
+#     sql_on: ${sessions.session_id} = ${page_views_3.session_id}
+#             and ${page_views_3.page_view_in_session_index} = 3
+#             and ${page_views_3.page_title} != ${sessions.first_page_title}
+#             and ${page_views_3.page_title} != ${page_views_2.page_title};;
+#   }
+# }
+
 explore: sessions {
-  join: page_views_2 {
-    fields: [page_views_2.page_title, page_views_2.session_count]
-    from: page_views
-    type: left_outer
-    sql_on: ${sessions.session_id} = ${page_views_2.session_id}
-            and ${page_views_2.page_view_in_session_index} = 2
-            and ${page_views_2.page_title} != ${sessions.first_page_title};;
-    relationship: many_to_one
-  }
-  join: page_views_3 {
-    fields: [page_views_3.page_title, page_views_3.session_count]
-    from: page_views
-    type: left_outer
-    sql_on: ${sessions.session_id} = ${page_views_3.session_id}
-            and ${page_views_3.page_view_in_session_index} = 3
-            and ${page_views_3.page_title} != ${sessions.first_page_title}
-            and ${page_views_3.page_title} != ${page_views_2.page_title};;
+  join: users {
+    sql_on: ${sessions.domain_userid} = ${users.domain_userid} ;;
     relationship: many_to_one
   }
 }
-
-# explore: sessions {
-#   join: users {
-#     sql_on: ${sessions.user_snowplow_domain_id} = ${users.user_snowplow_domain_id} ;;
-#     relationship: many_to_one
-#   }
-# }
 
 explore: users {
   sql_always_where: ${first_page_url} NOT LIKE '%video.web.%' ;;
