@@ -26,6 +26,7 @@ include: "*.view"
 include: "*.dashboard"
 
 explore: page_views {
+  fields: [ALL_FIELDS*,-page_views.last_page_title]
   sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;;
   join: sessions {
     type: left_outer
@@ -49,12 +50,12 @@ explore: page_views {
     relationship: one_to_many
   }
 
-  # join: sessions_rollup {
-    # sql_on: ${sessions_rollup.session_id} = ${sessions.session_id}
-      # AND ${page_views.page_view_index} = ${sessions_rollup.max_page_view_index} ;;
-    # type: left_outer
-    # relationship: many_to_many
-  # }
+#   join: sessions_rollup {
+#     sql_on: ${sessions_rollup.session_id} = ${sessions.session_id}
+#       AND ${page_views.page_view_index} = ${sessions_rollup.max_page_view_index} ;;
+#     type: left_outer
+#     relationship: many_to_many
+#   }
 }
 
 # explore: sessions {

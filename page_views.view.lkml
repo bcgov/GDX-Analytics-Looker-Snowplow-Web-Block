@@ -51,12 +51,12 @@ view: page_views {
     group_label: "Page View"
   }
 
-  # dimension: page_view_index {
-    # type: number
-    # index across all sessions
-    # sql: ${TABLE}.page_view_index ;;
-    # group_label: "Page View"
-  # }
+#   dimension: page_view_index {
+#     type: number
+#     # index across all sessions
+#     sql: ${TABLE}.page_view_index ;;
+#     group_label: "Page View"
+#   }
 
   dimension: page_view_in_session_index {
     type: number
@@ -248,10 +248,10 @@ view: page_views {
     sql: CASE WHEN ${page_view_in_session_index} = 1 THEN ${page_title} ELSE NULL END ;;
   }
 
-  # dimension: last_page_title {
-    # type: string
-    # sql: CASE WHEN ${page_view_in_session_index} = ${sessions_rollup.max_page_view_index} THEN ${page_title} ELSE NULL END ;;
-  # }
+  dimension: last_page_title {
+    type: string
+    sql: CASE WHEN ${page_view_in_session_index} = ${sessions_rollup.max_page_view_index} THEN ${page_title} ELSE NULL END ;;
+  }
 
   dimension: search_field {
     type: string
@@ -612,10 +612,10 @@ view: page_views {
   # these fields have been removed from the new web model
 
 
-  # dimension: exit_page_flag {
-    # type: yesno
-    # sql: ${page_view_index} = ${max_page_view_rollup.max_page_view_index} ;;
-  # }
+  dimension: exit_page_flag {
+    type: yesno
+    sql: ${page_view_in_session_index} = ${max_page_view_rollup.max_page_view_index} ;;
+  }
 
   # MEASURES
 
@@ -655,23 +655,23 @@ view: page_views {
     group_label: "Counts"
   }
 
-  # measure: landing_page_count {
-    # type: count_distinct
-    # sql: ${page_view_id} ;;
-    # filters: {
-      # field: page_view_index
-      # value: "1"
-    # }
-  # }
+  measure: landing_page_count {
+    type: count_distinct
+    sql: ${page_view_id} ;;
+    filters: {
+      field: page_view_in_session_index
+      value: "1"
+    }
+  }
 
-  # measure: exit_page_count {
-    # type: count_distinct
-    # sql: ${page_view_id} ;;
-    # filters: {
-      # field: exit_page_flag
-      # value: "Yes"
-    # }
-  # }
+  measure: exit_page_count {
+    type: count_distinct
+    sql: ${page_view_id} ;;
+    filters: {
+      field: exit_page_flag
+      value: "Yes"
+    }
+  }
 
   measure: session_count {
     type: count_distinct
@@ -729,7 +729,7 @@ view: max_page_view_rollup {
     explore_source: page_views {
       column: page_view_id {}
       column: page_title {}
-      # column: max_page_view_index {}
+      column: max_page_view_index {}
       derived_column: p_key {
         sql: ROW_NUMBER() OVER (order by true) ;;
       }
@@ -738,7 +738,7 @@ view: max_page_view_rollup {
   dimension: p_key {primary_key:yes}
   dimension: page_view_id {}
   dimension: page_title {}
-  # dimension: max_page_view_index {
-    # type: number
-  # }
+  dimension: max_page_view_index {
+    type: number
+  }
 }
