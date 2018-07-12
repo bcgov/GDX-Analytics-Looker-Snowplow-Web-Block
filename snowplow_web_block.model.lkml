@@ -26,6 +26,10 @@ include: "*.view"
 include: "*.dashboard"
 
 explore: page_views {
+  access_filter: {
+    field: browser_family
+    user_attribute: browser
+  }
   fields: [ALL_FIELDS*,-page_views.last_page_title]
   sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;;
   join: sessions {
