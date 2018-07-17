@@ -175,6 +175,12 @@ view: sessions {
     group_label: "Engagement"
   }
 
+  dimension: clicks {
+    type: number
+    sql: ${TABLE}.clicks ;;
+    group_label: "Engagement"
+  }
+
   dimension: time_engaged {
     type: number
     sql: ${TABLE}.time_engaged_in_s ;;
@@ -597,6 +603,12 @@ view: sessions {
   measure: page_view_count {
     type: sum
     sql: ${page_views} ;;
+    group_label: "Counts"
+  }
+
+  measure: click_count {
+    type: sum
+    sql: ${clicks} ;;
     group_label: "Counts"
   }
 

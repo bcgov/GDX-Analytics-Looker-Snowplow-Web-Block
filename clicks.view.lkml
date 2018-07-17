@@ -445,7 +445,7 @@ view: clicks {
     group_label: "Counts"
   }
 
-  measure: clicks_count {
+  measure: click_count {
     type: count_distinct
     sql: ${click_id} ;;
     group_label: "Counts"
