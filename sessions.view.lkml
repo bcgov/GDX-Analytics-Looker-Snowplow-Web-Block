@@ -446,6 +446,13 @@ view: sessions {
     group_label: "IP"
   }
 
+  dimension: is_government {
+    # the filter is put in this view because the IP is defined here in this view
+    type: yesno
+    # the filter is checking to see if the IP is in the gov network
+    sql: ${ip_address} LIKE '142.22.%' OR ${ip_address} LIKE '142.23.%' OR ${ip_address} LIKE '142.23.255%' OR ${ip_address} LIKE '142.24.%' OR ${ip_address} LIKE '142.31.%' OR ${ip_address} LIKE '142.31.255%' OR ${ip_address} LIKE '142.25.%' OR ${ip_address} LIKE '142.26.%' OR ${ip_address} LIKE '142.27.%' OR ${ip_address} LIKE '142.28.%' OR ${ip_address} LIKE '142.29.%' OR ${ip_address} LIKE '142.30.%' OR ${ip_address} LIKE '142.32.%' OR ${ip_address} LIKE '142.33.%' OR ${ip_address} LIKE '142.34.%' OR ${ip_address} LIKE '142.35.%' OR ${ip_address} LIKE '142.36.%' ;;
+  }
+
   # dimension: ip_isp {
     # type: string
     # sql: ${TABLE}.ip_isp ;;
