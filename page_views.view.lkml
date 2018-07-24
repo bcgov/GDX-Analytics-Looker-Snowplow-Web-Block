@@ -675,7 +675,7 @@ view: page_views {
 
   measure: session_count {
     type: count_distinct
-    sql: COALESCE(${session_id},0) ;;
+    sql: ${session_id} ;;
     group_label: "Counts"
   }
 
