@@ -620,8 +620,8 @@ view: sessions {
   }
 
   measure: session_count {
-    type: number
-    sql: COALESCE(COUNT (DISTINCT ${session_id}),0) ;;
+    type: count_distinct
+    sql: ${session_id};;
     group_label: "Counts"
     drill_fields: [session_count]
   }
