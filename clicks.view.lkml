@@ -432,6 +432,35 @@ view: clicks {
     group_label: "OS"
   }
 
+  # Targets
+
+  dimension: target_url {
+    type: string
+    sql: ${TABLE}.target_url ;;
+    group_label: "Target"
+  }
+
+  #substring select the extension only
+  dimension: target_extension {
+    type: string
+    sql: ${TABLE}.target_url ;;
+    group_label: "Target"
+  }
+
+  #substring select the filename with extension
+  dimension: target_file {
+    type: string
+    sql: ${TABLE}.target_url ;;
+    group_label: "Target"
+  }
+
+  #substring select the path only
+  dimension: target_path {
+    type: string
+    sql: ${TABLE}.target_url ;;
+    group_label: "Target"
+  }
+
   # Device
 
   dimension: device_type {
