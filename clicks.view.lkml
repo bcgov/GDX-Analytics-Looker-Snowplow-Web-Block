@@ -440,6 +440,7 @@ view: clicks {
     group_label: "Device"
   }
 
+
   dimension: device_ismobile {
     type: yesno
     sql: ${TABLE}.dvce_ismobile ;;
