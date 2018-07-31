@@ -1,6 +1,7 @@
 view: clicks {
   sql_table_name: derived.clicks ;;
 
+
   dimension: p_key {
     primary_key: yes
     sql: ${user_id} || ${domain_userid} || ${session_id} || ${click_id} ;;
