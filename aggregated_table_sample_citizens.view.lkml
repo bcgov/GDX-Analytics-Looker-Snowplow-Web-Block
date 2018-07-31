@@ -1,4 +1,5 @@
 view: aggregated_table_sample_citizens {
+
   derived_table: {
     sql: WITH step1 AS (
       SELECT
