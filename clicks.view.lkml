@@ -23,6 +23,13 @@ view: clicks {
     group_label: "User"
   }
 
+  dimension_group: click {
+    type: time
+    timeframes: [hour,date,week,month,quarter,year,raw]
+    sql:  ${TABLE}.collector_tstamp ;;
+  }
+
+
   dimension: network_userid {
     type: string
     sql: ${TABLE}.network_userid ;;
@@ -449,6 +456,26 @@ view: clicks {
   measure: click_count {
     type: count_distinct
     sql: ${click_id} ;;
+    group_label: "Counts"
+  }
+
+  measure: link_click_count {
+    type: count_distinct
+    sql: ${click_id} ;;
+    filters: {
+      field: click_type
+      value: "link_click"
+    }
+    group_label: "Counts"
+  }
+
+  measure: download_click_count {
+    type: count_distinct
+    sql: ${click_id} ;;
+    filters: {
+      field: click_type
+      value: "download"
+    }
     group_label: "Counts"
   }
 
