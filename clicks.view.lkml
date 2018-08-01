@@ -23,13 +23,6 @@ view: clicks {
     group_label: "User"
   }
 
-  dimension_group: click {
-    type: time
-    timeframes: [hour,date,week,month,quarter,year,raw]
-    sql:  ${TABLE}.collector_tstamp ;;
-  }
-
-
   dimension: network_userid {
     type: string
     sql: ${TABLE}.network_userid ;;
@@ -52,6 +45,13 @@ view: clicks {
   }
 
   # Page View
+
+  dimension_group: click_time {
+    type: time
+    timeframes: [hour,date,week,month,quarter,year,raw]
+    sql:  ${TABLE}.collector_tstamp ;;
+    group_label: "Click"
+  }
 
   dimension: click_id {
     type: string
@@ -440,24 +440,31 @@ view: clicks {
     group_label: "Target"
   }
 
-  #substring select the extension only
-  dimension: target_extension {
+  #substring select the host only
+  dimension: target_host {
     type: string
-    sql: ${TABLE}.target_url ;;
+    sql: REGEXP_SUBSTR(${TABLE}.target_url, '^[^/]+') ;;
+    group_label: "Target"
+  }
+
+  #substring select the path without host
+  dimension: target_path {
+    type: string
+    sql: REGEXP_SUBSTR(${TABLE}.target_url, '\/.*') ;;
     group_label: "Target"
   }
 
   #substring select the filename with extension
   dimension: target_file {
     type: string
-    sql: ${TABLE}.target_url ;;
+    sql: REGEXP_SUBSTR(${TABLE}.target_url, '[^/]+$') ;;
     group_label: "Target"
   }
 
-  #substring select the path only
-  dimension: target_path {
+  #substring select the extension only
+  dimension: target_extension {
     type: string
-    sql: ${TABLE}.target_url ;;
+    sql:REGEXP_SUBSTR(${TABLE}.target_url, '[^\.]+$') ;;
     group_label: "Target"
   }
 
