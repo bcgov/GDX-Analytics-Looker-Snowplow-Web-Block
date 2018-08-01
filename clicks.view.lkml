@@ -443,7 +443,7 @@ view: clicks {
   #substring select the host only
   dimension: target_host {
     type: string
-    sql: REGEXP_SUBSTR(${TABLE}.target_url, '^[^/]+') ;;
+    sql: REGEXP_SUBSTR(${TABLE}.target_url, '^[^(.*://)|/]+') ;;
     group_label: "Target"
   }
 
