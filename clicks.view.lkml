@@ -443,7 +443,9 @@ view: clicks {
   #substring select the host only
   dimension: target_host {
     type: string
-    sql: REGEXP_SUBSTR(${TABLE}.target_url, '^[^/]+') ;;
+    # A range of non / chars, followed by a '.' (subdomain.domain.tdl), followed by range of non / or : characters (strips port)
+    # https://stackoverflow.com/questions/17310972/how-to-parse-host-out-of-a-string-in-redshift
+    sql:  REGEXP_SUBSTR(${TABLE}.target_url, '[^/]+\\.[^/:]+') ;;
     group_label: "Target"
   }
 
