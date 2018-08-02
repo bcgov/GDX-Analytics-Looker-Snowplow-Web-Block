@@ -1,6 +1,7 @@
 view: clicks {
   sql_table_name: derived.clicks ;;
 
+
   dimension: p_key {
     primary_key: yes
     sql: ${user_id} || ${domain_userid} || ${session_id} || ${click_id} ;;
@@ -44,6 +45,13 @@ view: clicks {
   }
 
   # Page View
+
+  dimension_group: click_time {
+    type: time
+    timeframes: [hour,date,week,month,quarter,year,raw]
+    sql:  ${TABLE}.collector_tstamp ;;
+    group_label: "Click"
+  }
 
   dimension: click_id {
     type: string
@@ -424,6 +432,37 @@ view: clicks {
     group_label: "OS"
   }
 
+  # Targets
+
+  dimension: target_url {
+    type: string
+    sql: ${TABLE}.target_url ;;
+    group_label: "Target"
+  }
+
+  #substring select the host only
+  dimension: target_host {
+    type: string
+    # A range of non / chars, followed by a '.' (subdomain.domain.tdl), followed by range of non / or : characters (strips port)
+    # https://stackoverflow.com/questions/17310972/how-to-parse-host-out-of-a-string-in-redshift
+    sql:  REGEXP_SUBSTR(${TABLE}.target_url, '[^/]+\\.[^/:]+') ;;
+    group_label: "Target"
+  }
+
+  #substring select the filename with extension
+  dimension: target_file {
+    type: string
+    sql: REGEXP_SUBSTR(${TABLE}.target_url, '[^/]+$') ;;
+    group_label: "Target"
+  }
+
+  #substring select the extension only
+  dimension: target_extension {
+    type: string
+    sql:REGEXP_SUBSTR(${TABLE}.target_url, '[^\.]+$') ;;
+    group_label: "Target"
+  }
+
   # Device
 
   dimension: device_type {
@@ -431,6 +470,7 @@ view: clicks {
     sql: ${TABLE}.dvce_type ;;
     group_label: "Device"
   }
+
 
   dimension: device_ismobile {
     type: yesno
@@ -448,6 +488,26 @@ view: clicks {
   measure: click_count {
     type: count_distinct
     sql: ${click_id} ;;
+    group_label: "Counts"
+  }
+
+  measure: link_click_count {
+    type: count_distinct
+    sql: ${click_id} ;;
+    filters: {
+      field: click_type
+      value: "link_click"
+    }
+    group_label: "Counts"
+  }
+
+  measure: download_click_count {
+    type: count_distinct
+    sql: ${click_id} ;;
+    filters: {
+      field: click_type
+      value: "download"
+    }
     group_label: "Counts"
   }
 

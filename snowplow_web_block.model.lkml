@@ -15,6 +15,7 @@
 # Copyright:   Copyright (c) 2016 Snowplow Analytics Ltd
 # License:     Apache License Version 2.0
 
+
 connection: "redshift"
 # Set the week start day to Sunday. Default is Monday
 week_start_day: sunday
@@ -96,3 +97,5 @@ explore: users {
 explore: aggregated_table_sample_citizens {}
 
 explore: wait_time_table_sample_citizens {}
+
+explore: clicks{}
