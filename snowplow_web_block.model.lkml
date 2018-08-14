@@ -31,6 +31,12 @@ explore: page_views {
     field: browser_family
     user_attribute: browser
   }
+  # adding this access filter to be used by the CMS Lite embed code generator
+  #    to allow for page-level dashboards
+  access_filter: {
+    field: node_id
+    user_attribute: node_id
+  }
   fields: [ALL_FIELDS*,-page_views.last_page_title]
   sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;;
   join: sessions {

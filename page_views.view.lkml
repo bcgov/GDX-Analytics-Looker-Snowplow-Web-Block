@@ -197,6 +197,16 @@ view: page_views {
     sql: ${TABLE}.page_url ;;
     group_label: "Page"
   }
+  # The node_id is passed to the tracker by CMS Lite.
+  #    This is used to match with metadata about Gov pages and for filtering purposes
+  dimension: node_id {
+    type: string
+    sql: ${TABLE}.node_id ;;
+    group_label: "Page"
+  }
+
+
+
 
   # dimension: page_urlscheme {
     # type: string
