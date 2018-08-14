@@ -31,6 +31,8 @@ explore: page_views {
     field: browser_family
     user_attribute: browser
   }
+  # adding this access filter to be used by the CMS Lite embed code generator
+  #    to allow for page-level dashboards
   access_filter: {
     field: node_id
     user_attribute: node_id
