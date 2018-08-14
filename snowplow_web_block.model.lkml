@@ -31,6 +31,10 @@ explore: page_views {
     field: browser_family
     user_attribute: browser
   }
+  access_filter: {
+    field: node_id
+    user_attribute: node_id
+  }
   fields: [ALL_FIELDS*,-page_views.last_page_title]
   sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;;
   join: sessions {

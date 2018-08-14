@@ -197,6 +197,14 @@ view: page_views {
     sql: ${TABLE}.page_url ;;
     group_label: "Page"
   }
+  dimension: node_id {
+    type: string
+    sql: ${TABLE}.node_id ;;
+    group_label: "Page"
+  }
+
+
+
 
   # dimension: page_urlscheme {
     # type: string
