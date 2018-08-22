@@ -12,6 +12,7 @@ view: users {
           -- engagement
           SUM(page_views) AS page_views,
           SUM(clicks) AS clicks,
+          SUM(searches) AS searches,
           COUNT(*) AS sessions,
           SUM(time_engaged_in_s) AS time_engaged_in_s
 
@@ -37,6 +38,7 @@ view: users {
         -- engagement
         b.page_views,
         b.clicks,
+        b.searches,
         b.sessions,
         b.time_engaged_in_s,
 
@@ -152,6 +154,12 @@ view: users {
   dimension: clicks {
     type: number
     sql: ${TABLE}.clicks ;;
+    group_label: "Engagement"
+  }
+
+  dimension: searches {
+    type: number
+    sql: ${TABLE}.searches ;;
     group_label: "Engagement"
   }
 
@@ -358,6 +366,12 @@ view: users {
   measure: click_count {
     type: sum
     sql: ${clicks} ;;
+    group_label: "Counts"
+  }
+
+  measure: search_count {
+    type: sum
+    sql: ${searches} ;;
     group_label: "Counts"
   }
 

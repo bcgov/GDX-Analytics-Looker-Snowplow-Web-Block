@@ -3,6 +3,21 @@ view: sessions {
 
   # DIMENSIONS
 
+  # Application
+
+  dimension: app_id {
+    type: string
+    sql: ${TABLE}.app_id ;;
+    group_label: "Application"
+  }
+
+  dimension: dcs_id {
+    type: string
+    sql: ${TABLE}.dcs_id ;;
+    group_label: "Application"
+  }
+
+
   # User
 
   dimension: user_id {
@@ -181,6 +196,12 @@ view: sessions {
     group_label: "Engagement"
   }
 
+  dimension: searches {
+    type: number
+    sql: ${TABLE}.searches ;;
+    group_label: "Engagement"
+  }
+
   dimension: time_engaged {
     type: number
     sql: ${TABLE}.time_engaged_in_s ;;
@@ -214,6 +235,12 @@ view: sessions {
   dimension: first_page_url {
     type: string
     sql: ${TABLE}.first_pageurl ;;
+    group_label: "First Page"
+  }
+
+  dimension: first_page_node_id {
+    type: string
+    sql: ${TABLE}.node_id ;;
     group_label: "First Page"
   }
 
@@ -477,14 +504,6 @@ view: sessions {
     # sql: ${TABLE}.ip_net_speed ;;
     # group_label: "IP"
   # }
-
-  # Application
-
-  dimension: app_id {
-    type: string
-    sql: ${TABLE}.app_id ;;
-    group_label: "Application"
-  }
 
   # Browser
 
