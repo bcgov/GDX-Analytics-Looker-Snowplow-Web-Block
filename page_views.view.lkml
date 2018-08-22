@@ -8,6 +8,21 @@ view: page_views {
 
   # DIMENSIONS
 
+  # Application
+
+  dimension: app_id {
+    type: string
+    sql: ${TABLE}.app_id ;;
+    group_label: "Application"
+  }
+
+  # this is only available for WebTrends data
+  dimension: dcs_id {
+    type: string
+    sql: ${TABLE}.dcs_id ;;
+    group_label: "Application"
+  }
+
   # User
 
   dimension: user_id {
@@ -198,15 +213,12 @@ view: page_views {
     group_label: "Page"
   }
   # The node_id is passed to the tracker by CMS Lite.
-  #    This is used to match with metadata about Gov pages and for filtering purposes
+  # This is used to match with metadata about Gov pages and for filtering purposes
   dimension: node_id {
     type: string
     sql: ${TABLE}.node_id ;;
     group_label: "Page"
   }
-
-
-
 
   # dimension: page_urlscheme {
     # type: string
@@ -496,14 +508,6 @@ view: page_views {
     # sql: ${TABLE}.ip_net_speed ;;
     # group_label: "IP"
   # }
-
-  # Application
-
-  dimension: app_id {
-    type: string
-    sql: ${TABLE}.app_id ;;
-    group_label: "Application"
-  }
 
   # Browser
 

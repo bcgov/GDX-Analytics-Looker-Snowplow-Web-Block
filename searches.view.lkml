@@ -1,10 +1,10 @@
-view: clicks {
-  sql_table_name: derived.clicks ;;
+view: searches {
+  sql_table_name: derived.searches ;;
 
 
   dimension: p_key {
     primary_key: yes
-    sql: ${user_id} || ${domain_userid} || ${session_id} || ${click_id} ;;
+    sql: ${user_id} || ${domain_userid} || ${session_id} || ${search_id} ;;
   }
 
   # DIMENSIONS
@@ -59,32 +59,26 @@ view: clicks {
     group_label: "Session"
   }
 
-  # Click
+  # Search
 
-  dimension_group: click_time {
+  dimension_group: search_time {
     type: time
     timeframes: [hour,date,week,month,quarter,year,raw]
     sql:  ${TABLE}.collector_tstamp ;;
-    group_label: "Click"
+    group_label: "Search"
   }
 
-  dimension: click_id {
+  dimension: search_id {
     type: string
-    sql: ${TABLE}.click_id ;;
-    group_label: "Click"
+    sql: ${TABLE}.search_id ;;
+    group_label: "Search"
   }
 
-  dimension: click_type {
-    type: string
-    sql: ${TABLE}.click_type ;;
-    group_label: "Click"
-  }
-
-  dimension: click_in_session_index {
+  dimension: search_in_session_index {
     type: number
     # index within each session
-    sql: ${TABLE}.click_in_session_index ;;
-    group_label: "Click"
+    sql: ${TABLE}.search_in_session_index ;;
+    group_label: "Search"
   }
 
 
@@ -445,35 +439,30 @@ view: clicks {
     group_label: "OS"
   }
 
-  # Targets
+  # Search results
 
-  dimension: target_url {
+  dimension: terms {
     type: string
-    sql: ${TABLE}.target_url ;;
-    group_label: "Target"
+    sql: ${TABLE}.terms ;;
+    group_label: "Results"
   }
 
-  #substring select the host only
-  dimension: target_host {
+  dimension: filters {
     type: string
-    # A range of non / chars, followed by a '.' (subdomain.domain.tdl), followed by range of non / or : characters (strips port)
-    # https://stackoverflow.com/questions/17310972/how-to-parse-host-out-of-a-string-in-redshift
-    sql:  REGEXP_SUBSTR(${TABLE}.target_url, '[^/]+\\.[^/:]+') ;;
-    group_label: "Target"
+    sql: ${TABLE}.filters ;;
+    group_label: "Results"
   }
 
-  #substring select the filename with extension
-  dimension: target_file {
-    type: string
-    sql: REGEXP_SUBSTR(${TABLE}.target_url, '[^/]+$') ;;
-    group_label: "Target"
+  dimension: total_results {
+    type: number
+    sql: ${TABLE}.total_results ;;
+    group_label: "Results"
   }
 
-  #substring select the extension only
-  dimension: target_extension {
-    type: string
-    sql:REGEXP_SUBSTR(${TABLE}.target_url, '[^\.]+$') ;;
-    group_label: "Target"
+  dimension: page_results {
+    type: number
+    sql: ${TABLE}.page_results ;;
+    group_label: "Results"
   }
 
   # Device
@@ -498,35 +487,15 @@ view: clicks {
     group_label: "Counts"
   }
 
-  measure: click_count {
+  measure: search_count {
     type: count_distinct
-    sql: ${click_id} ;;
+    sql: ${search_id} ;;
     group_label: "Counts"
   }
 
-  measure: link_click_count {
-    type: count_distinct
-    sql: ${click_id} ;;
-    filters: {
-      field: click_type
-      value: "link_click"
-    }
-    group_label: "Counts"
-  }
-
-  measure: download_click_count {
-    type: count_distinct
-    sql: ${click_id} ;;
-    filters: {
-      field: click_type
-      value: "download"
-    }
-    group_label: "Counts"
-  }
-
-  measure: max_click_index {
+  measure: max_search_index {
     type: max
-    sql: ${click_in_session_index} ;;
+    sql: ${search_in_session_index} ;;
   }
 
   measure: session_count {
@@ -541,9 +510,9 @@ view: clicks {
     group_label: "Counts"
   }
 
-  measure: average_clicks_per_visit {
+  measure: average_searches_per_visit {
     type: average
-    sql: ${click_in_session_index} ;;
+    sql: ${search_in_session_index} ;;
     group_label: "Engagement"
   }
 }
