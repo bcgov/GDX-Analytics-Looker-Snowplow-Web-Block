@@ -100,8 +100,6 @@ explore: users {
   sql_always_where: ${first_page_url} NOT LIKE '%video.web.%' ;;
 }
 
-explore: aggregated_table_sample_citizens {}
-
-explore: wait_time_table_sample_citizens {}
-
 explore: clicks{}
+
+explore: searches {}
