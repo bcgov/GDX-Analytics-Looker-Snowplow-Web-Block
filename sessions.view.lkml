@@ -91,6 +91,10 @@ view: sessions {
 #     hidden: yes
   }
 
+  # date_range provides the necessary filter for Explores of current_session and last_period
+  # where current_session captures the sessions from within the date range selected
+  # and compares to last_period, which is the same duration as current_session, but
+  # is offset such that it's end date exactly precedes current_session's start date
   filter: date_range {
     type: date
   }
@@ -117,27 +121,44 @@ view: sessions {
   #
   # current_period must include an upper limit to avoid including future dates when
   # a date-range is selected as the filter.
+
+  # current_period filters sessions that are within the start and end range
+  # of the date_range filter, as selected in an Explore.
+  # the date_range filter is required for current_period
+  # the last_period dimension is required to compare against current_period
   dimension: current_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${session_start_raw} >= {% date_start date_range %} ;;
+    sql:  ${session_start_raw} >= {% date_start date_range %} ;;
   }
 
+  # period_difference calculates the number of days between the start and end dates
+  # selected on the date_range filter, as selected in an Explore.
+  # This is used by last_period to calculate its duration.
   dimension: period_difference {
     group_label: "Flexible Filter"
     type: number
-    sql: DATEDIFF(DAY, {% date_start date_range %}, {% date_end date_range %})  ;;
+    sql:  DATEDIFF(DAY, {% date_start date_range %}, {% date_end date_range %})  ;;
   }
 
+  # is_in_range determines which sessions occur between the start of the last_period
+  # and the end of the current_period, as selected on the date_range filter in an Explore.
   filter: is_in_range {
     type: yesno
-    sql:  ${session_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start date_range %}) AND ${session_start_raw}< {% date_end date_range %}    ;;
+    sql:  ${session_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start date_range %})
+      AND ${session_start_raw}< {% date_end date_range %}    ;;
   }
 
+  # last_period selects the the sessions that occurred immediately prior to the current_session and
+  # over the same duration the current_session. Used in an explore, the date_range filter provides
+  # the necessary is how input for date ranges to compare in this way.
+  # the date_range filter is required for last_period
+  # the current_period dimension is required to compare against last_period
   dimension: last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${session_start_raw} < {% date_start date_range %} AND ${session_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start date_range %}) ;;
+    sql:  ${session_start_raw} < {% date_start date_range %}
+      AND ${session_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start date_range %}) ;;
     required_fields: [is_in_range]
   }
 
