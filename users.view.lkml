@@ -180,7 +180,7 @@ view: users {
 
   dimension: first_page_url {
     type: string
-    sql: ${TABLE}.first_pageurl ;;
+    sql: ${TABLE}.first_page_url ;;
     group_label: "First Page"
   }
 
