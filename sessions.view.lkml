@@ -99,6 +99,11 @@ view: sessions {
     type: date
   }
 
+  dimension: comparison_dim {
+    type: date
+    sql: {% date_start date_range %} ;;
+  }
+
   # TODO:
   # Dimensions current_period, is_in_range, and last_period need to be updated.
   # There is a problem where the dates to be compared are rolled
@@ -129,7 +134,8 @@ view: sessions {
   dimension: current_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql:  ${session_start_raw} >= {% date_start date_range %} ;;
+    sql: ${session_start_date} >- ${comparison_dim} ;;
+#     sql:  ${session_start_raw} >= {% date_start date_range %} ;;
   }
 
   # period_difference calculates the number of days between the start and end dates
