@@ -134,7 +134,7 @@ view: sessions {
   dimension: current_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${session_start_date} >- ${comparison_dim} ;;
+    sql: ${session_start_date} >= ${comparison_dim} ;;
 #     sql:  ${session_start_raw} >= {% date_start date_range %} ;;
   }
 
