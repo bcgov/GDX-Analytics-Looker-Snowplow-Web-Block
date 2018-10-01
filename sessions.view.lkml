@@ -333,11 +333,11 @@ view: sessions {
 
   # Referer
 
-  dimension: referer_url {
-    type: string
-    sql: ${TABLE}.refr_url ;;
-    group_label: "Referer"
-  }
+#   dimension: referer_url {
+#     type: string
+#     sql: ${TABLE}.refr_url ;;
+#     group_label: "Referer"
+#   }
 
   dimension: referer_urlscheme {
     type: string
