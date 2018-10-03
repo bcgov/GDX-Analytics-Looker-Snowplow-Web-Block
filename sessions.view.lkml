@@ -335,7 +335,7 @@ view: sessions {
 
   dimension: referer_url {
     type: string
-    sql: ${TABLE}.refr_url ;;
+    sql: ${TABLE}.page_referrer ;;
     group_label: "Referer"
   }
 
