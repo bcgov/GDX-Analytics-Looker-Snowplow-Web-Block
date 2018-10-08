@@ -99,10 +99,7 @@ view: sessions {
     type: date
   }
 
-  dimension: comparison_dim {
-    type: date
-    sql: {% date_start date_range %} ;;
-  }
+
 
   # TODO:
   # Dimensions current_period, is_in_range, and last_period need to be updated.
@@ -131,12 +128,7 @@ view: sessions {
   # of the date_range filter, as selected in an Explore.
   # the date_range filter is required for current_period
   # the last_period dimension is required to compare against current_period
-  dimension: current_period {
-    group_label: "Flexible Filter"
-    type: yesno
-    sql: ${session_start_date} >= ${comparison_dim} ;;
-#     sql:  ${session_start_raw} >= {% date_start date_range %} ;;
-  }
+
 
   # period_difference calculates the number of days between the start and end dates
   # selected on the date_range filter, as selected in an Explore.
@@ -144,15 +136,15 @@ view: sessions {
   dimension: period_difference {
     group_label: "Flexible Filter"
     type: number
-    sql:  DATEDIFF(DAY, {% date_start date_range %}, {% date_end date_range %})  ;;
+    sql:  DATEDIFF(DAY, ${date_start}, ${date_end})  ;;
   }
 
   # is_in_range determines which sessions occur between the start of the last_period
   # and the end of the current_period, as selected on the date_range filter in an Explore.
   filter: is_in_range {
     type: yesno
-    sql:  ${session_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start date_range %})
-      AND ${session_start_raw}< {% date_end date_range %}    ;;
+    sql:  ${session_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
+      AND ${session_start_raw} < ${date_end}    ;;
   }
 
   # last_period selects the the sessions that occurred immediately prior to the current_session and
@@ -160,12 +152,38 @@ view: sessions {
   # the necessary is how input for date ranges to compare in this way.
   # the date_range filter is required for last_period
   # the current_period dimension is required to compare against last_period
+
+
   dimension: last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql:  ${session_start_raw} < {% date_start date_range %}
-      AND ${session_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start date_range %}) ;;
+    sql:  ${session_start_date} < ${date_start}
+      AND ${session_start_date} >= DATEADD(DAY, -${period_difference}, ${date_start}) ;;
     required_fields: [is_in_range]
+  }
+
+  # current period is taking the first date of the selected date range ensuring all the sessions start on and after the date start
+  # and less than the upper bound of the date selected cast into PDT
+
+  dimension: current_period {
+    group_label: "Flexible Filter"
+    type: yesno
+    sql: ${session_start_date} >= ${date_start}
+      AND ${session_start_date} <= ${date_end};;
+    # sql:  ${session_start_raw} >= {% date_start date_range %}
+    #         AND
+    #       ${session_start_raw} <= {% date_end date_range %} ;;
+    # sql:  ${session_start_raw} >= {% date_start date_range %} ;;
+  }
+
+  dimension: date_start {
+    type: date
+    sql: {% date_start date_range %} ;;
+  }
+
+  dimension: date_end {
+    type: date
+    sql: {% date_end date_range %} ;;
   }
 
   dimension: session_start_window {
@@ -184,26 +202,26 @@ view: sessions {
       else: "unknown"
     }
 
-      # hidden: yes
+    # hidden: yes
   }
 
   # Session Time (User Timezone)
 
   # dimension_group: session_start_local {
-    # type: time
-    # timeframes: [time, time_of_day, hour_of_day, day_of_week]
-    # sql: ${TABLE}.session_start_local ;;
-    #X# group_label:"Session Time (User Timezone)"
-    # convert_tz: no
+  # type: time
+  # timeframes: [time, time_of_day, hour_of_day, day_of_week]
+  # sql: ${TABLE}.session_start_local ;;
+  #X# group_label:"Session Time (User Timezone)"
+  # convert_tz: no
   # }
 
   # dimension_group: session_end_local {
-    # type: time
-    # timeframes: [time, time_of_day, hour_of_day, day_of_week]
-    # sql: ${TABLE}.session_end_local ;;
-    #X# group_label:"Session Time (User Timezone)"
-    # convert_tz: no
-    # hidden: yes
+  # type: time
+  # timeframes: [time, time_of_day, hour_of_day, day_of_week]
+  # sql: ${TABLE}.session_end_local ;;
+  #X# group_label:"Session Time (User Timezone)"
+  # convert_tz: no
+  # hidden: yes
   # }
 
   # Engagement
@@ -294,10 +312,10 @@ view: sessions {
   }
 
   # dimension: first_page_urlscheme {
-    # type: string
-    # sql: ${TABLE}.first_page_urlscheme ;;
-    # group_label: "First Page"
-    # hidden: yes
+  # type: string
+  # sql: ${TABLE}.first_page_urlscheme ;;
+  # group_label: "First Page"
+  # hidden: yes
   # }
 
   dimension: first_page_urlhost {
@@ -307,10 +325,10 @@ view: sessions {
   }
 
   # dimension: first_page_urlport {
-    # type: number
-    # sql: ${TABLE}.first_page_urlport ;;
-    # group_label: "First Page"
-    # hidden: yes
+  # type: number
+  # sql: ${TABLE}.first_page_urlport ;;
+  # group_label: "First Page"
+  # hidden: yes
   # }
 
   dimension: first_page_urlpath {
@@ -326,9 +344,9 @@ view: sessions {
   }
 
   # dimension: first_page_urlfragment {
-    # type: string
-    # sql: ${TABLE}.first_page_urlfragment ;;
-    # group_label: "First Page"
+  # type: string
+  # sql: ${TABLE}.first_page_urlfragment ;;
+  # group_label: "First Page"
   # }
 
   dimension: first_page_title {
@@ -359,10 +377,10 @@ view: sessions {
   }
 
   # dimension: referer_urlport {
-    # type: number
-    # sql: ${TABLE}.refr_urlport ;;
-    # group_label: "Referer"
-    # hidden: yes
+  # type: number
+  # sql: ${TABLE}.refr_urlport ;;
+  # group_label: "Referer"
+  # hidden: yes
   # }
 
   dimension: referer_urlpath {
@@ -378,9 +396,9 @@ view: sessions {
   }
 
   # dimension: referer_urlfragment {
-    # type: string
-    # sql: ${TABLE}.refr_urlfragment ;;
-    # group_label: "Referer"
+  # type: string
+  # sql: ${TABLE}.refr_urlfragment ;;
+  # group_label: "Referer"
   # }
 
   dimension: referer_medium {
@@ -527,31 +545,31 @@ view: sessions {
     # ATTENTION: This is_government filter is replicated by both page_views.view.lkml and sessions.view.lkml. ANY update to this code block must also be reflected in the corresponding code block of the other lkml file
     type: yesno
     # the filter is checking to see if the IP is in the gov network
-      sql: ${ip_address} LIKE '142.22.%' OR ${ip_address} LIKE '142.23.%' OR ${ip_address} LIKE '142.24.%' OR ${ip_address} LIKE '142.25.%' OR ${ip_address} LIKE '142.26.%' OR ${ip_address} LIKE '142.27.%' OR ${ip_address} LIKE '142.28.%' OR ${ip_address} LIKE '142.29.%' OR ${ip_address} LIKE '142.30.%' OR ${ip_address} LIKE '142.31.%' OR  ${ip_address} LIKE '142.32.%' OR ${ip_address} LIKE '142.33.%' OR ${ip_address} LIKE '142.34.%' OR ${ip_address} LIKE '142.35.%' OR ${ip_address} LIKE '142.36.%' ;;
-      }
+    sql: ${ip_address} LIKE '142.22.%' OR ${ip_address} LIKE '142.23.%' OR ${ip_address} LIKE '142.24.%' OR ${ip_address} LIKE '142.25.%' OR ${ip_address} LIKE '142.26.%' OR ${ip_address} LIKE '142.27.%' OR ${ip_address} LIKE '142.28.%' OR ${ip_address} LIKE '142.29.%' OR ${ip_address} LIKE '142.30.%' OR ${ip_address} LIKE '142.31.%' OR  ${ip_address} LIKE '142.32.%' OR ${ip_address} LIKE '142.33.%' OR ${ip_address} LIKE '142.34.%' OR ${ip_address} LIKE '142.35.%' OR ${ip_address} LIKE '142.36.%' ;;
+  }
 
   # dimension: ip_isp {
-    # type: string
-    # sql: ${TABLE}.ip_isp ;;
-    # group_label: "IP"
+  # type: string
+  # sql: ${TABLE}.ip_isp ;;
+  # group_label: "IP"
   # }
 
   # dimension: ip_organization {
-    # type: string
-    # sql: ${TABLE}.ip_organization ;;
-    # group_label: "IP"
+  # type: string
+  # sql: ${TABLE}.ip_organization ;;
+  # group_label: "IP"
   # }
 
   # dimension: ip_domain {
-    # type: string
-    # sql: ${TABLE}.ip_domain ;;
-    # group_label: "IP"
+  # type: string
+  # sql: ${TABLE}.ip_domain ;;
+  # group_label: "IP"
   # }
 
   # dimension: ip_net_speed {
-    # type: string
-    # sql: ${TABLE}.ip_net_speed ;;
-    # group_label: "IP"
+  # type: string
+  # sql: ${TABLE}.ip_net_speed ;;
+  # group_label: "IP"
   # }
 
   # Browser
@@ -719,7 +737,7 @@ view: sessions {
 
     group_label: "Counts"
     drill_fields: [new_user_count]
-    }
+  }
   set: new_user_count{
     fields: [domain_userid, users.first_page_url, session_count, average_time_engaged, total_time_engaged]
   }
