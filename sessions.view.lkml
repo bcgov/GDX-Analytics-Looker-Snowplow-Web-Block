@@ -143,8 +143,8 @@ view: sessions {
   # and the end of the current_period, as selected on the date_range filter in an Explore.
   filter: is_in_range {
     type: yesno
-    sql:  ${session_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
-      AND ${session_start_raw} < ${date_end}    ;;
+    sql:  ${session_start_date} >= DATEADD(DAY, -${period_difference}, ${date_start})
+      AND ${session_start_date} < ${date_end}    ;;
   }
 
   # last_period selects the the sessions that occurred immediately prior to the current_session and
@@ -179,11 +179,13 @@ view: sessions {
   dimension: date_start {
     type: date
     sql: {% date_start date_range %} ;;
+    hidden: yes
   }
 
   dimension: date_end {
     type: date
     sql: {% date_end date_range %} ;;
+    hidden: yes
   }
 
   dimension: session_start_window {
