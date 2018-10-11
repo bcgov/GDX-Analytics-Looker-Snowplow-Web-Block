@@ -39,7 +39,7 @@ explore: page_views {
   }
 
   fields: [ALL_FIELDS*,-page_views.last_page_title]
-  sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;;
+  # sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
   join: sessions {
     type: left_outer
     sql_on: ${sessions.session_id} = ${page_views.session_id};;
@@ -117,7 +117,7 @@ explore: sessions {
 }
 
 explore: users {
-  sql_always_where: ${first_page_url} NOT LIKE '%video.web.%' ;;
+  # sql_always_where: ${first_page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
 }
 
 explore: clicks{}
