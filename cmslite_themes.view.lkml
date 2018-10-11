@@ -30,7 +30,7 @@ view: cmslite_themes {
   }
   dimension: theme_id {
     type: string
-    sql: ${TABLE}.theme_id ;;
+    sql: COALESCE(${TABLE}.theme_id,'') ;; #ensure that this field is not NULL, so that user attribute filters work
   }
 
   dimension: subtheme {
