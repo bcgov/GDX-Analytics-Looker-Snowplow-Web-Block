@@ -37,6 +37,7 @@ explore: page_views {
     field: node_id
     user_attribute: node_id
   }
+
   fields: [ALL_FIELDS*,-page_views.last_page_title]
   sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;;
   join: sessions {
@@ -60,6 +61,19 @@ explore: page_views {
     sql_on: ${page_views_rollup.session_start_raw} = ${sessions.session_start_date} ;;
     relationship: one_to_many
   }
+
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+
+
+  }
+  access_filter: {
+    field: cmslite_themes.theme_id
+    user_attribute: theme
+  }
+
 
 #   join: sessions_rollup {
 #     sql_on: ${sessions_rollup.session_id} = ${sessions.session_id}
@@ -93,6 +107,12 @@ explore: sessions {
   join: users {
     sql_on: ${sessions.domain_userid} = ${users.domain_userid} ;;
     relationship: many_to_one
+  }
+
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${sessions.first_page_node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
   }
 }
 
