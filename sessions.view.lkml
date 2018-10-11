@@ -88,53 +88,35 @@ view: sessions {
     timeframes: [raw, time, minute10, hour, date, week, month, quarter, year]
     sql: ${TABLE}.session_end ;;
     #X# group_label:"Session Time"
-#     hidden: yes
+    # hidden: yes
   }
 
-  # date_range provides the necessary filter for Explores of current_session and last_period
-  # where current_session captures the sessions from within the date range selected
-  # and compares to last_period, which is the same duration as current_session, but
-  # is offset such that it's end date exactly precedes current_session's start date
+  # date_range provides the necessary filter for Explores of current_period and last_period
+  # and to filter is_in_range.
   filter: date_range {
     type: date
   }
 
-  # TODO:
-  # Dimensions current_period, is_in_range, and last_period need to be updated.
-  # There is a problem where the dates to be compared are rolled
-  # to tomorrow's date in the local time zone of the query, resulting
-  # in incorrect reporting on the data.
+  # date_start and date_end provide date range timezone corrections for
+  # use in the dimensions current_period, is_in_range, and last_period
   #
-  # ${session_start_raw} must first be cast as a date that accounts for
-  # the timezone from UTC to PST prior to the date_start/date_end
-  # comparisons in the sql liquid variables.
-  #
-  # JIRA ticket GDXDSD-1189 contains discussion relating to this problem
-  # A TODO in cfms_block/cfms_poc.view.lkml parallels this problem
-  # The TODO goal of each is to unify on a generalized solution.
-  #
-  # Documentation references:
-  # Looker Liquid Variables:
-  #   https://docs.looker.com/reference/liquid-variables
+  # Using liquid variables: https://docs.looker.com/reference/liquid-variables
   # Using date_start and date_end with date filters:
   #   https://discourse.looker.com/t/using-date-start-and-date-end-with-date-filters/2880
-  #
-  # current_period must include an upper limit to avoid including future dates when
-  # a date-range is selected as the filter.
+  dimension: date_start {
+    type: date
+    sql: {% date_start date_range %} ;;
+    hidden: yes
+  }
 
-  # current_period filters sessions that are within the start and end range
-  # of the date_range filter, as selected in an Explore.
-  # the date_range filter is required for current_period
-  # the last_period dimension is required to compare against current_period
-  dimension: current_period {
-    group_label: "Flexible Filter"
-    type: yesno
-    sql:  ${session_start_raw} >= {% date_start date_range %} ;;
+  dimension: date_end {
+    type: date
+    sql: {% date_end date_range %} ;;
+    hidden: yes
   }
 
   # period_difference calculates the number of days between the start and end dates
   # selected on the date_range filter, as selected in an Explore.
-  # This is used by last_period to calculate its duration.
   dimension: period_difference {
     group_label: "Flexible Filter"
     type: number
@@ -145,20 +127,29 @@ view: sessions {
   # and the end of the current_period, as selected on the date_range filter in an Explore.
   filter: is_in_range {
     type: yesno
-    sql:  ${session_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start date_range %})
-      AND ${session_start_raw}< {% date_end date_range %}    ;;
+    sql:  ${session_start_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
+      AND ${session_start_time} <= ${date_end} -- captures all start dates in both current_period and last_period.
+      ;;
+  }
+
+  # current period identifies sessions falling between the start and end of the date range selected
+  dimension: current_period {
+    group_label: "Flexible Filter"
+    type: yesno
+    sql: ${session_start_time} >= ${date_start} -- inclusive of the start date
+      AND ${session_start_time} <= ${date_end}  -- also inclusive, since date range filters are already "until (before)"
+      ;;
   }
 
   # last_period selects the the sessions that occurred immediately prior to the current_session and
-  # over the same duration the current_session. Used in an explore, the date_range filter provides
-  # the necessary is how input for date ranges to compare in this way.
-  # the date_range filter is required for last_period
-  # the current_period dimension is required to compare against last_period
+  # over the same number of days as the current_session.
+  # For instance, it would provide a suitable comparison of data from one week to the next.
   dimension: last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql:  ${session_start_raw} < {% date_start date_range %}
-      AND ${session_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start date_range %}) ;;
+    sql: ${session_start_time} >= DATEADD(DAY, -${period_difference}, ${date_start}) -- inclusive, just as current_period is
+      AND ${session_start_time} < ${date_start} -- exlusive since the start date is in the current period
+      ;;
     required_fields: [is_in_range]
   }
 
@@ -178,26 +169,26 @@ view: sessions {
       else: "unknown"
     }
 
-      # hidden: yes
+    # hidden: yes
   }
 
   # Session Time (User Timezone)
 
   # dimension_group: session_start_local {
-    # type: time
-    # timeframes: [time, time_of_day, hour_of_day, day_of_week]
-    # sql: ${TABLE}.session_start_local ;;
-    #X# group_label:"Session Time (User Timezone)"
-    # convert_tz: no
+  # type: time
+  # timeframes: [time, time_of_day, hour_of_day, day_of_week]
+  # sql: ${TABLE}.session_start_local ;;
+  #X# group_label:"Session Time (User Timezone)"
+  # convert_tz: no
   # }
 
   # dimension_group: session_end_local {
-    # type: time
-    # timeframes: [time, time_of_day, hour_of_day, day_of_week]
-    # sql: ${TABLE}.session_end_local ;;
-    #X# group_label:"Session Time (User Timezone)"
-    # convert_tz: no
-    # hidden: yes
+  # type: time
+  # timeframes: [time, time_of_day, hour_of_day, day_of_week]
+  # sql: ${TABLE}.session_end_local ;;
+  #X# group_label:"Session Time (User Timezone)"
+  # convert_tz: no
+  # hidden: yes
   # }
 
   # Engagement
@@ -288,10 +279,10 @@ view: sessions {
   }
 
   # dimension: first_page_urlscheme {
-    # type: string
-    # sql: ${TABLE}.first_page_urlscheme ;;
-    # group_label: "First Page"
-    # hidden: yes
+  # type: string
+  # sql: ${TABLE}.first_page_urlscheme ;;
+  # group_label: "First Page"
+  # hidden: yes
   # }
 
   dimension: first_page_urlhost {
@@ -301,10 +292,10 @@ view: sessions {
   }
 
   # dimension: first_page_urlport {
-    # type: number
-    # sql: ${TABLE}.first_page_urlport ;;
-    # group_label: "First Page"
-    # hidden: yes
+  # type: number
+  # sql: ${TABLE}.first_page_urlport ;;
+  # group_label: "First Page"
+  # hidden: yes
   # }
 
   dimension: first_page_urlpath {
@@ -320,9 +311,9 @@ view: sessions {
   }
 
   # dimension: first_page_urlfragment {
-    # type: string
-    # sql: ${TABLE}.first_page_urlfragment ;;
-    # group_label: "First Page"
+  # type: string
+  # sql: ${TABLE}.first_page_urlfragment ;;
+  # group_label: "First Page"
   # }
 
   dimension: first_page_title {
@@ -353,10 +344,10 @@ view: sessions {
   }
 
   # dimension: referer_urlport {
-    # type: number
-    # sql: ${TABLE}.refr_urlport ;;
-    # group_label: "Referer"
-    # hidden: yes
+  # type: number
+  # sql: ${TABLE}.refr_urlport ;;
+  # group_label: "Referer"
+  # hidden: yes
   # }
 
   dimension: referer_urlpath {
@@ -372,9 +363,9 @@ view: sessions {
   }
 
   # dimension: referer_urlfragment {
-    # type: string
-    # sql: ${TABLE}.refr_urlfragment ;;
-    # group_label: "Referer"
+  # type: string
+  # sql: ${TABLE}.refr_urlfragment ;;
+  # group_label: "Referer"
   # }
 
   dimension: referer_medium {
@@ -521,31 +512,31 @@ view: sessions {
     # ATTENTION: This is_government filter is replicated by both page_views.view.lkml and sessions.view.lkml. ANY update to this code block must also be reflected in the corresponding code block of the other lkml file
     type: yesno
     # the filter is checking to see if the IP is in the gov network
-      sql: ${ip_address} LIKE '142.22.%' OR ${ip_address} LIKE '142.23.%' OR ${ip_address} LIKE '142.24.%' OR ${ip_address} LIKE '142.25.%' OR ${ip_address} LIKE '142.26.%' OR ${ip_address} LIKE '142.27.%' OR ${ip_address} LIKE '142.28.%' OR ${ip_address} LIKE '142.29.%' OR ${ip_address} LIKE '142.30.%' OR ${ip_address} LIKE '142.31.%' OR  ${ip_address} LIKE '142.32.%' OR ${ip_address} LIKE '142.33.%' OR ${ip_address} LIKE '142.34.%' OR ${ip_address} LIKE '142.35.%' OR ${ip_address} LIKE '142.36.%' ;;
-      }
+    sql: ${ip_address} LIKE '142.22.%' OR ${ip_address} LIKE '142.23.%' OR ${ip_address} LIKE '142.24.%' OR ${ip_address} LIKE '142.25.%' OR ${ip_address} LIKE '142.26.%' OR ${ip_address} LIKE '142.27.%' OR ${ip_address} LIKE '142.28.%' OR ${ip_address} LIKE '142.29.%' OR ${ip_address} LIKE '142.30.%' OR ${ip_address} LIKE '142.31.%' OR  ${ip_address} LIKE '142.32.%' OR ${ip_address} LIKE '142.33.%' OR ${ip_address} LIKE '142.34.%' OR ${ip_address} LIKE '142.35.%' OR ${ip_address} LIKE '142.36.%' ;;
+  }
 
   # dimension: ip_isp {
-    # type: string
-    # sql: ${TABLE}.ip_isp ;;
-    # group_label: "IP"
+  # type: string
+  # sql: ${TABLE}.ip_isp ;;
+  # group_label: "IP"
   # }
 
   # dimension: ip_organization {
-    # type: string
-    # sql: ${TABLE}.ip_organization ;;
-    # group_label: "IP"
+  # type: string
+  # sql: ${TABLE}.ip_organization ;;
+  # group_label: "IP"
   # }
 
   # dimension: ip_domain {
-    # type: string
-    # sql: ${TABLE}.ip_domain ;;
-    # group_label: "IP"
+  # type: string
+  # sql: ${TABLE}.ip_domain ;;
+  # group_label: "IP"
   # }
 
   # dimension: ip_net_speed {
-    # type: string
-    # sql: ${TABLE}.ip_net_speed ;;
-    # group_label: "IP"
+  # type: string
+  # sql: ${TABLE}.ip_net_speed ;;
+  # group_label: "IP"
   # }
 
   # Browser
@@ -713,7 +704,7 @@ view: sessions {
 
     group_label: "Counts"
     drill_fields: [new_user_count]
-    }
+  }
   set: new_user_count{
     fields: [domain_userid, users.first_page_url, session_count, average_time_engaged, total_time_engaged]
   }
