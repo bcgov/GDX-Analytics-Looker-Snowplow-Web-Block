@@ -441,9 +441,20 @@ view: searches {
 
   # Search results
 
+  # terms returns a string array of search terms
+  # which can have a size > 1
   dimension: terms {
     type: string
     sql: ${TABLE}.terms ;;
+    group_label: "Results"
+  }
+
+  # readable_terms removes wrapping [" "] from the terms dimension,
+  # array and replaces + signs with ' ', rendering a readable string
+  # in the case of the term string array containing a single element
+  dimension: readable_terms {
+    type:  string
+    sql:  replace(substring(${terms}, 3, length(${terms})-4),'+',' ') ;;
     group_label: "Results"
   }
 
