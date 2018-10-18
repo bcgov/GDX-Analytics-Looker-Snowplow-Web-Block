@@ -449,12 +449,12 @@ view: searches {
     group_label: "Results"
   }
 
-  # readable_terms extracts the first string of
-  # the terms string array and formats it for
-  # better readability in reports
+  # readable_terms removes wrapping [" "] from the terms dimension,
+  # array and replaces + signs with ' ', rendering a readable string
+  # in the case of the term string array containing a single element
   dimension: readable_terms {
     type:  string
-    sql:  replace(substring(${terms}, 3, length(${terms})-4),"+"," ") ;;
+    sql:  replace(substring(${terms}, 3, length(${terms})-4),'+',' ') ;;
     group_label: "Results"
   }
 
