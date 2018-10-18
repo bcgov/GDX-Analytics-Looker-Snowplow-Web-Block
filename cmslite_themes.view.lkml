@@ -1,6 +1,7 @@
 view: cmslite_themes {
   derived_table: {
-    sql: select cm.node_id,
+    sql: WITH ids AS (
+      SELECT cm.node_id,
           CASE
             WHEN cm.parent_node_id = 'CA4CBBBB070F043ACF7FB35FE3FD1081' and cm.page_type = 'BC Gov Theme' THEN cm.node_id -- On Gov.bc.ca, a page with this as root IS a theme. Will change node_id to title when available
             WHEN cm.ancestor_nodes = '||' THEN cm.parent_node_id
@@ -14,7 +15,16 @@ view: cmslite_themes {
             ELSE NULL
           END AS subtheme_id
           FROM cmslite.metadata AS cm
-          LEFT JOIN cmslite.metadata AS cm_parent ON cm_parent.page_type = 'BC Gov Theme' AND cm_parent.node_id = cm.parent_node_id;;
+          LEFT JOIN cmslite.metadata AS cm_parent ON cm_parent.page_type = 'BC Gov Theme' AND cm_parent.node_id = cm.parent_node_id
+      )
+      SELECT
+      ids.*,
+      cm_theme.title AS theme,
+      cm_sub_theme.title AS subtheme
+      FROM ids
+      LEFT JOIN cmslite.metadata AS cm_theme ON cm_theme.node_id = theme_id
+      LEFT JOIN cmslite.metadata AS cm_sub_theme ON cm_sub_theme.node_id = subtheme_id
+      ;;
     persist_for: "24 hours"
     distribution_style: all
   }
@@ -26,7 +36,7 @@ view: cmslite_themes {
 
   dimension: theme {
     type: string
-    sql: ${TABLE}.theme_id ;;
+    sql: ${TABLE}.theme ;;
   }
   dimension: theme_id {
     type: string
@@ -35,7 +45,7 @@ view: cmslite_themes {
 
   dimension: subtheme {
     type: string
-    sql: ${TABLE}.subtheme_id ;;
+    sql: ${TABLE}.subtheme ;;
   }
   dimension: subtheme_id {
     type: string
