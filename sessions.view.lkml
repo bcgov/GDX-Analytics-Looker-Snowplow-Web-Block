@@ -154,6 +154,7 @@ view: sessions {
   }
 
   dimension: date_window {
+    group_label: "Flexible Filter"
     required_fields: [is_in_range]
     case: {
       when: {
@@ -176,6 +177,7 @@ view: sessions {
   # the last_period date range by. Exploring comparison_date with any Measure and a pivot
   # on date_window results in a pointwise comparison of current and last periods
   dimension: comparison_date {
+    group_label: "Flexible Filter"
     required_fields: [date_window]
     type: date
     sql:

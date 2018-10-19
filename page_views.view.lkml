@@ -114,6 +114,107 @@ view: page_views {
     hidden: yes
   }
 
+  # date_range provides the necessary filter for Explores of current_period and last_period
+  # and to filter is_in_range.
+  filter: date_range {
+    type: date
+  }
+
+  # date_start and date_end provide date range timezone corrections for
+  # use in the dimensions current_period, is_in_range, and last_period
+  #
+  # Using liquid variables: https://docs.looker.com/reference/liquid-variables
+  # Using date_start and date_end with date filters:
+  #   https://discourse.looker.com/t/using-date-start-and-date-end-with-date-filters/2880
+  dimension: date_start {
+    type: date
+    sql: {% date_start date_range %} ;;
+    hidden: yes
+  }
+
+  dimension: date_end {
+    type: date
+    sql: {% date_end date_range %} ;;
+    hidden: yes
+  }
+
+  # period_difference calculates the number of days between the start and end dates
+  # selected on the date_range filter, as selected in an Explore.
+  dimension: period_difference {
+    group_label: "Flexible Filter"
+    type: number
+    sql:  DATEDIFF(DAY, {% date_start date_range %}, {% date_end date_range %})  ;;
+  }
+
+  # is_in_range determines which sessions occur between the start of the last_period
+  # and the end of the current_period, as selected on the date_range filter in an Explore.
+  filter: is_in_range {
+    group_label: "Flexible Filter"
+    type: yesno
+    sql:  ${page_view_start_device_created_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
+      AND ${page_view_start_device_created_time} <= ${date_end} -- captures all start dates in both current_period and last_period.
+      ;;
+  }
+
+  # current period identifies sessions falling between the start and end of the date range selected
+  dimension: current_period {
+    group_label: "Flexible Filter"
+    type: yesno
+    sql: ${page_view_start_device_created_time} >= ${date_start} -- inclusive of the start date
+      AND ${page_view_start_device_created_time} <= ${date_end}  -- also inclusive, since date range filters are already "until (before)"
+      ;;
+  }
+
+  # last_period selects the the sessions that occurred immediately prior to the current_session and
+  # over the same number of days as the current_session.
+  # For instance, it would provide a suitable comparison of data from one week to the next.
+  dimension: last_period {
+    group_label: "Flexible Filter"
+    type: yesno
+    sql: ${page_view_start_device_created_time} >= DATEADD(DAY, -${period_difference}, ${date_start}) -- inclusive, just as current_period is
+      AND ${page_view_start_device_created_time} < ${date_start} -- exlusive since the start date is in the current period
+      ;;
+    required_fields: [is_in_range]
+  }
+
+  dimension: date_window {
+    group_label: "Flexible Filter"
+    required_fields: [is_in_range]
+    case: {
+      when: {
+        sql: ${current_period} ;;
+        label: "current_period"
+      }
+
+      when: {
+        sql: ${last_period} ;;
+        label: "last_period"
+      }
+
+      else: "unknown"
+    }
+
+    # hidden: yes
+  }
+
+  # comparison_date returns dates in the current_period providing a positive offset of
+  # the last_period date range by. Exploring comparison_date with any Measure and a pivot
+  # on date_window results in a pointwise comparison of current and last periods
+  dimension: comparison_date {
+    group_label: "Flexible Filter"
+    required_fields: [date_window]
+    type: date
+    sql:
+       CASE
+         WHEN ${date_window} = 'current_period' THEN
+           ${page_view_start_device_created_date}
+         WHEN ${date_window} = 'last_period' THEN
+           DATEADD(DAY,${period_difference},${page_view_start_device_created_date})
+         ELSE
+           NULL
+       END ;;
+  }
+
   # Engagement
 
   dimension: time_engaged {
@@ -221,10 +322,10 @@ view: page_views {
   }
 
   # dimension: page_urlscheme {
-    # type: string
-    # sql: ${TABLE}.pageurl_scheme ;;
-    # group_label: "Page"
-    # hidden: yes
+  # type: string
+  # sql: ${TABLE}.pageurl_scheme ;;
+  # group_label: "Page"
+  # hidden: yes
   # }
 
   dimension: page_urlhost {
@@ -234,10 +335,10 @@ view: page_views {
   }
 
   # dimension: page_urlport {
-    # type: number
-    # sql: ${TABLE}.page_urlport ;;
-    # group_label: "Page"
-    # hidden: yes
+  # type: number
+  # sql: ${TABLE}.page_urlport ;;
+  # group_label: "Page"
+  # hidden: yes
   # }
 
   dimension: page_urlpath {
@@ -253,9 +354,9 @@ view: page_views {
   }
 
   # dimension: page_urlfragment {
-    # type: string
-    # sql: ${TABLE}.page_urlfragment ;;
-    # group_label: "Page"
+  # type: string
+  # sql: ${TABLE}.page_urlfragment ;;
+  # group_label: "Page"
   # }
 
   dimension: page_title {
@@ -314,10 +415,10 @@ view: page_views {
   }
 
   # dimension: referer_url_port {
-    # type: number
-    # sql: ${TABLE}.refr_urlport ;;
-    # group_label: "Referer"
-    # hidden: yes
+  # type: number
+  # sql: ${TABLE}.refr_urlport ;;
+  # group_label: "Referer"
+  # hidden: yes
   # }
 
   dimension: referer_urlpath {
@@ -333,9 +434,9 @@ view: page_views {
   }
 
   # dimension: referer_urlfragment {
-    # type: string
-    # sql: ${TABLE}.refr_urlfragment ;;
-    # group_label: "Referer"
+  # type: string
+  # sql: ${TABLE}.refr_urlfragment ;;
+  # group_label: "Referer"
   # }
 
   dimension: referer_medium {
@@ -476,8 +577,8 @@ view: page_views {
     # ATTENTION: This is_government filter is replicated by both page_views.view.lkml and sessions.view.lkml. ANY update to this code block must also be reflected in the corresponding code block of the other lkml file
     type: yesno
     # the filter is checking to see if the IP is in the gov network
-      sql: ${ip_address} LIKE '142.22.%' OR ${ip_address} LIKE '142.23.%' OR ${ip_address} LIKE '142.24.%' OR ${ip_address} LIKE '142.25.%' OR ${ip_address} LIKE '142.26.%' OR ${ip_address} LIKE '142.27.%' OR ${ip_address} LIKE '142.28.%' OR ${ip_address} LIKE '142.29.%' OR ${ip_address} LIKE '142.30.%' OR ${ip_address} LIKE '142.31.%' OR  ${ip_address} LIKE '142.32.%' OR ${ip_address} LIKE '142.33.%' OR ${ip_address} LIKE '142.34.%' OR ${ip_address} LIKE '142.35.%' OR ${ip_address} LIKE '142.36.%' ;;
-      }
+    sql: ${ip_address} LIKE '142.22.%' OR ${ip_address} LIKE '142.23.%' OR ${ip_address} LIKE '142.24.%' OR ${ip_address} LIKE '142.25.%' OR ${ip_address} LIKE '142.26.%' OR ${ip_address} LIKE '142.27.%' OR ${ip_address} LIKE '142.28.%' OR ${ip_address} LIKE '142.29.%' OR ${ip_address} LIKE '142.30.%' OR ${ip_address} LIKE '142.31.%' OR  ${ip_address} LIKE '142.32.%' OR ${ip_address} LIKE '142.33.%' OR ${ip_address} LIKE '142.34.%' OR ${ip_address} LIKE '142.35.%' OR ${ip_address} LIKE '142.36.%' ;;
+  }
 
   dimension: ip_address {
     type: string
@@ -486,27 +587,27 @@ view: page_views {
   }
 
   # dimension: ip_isp {
-    # type: string
-    # sql: ${TABLE}.ip_isp ;;
-    # group_label: "IP"
+  # type: string
+  # sql: ${TABLE}.ip_isp ;;
+  # group_label: "IP"
   # }
 
   # dimension: ip_organization {
-    # type: string
-    # sql: ${TABLE}.ip_organization ;;
-    # group_label: "IP"
+  # type: string
+  # sql: ${TABLE}.ip_organization ;;
+  # group_label: "IP"
   # }
 
   # dimension: ip_domain {
-    # type: string
-    # sql: ${TABLE}.ip_domain ;;
-    # group_label: "IP"
+  # type: string
+  # sql: ${TABLE}.ip_domain ;;
+  # group_label: "IP"
   # }
 
   # dimension: ip_net_speed {
-    # type: string
-    # sql: ${TABLE}.ip_net_speed ;;
-    # group_label: "IP"
+  # type: string
+  # sql: ${TABLE}.ip_net_speed ;;
+  # group_label: "IP"
   # }
 
   # Browser
@@ -568,9 +669,9 @@ view: page_views {
   # OS
 
   # dimension: os {
-    # type: string
-    # sql: ${TABLE}.os ;;
-    # group_label: "OS"
+  # type: string
+  # sql: ${TABLE}.os ;;
+  # group_label: "OS"
   # }
 
   dimension: os_name {
@@ -586,15 +687,15 @@ view: page_views {
   }
 
   # dimension: os_minor_version {
-    # type: string
-    # sql: ${TABLE}.os_minor_version ;;
-    # group_label: "OS"
+  # type: string
+  # sql: ${TABLE}.os_minor_version ;;
+  # group_label: "OS"
   # }
 
   # dimension: os_build_version {
-    # type: string
-    # sql: ${TABLE}.os_build_version ;;
-    # group_label: "OS"
+  # type: string
+  # sql: ${TABLE}.os_build_version ;;
+  # group_label: "OS"
   # }
 
   dimension: os_manufacturer {
