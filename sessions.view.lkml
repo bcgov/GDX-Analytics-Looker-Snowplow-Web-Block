@@ -153,7 +153,7 @@ view: sessions {
     required_fields: [is_in_range]
   }
 
-  dimension: session_start_window {
+  dimension: date_window {
     required_fields: [is_in_range]
     case: {
       when: {
@@ -174,15 +174,15 @@ view: sessions {
 
   # comparison_date returns dates in the current_period providing a positive offset of
   # the last_period date range by. Exploring comparison_date with any Measure and a pivot
-  # on session_start_window results in a pointwise comparison of current and last periods
+  # on date_window results in a pointwise comparison of current and last periods
   dimension: comparison_date {
-    required_fields: [session_start_window]
+    required_fields: [date_window]
     type: date
     sql:
        CASE
-         WHEN ${session_start_window} = 'current_period' THEN
+         WHEN ${date_window} = 'current_period' THEN
            ${session_start_date}
-         WHEN ${session_start_window} = 'last_period' THEN
+         WHEN ${date_window} = 'last_period' THEN
            DATEADD(DAY,${period_difference},${session_start_date})
          ELSE
            NULL
