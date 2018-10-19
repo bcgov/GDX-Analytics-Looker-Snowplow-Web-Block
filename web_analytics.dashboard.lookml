@@ -15,6 +15,9 @@
 # Copyright:   Copyright (c) 2016 Snowplow Analytics Ltd
 # License:     Apache License Version 2.0
 
+# Note: PR 43, commit 46216091db386a2ef377188fa9de4cbbdd104f33 changes references of
+# sessions.session_start_window to sessions.date_window. No observed impact to this Dashboard's render.
+
 - dashboard: web
   title: Snowplow web dashboard (4 week period)
   layout: grid
