@@ -15,6 +15,9 @@
 # Copyright:   Copyright (c) 2016 Snowplow Analytics Ltd
 # License:     Apache License Version 2.0
 
+# Note: PR 43, commit 46216091db386a2ef377188fa9de4cbbdd104f33 changes references of
+# sessions.session_start_window to sessions.date_window. No observed impact to this Dashboard's render.
+
 - dashboard: web
   title: Snowplow web dashboard (4 week period)
   layout: grid
@@ -38,13 +41,13 @@
     type: single_value
     model: snowplow_web_block
     explore: sessions
-    dimensions: sessions.session_start_window
+    dimensions: sessions.date_window
     measures: sessions.user_count
     dynamic_fields:
     - table_calculation: change
       label: Change since last period
       expression: offset(${sessions.user_count}, 0) - offset(${sessions.user_count}, 1)
-    sorts: sessions.session_start_window
+    sorts: sessions.date_window
     show_comparison: true
     comparison_type: change
     comparison_label: compared to last period
@@ -55,13 +58,13 @@
     type: single_value
     model: snowplow_web_block
     explore: sessions
-    dimensions: sessions.session_start_window
+    dimensions: sessions.date_window
     measures: sessions.new_user_count
     dynamic_fields:
     - table_calculation: change
       label: Change since last period
       expression: offset(${sessions.new_user_count}, 0) - offset(${sessions.new_user_count}, 1)
-    sorts: sessions.session_start_window
+    sorts: sessions.date_window
     show_comparison: true
     comparison_type: change
     comparison_label: compared to last period
@@ -72,7 +75,7 @@
     type: single_value
     model: snowplow_web_block
     explore: sessions
-    dimensions: sessions.session_start_window
+    dimensions: sessions.date_window
     measures: sessions.new_user_count
     dynamic_fields:
     - table_calculation: change
@@ -80,7 +83,7 @@
       expression: offset(${sessions.new_user_count}, 0) - offset(${sessions.new_user_count}, 1)
     filters:
       sessions.user_engaged: yes
-    sorts: sessions.session_start_window
+    sorts: sessions.date_window
     show_comparison: true
     comparison_type: change
     comparison_label: compared to last period
@@ -99,7 +102,7 @@
       expression: offset(${sessions.user_count}, 0) - offset(${sessions.user_count}, 1)
     filters:
       sessions.session_index: '>1'
-    sorts: users.first_session_start_window
+    sorts: users.first_date_window
     show_comparison: true
     comparison_type: change
     comparison_label: compared to last period
