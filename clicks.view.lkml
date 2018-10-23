@@ -453,6 +453,13 @@ view: clicks {
     group_label: "Target"
   }
 
+  dimension: target_url_nopar {
+    type: string
+    #This removes the parameters from the url, anything including the ?
+    sql: regexp_replace(${TABLE}.target_url, '\\?.*$') ;;
+    group_label: "Target"
+  }
+
   #substring select the host only
   dimension: target_host {
     type: string
