@@ -176,6 +176,8 @@ view: sessions {
   # comparison_date returns dates in the current_period providing a positive offset of
   # the last_period date range by. Exploring comparison_date with any Measure and a pivot
   # on date_window results in a pointwise comparison of current and last periods
+  #
+  # Note that we need to put this back into UTC as otherwise, Looker will double convert the timezone later
   dimension: comparison_date {
     group_label: "Flexible Filter"
     required_fields: [date_window]
@@ -183,9 +185,9 @@ view: sessions {
     sql:
        CASE
          WHEN ${date_window} = 'current_period' THEN
-           ${session_start_date}
+           CONVERT_TIMEZONE('America/Los_Angeles','UTC', ${session_start_date})
          WHEN ${date_window} = 'last_period' THEN
-           DATEADD(DAY,${period_difference},${session_start_date})
+           DATEADD(DAY,${period_difference},(CONVERT_TIMEZONE('America/Los_Angeles','UTC', ${session_start_date})))
          ELSE
            NULL
        END ;;
