@@ -120,6 +120,13 @@ explore: users {
   # sql_always_where: ${first_page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
 }
 
-explore: clicks{}
+explore: clicks{
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${clicks.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+
+}
 
 explore: searches {}
