@@ -150,12 +150,10 @@ view: sessions {
     sql: ${session_start_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
       AND ${session_start_time} <= DATEADD(DAY, -${period_difference}, ${date_end})
       ;;
-    required_fields: [is_in_current_period_or_last_period]
   }
 
   dimension: date_window {
     group_label: "Flexible Filter"
-    required_fields: [is_in_current_period_or_last_period]
     case: {
       when: {
         sql: ${current_period} ;;
