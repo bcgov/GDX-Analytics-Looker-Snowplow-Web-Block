@@ -115,13 +115,13 @@ view: page_views {
   }
 
   # date_range provides the necessary filter for Explores of current_period and last_period
-  # and to filter is_in_current_period_and_last_period.
+  # and to filter is_in_current_period_or_last_period.
   filter: date_range {
     type: date
   }
 
   # date_start and date_end provide date range timezone corrections for
-  # use in the dimensions current_period, is_in_current_period_and_last_period, and last_period
+  # use in the dimensions current_period, is_in_current_period_or_last_period, and last_period
   #
   # Using liquid variables: https://docs.looker.com/reference/liquid-variables
   # Using date_start and date_end with date filters:
@@ -146,9 +146,9 @@ view: page_views {
     sql:  DATEDIFF(DAY, {% date_start date_range %}, {% date_end date_range %})  ;;
   }
 
-  # is_in_current_period_and_last_period determines which sessions occur between the start of the last_period
+  # is_in_current_period_or_last_period determines which sessions occur between the start of the last_period
   # and the end of the current_period, as selected on the date_range filter in an Explore.
-  filter: is_in_current_period_and_last_period {
+  filter: is_in_current_period_or_last_period {
     group_label: "Flexible Filter"
     type: yesno
     sql:  ${page_view_start_device_created_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
@@ -174,12 +174,12 @@ view: page_views {
     sql: ${page_view_start_device_created_time} >= DATEADD(DAY, -${period_difference}, ${date_start}) -- inclusive, just as current_period is
       AND ${page_view_start_device_created_time} < ${date_start} -- exlusive since the start date is in the current period
       ;;
-    required_fields: [is_in_current_period_and_last_period]
+    required_fields: [is_in_current_period_or_last_period]
   }
 
   dimension: date_window {
     group_label: "Flexible Filter"
-    required_fields: [is_in_current_period_and_last_period]
+    required_fields: [is_in_current_period_or_last_period]
     case: {
       when: {
         sql: ${current_period} ;;
