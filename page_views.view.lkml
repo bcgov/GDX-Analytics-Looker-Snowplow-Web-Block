@@ -152,17 +152,15 @@ view: page_views {
     group_label: "Flexible Filter"
     type: yesno
     sql:  ${page_view_start_device_created_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
-      AND ${page_view_start_device_created_time} <= ${date_end} -- captures all start dates in both current_period and last_period.
-      ;;
+      AND ${page_view_start_device_created_time} <= DATEADD(DAY, -${period_difference}, ${date_end}) ;;
   }
 
   # current period identifies sessions falling between the start and end of the date range selected
   dimension: current_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${page_view_start_device_created_time} >= ${date_start} -- inclusive of the start date
-      AND ${page_view_start_device_created_time} <= ${date_end}  -- also inclusive, since date range filters are already "until (before)"
-      ;;
+    sql: ${page_view_start_device_created_time} >= ${date_start}
+      AND ${page_view_start_device_created_time} <= ${date_end} ;;
   }
 
   # last_period selects the the sessions that occurred immediately prior to the current_session and
@@ -171,15 +169,12 @@ view: page_views {
   dimension: last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${page_view_start_device_created_time} >= DATEADD(DAY, -${period_difference}, ${date_start}) -- inclusive, just as current_period is
-      AND ${page_view_start_device_created_time} < ${date_start} -- exlusive since the start date is in the current period
-      ;;
-    required_fields: [is_in_current_period_or_last_period]
+    sql: ${page_view_start_device_created_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
+      AND ${page_view_start_device_created_time} <= DATEADD(DAY, -${period_difference}, ${date_end}) ;;
   }
 
   dimension: date_window {
     group_label: "Flexible Filter"
-    required_fields: [is_in_current_period_or_last_period]
     case: {
       when: {
         sql: ${current_period} ;;

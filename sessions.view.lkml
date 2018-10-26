@@ -136,8 +136,8 @@ view: sessions {
   dimension: current_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${session_start_time} >= ${date_start} -- inclusive of the start date
-      AND ${session_start_time} <= ${date_end}  -- also inclusive, since date range filters are already "until (before)"
+    sql: ${session_start_time} >= ${date_start}
+      AND ${session_start_time} <= ${date_end}
       ;;
   }
 
@@ -147,15 +147,13 @@ view: sessions {
   dimension: last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${session_start_time} >= DATEADD(DAY, -${period_difference}, ${date_start}) -- inclusive, just as current_period is
-      AND ${session_start_time} < ${date_start} -- exlusive since the start date is in the current period
+    sql: ${session_start_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
+      AND ${session_start_time} <= DATEADD(DAY, -${period_difference}, ${date_end})
       ;;
-    required_fields: [is_in_current_period_or_last_period]
   }
 
   dimension: date_window {
     group_label: "Flexible Filter"
-    required_fields: [is_in_current_period_or_last_period]
     case: {
       when: {
         sql: ${current_period} ;;
