@@ -41,18 +41,52 @@ view: sessions {
 
   # Session
 
+  # session_id: string
+  # Table reference - VARCHAR(255)
+  #
+  # session_id is a unique identifier for a session based on the device IP address and timestamp.
+  # It comes from:
+  # derived.sessions session_id
+  # > derived.page_views_webtrends session_id
+  #   > derved.events domain_sessionid
+  #     > webtrends.events wt_co_f
+  #
+  # References:
+  #
+  # * https://github.com/snowplow-proservices/ca.bc.gov-schema-registry/blob/master/webtrends_migration/redshift/03_copy_data_into_derived_events.sql
+  # * https://github.com/snowplow-proservices/ca.bc.gov-schema-registry/blob/master/webtrends_migration/redshift/05_derived_sessions_webtrends.sql
+  # * https://help.webtrends.com/legacy/en/dcapi/dc_api_identifying_visitors.html
   dimension: session_id {
     type: string
     sql: ${TABLE}.session_id ;;
+    description: "A unique identifier for a given session, based on IP and timestamp."
     group_label: "Session"
   }
 
+  # session_index: number
+  # Table reference: INTEGER
+  #
+  # session_index is the user's current session number indexed from 1.
+  # In this context, users are identified using a User ID set by Snowplow using 1st party cookie.
+  #
+  # from 05_derived_sessions_webtrends.sql:
+  # ROW_NUMBER() OVER (PARTITION BY a.user_snowplow_domain_id ORDER BY a.page_view_start) AS session_index
+  #
+  # References:
+  # * https://github.com/snowplow-proservices/ca.bc.gov-schema-registry/blob/master/webtrends_migration/redshift/05_derived_sessions_webtrends.sql
+  # * https://github.com/snowplow-proservices/ca.bc.gov-snowplow-pipeline/blob/master/jobs/webmodel/README.md
   dimension: session_index {
     type: number
     sql: ${TABLE}.session_index ;;
+    description: "The number of a given user's session, according to Snowplow cookie tracking. First session is \"1\""
     group_label: "Session"
   }
 
+  # first_or_returning_session: string
+  #
+  # A label to discern a user's "first session" from every subsequent "returning session".
+  #
+  # FLAG: Not in use, and hidden from explores. Flagged for Removal.
   dimension: first_or_returning_session {
     type: string
 
@@ -76,14 +110,34 @@ view: sessions {
 
   # Session Time
 
+  # session_start: time
+  # Table reference: TIMESTAMP
+  #
+  # session_start corresponds to the first value of page_view_start_time within that session.
+  # Explores can reference any timeframe except raw;
+  # LookML can reference raw without any formatting or timezone conversions, and all other timeframes with conversion.
+  #
+  # References:
+  # * https://github.com/snowplow-proservices/ca.bc.gov-snowplow-pipeline/blob/master/jobs/webmodel/README.md
   dimension_group: session_start {
+    description: "corresponds to the start time on the first page view of a given session."
     type: time
     timeframes: [raw, time, minute10, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
     sql: ${TABLE}.session_start ;;
     #X# group_label:"Session Time"
   }
 
+  # session_end: time
+  # Table reference: TIMESTAMP
+  #
+  # session_end corresponds to the last page_view_end_time within that session.
+  # Explores can reference any timeframe except raw;
+  # LookML can reference raw without any formatting or timezone conversions, and all other timeframes with conversion.
+  #
+  # References:
+  # * https://github.com/snowplow-proservices/ca.bc.gov-snowplow-pipeline/blob/master/jobs/webmodel/README.md
   dimension_group: session_end {
+    description: "corresponds to the end time of the last page view within a given session."
     type: time
     timeframes: [raw, time, minute10, hour, date, week, month, quarter, year]
     sql: ${TABLE}.session_end ;;
@@ -91,10 +145,14 @@ view: sessions {
     # hidden: yes
   }
 
+  # date_range: date
+  #
   # date_range provides the necessary filter for Explores of current_period and last_period
   # and to filter is_in_current_period_or_last_period.
   filter: date_range {
     type: date
+    description: "This filter is necessary for comparisons between the current and previous date range"
+    group_label: "Flexible Filter"
   }
 
   # date_start and date_end provide date range timezone corrections for
