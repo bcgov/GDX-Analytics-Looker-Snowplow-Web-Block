@@ -59,7 +59,7 @@ view: sessions {
   dimension: session_id {
     type: string
     sql: ${TABLE}.session_id ;;
-    description: "A unique identifier for a given session, based on IP and timestamp."
+    description: "A unique identifier for a given user session, based on IP and timestamp."
     group_label: "Session"
   }
 
@@ -78,15 +78,15 @@ view: sessions {
   dimension: session_index {
     type: number
     sql: ${TABLE}.session_index ;;
-    description: "The number of a given user's session, according to Snowplow cookie tracking. First session is \"1\""
+    # description: "The number of a given user's session, according to Snowplow cookie tracking. First session is \"1\""
+    description: "This is the number of visits by a user, according to cookie tracking."
     group_label: "Session"
+    hidden: yes
   }
 
   # first_or_returning_session: string
   #
   # A label to discern a user's "first session" from every subsequent "returning session".
-  #
-  # FLAG: Not in use, and hidden from explores. Flagged for Removal.
   dimension: first_or_returning_session {
     type: string
 
@@ -115,12 +115,12 @@ view: sessions {
   #
   # session_start corresponds to the first value of page_view_start_time within that session.
   # Explores can reference any timeframe except raw;
-  # LookML can reference raw without any formatting or timezone conversions, and all other timeframes with conversion.
+  # LookML can reference raw without any formatting or timezone conversions, and all other timeframes can be referenced with conversion.
   #
   # References:
   # * https://github.com/snowplow-proservices/ca.bc.gov-snowplow-pipeline/blob/master/jobs/webmodel/README.md
   dimension_group: session_start {
-    description: "corresponds to the start time on the first page view of a given session."
+    description: "The start time of the first page view of a given session."
     type: time
     timeframes: [raw, time, minute10, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
     sql: ${TABLE}.session_start ;;
@@ -132,12 +132,12 @@ view: sessions {
   #
   # session_end corresponds to the last page_view_end_time within that session.
   # Explores can reference any timeframe except raw;
-  # LookML can reference raw without any formatting or timezone conversions, and all other timeframes with conversion.
+  # LookML can reference raw without any formatting or timezone conversions, and all other timeframes can be referenced with conversion.
   #
   # References:
   # * https://github.com/snowplow-proservices/ca.bc.gov-snowplow-pipeline/blob/master/jobs/webmodel/README.md
   dimension_group: session_end {
-    description: "corresponds to the end time of the last page view within a given session."
+    description: "The end time of the last page view of a given session."
     type: time
     timeframes: [raw, time, minute10, hour, date, week, month, quarter, year]
     sql: ${TABLE}.session_end ;;
@@ -145,14 +145,13 @@ view: sessions {
     # hidden: yes
   }
 
-  # date_range: date
+  # flexible_filter_date_range: date
   #
-  # date_range provides the necessary filter for Explores of current_period and last_period
+  # flexible_filter_date_range provides the necessary filter for Explores of current_period and last_period
   # and to filter is_in_current_period_or_last_period.
-  filter: date_range {
+  filter: flexible_filter_date_range {
     type: date
-    description: "This filter is necessary for comparisons between the current and previous date range"
-    group_label: "Flexible Filter"
+    description: "This provides a date range used by dimensions in the Flexible Filters group. NOTE: On its own it does not do anything."
   }
 
   # date_start and date_end provide date range timezone corrections for
@@ -163,26 +162,26 @@ view: sessions {
   #   https://discourse.looker.com/t/using-date-start-and-date-end-with-date-filters/2880
   dimension: date_start {
     type: date
-    sql: {% date_start date_range %} ;;
+    sql: {% date_start flexible_filter_date_range %} ;;
     hidden: yes
   }
 
   dimension: date_end {
     type: date
-    sql: {% date_end date_range %} ;;
+    sql: {% date_end flexible_filter_date_range %} ;;
     hidden: yes
   }
 
   # period_difference calculates the number of days between the start and end dates
-  # selected on the date_range filter, as selected in an Explore.
+  # selected on the flexible_filter_date_range filter, as selected in an Explore.
   dimension: period_difference {
     group_label: "Flexible Filter"
     type: number
-    sql:  DATEDIFF(DAY, {% date_start date_range %}, {% date_end date_range %})  ;;
+    sql:  DATEDIFF(DAY, {% date_start flexible_filter_date_range %}, {% date_end flexible_filter_date_range %})  ;;
   }
 
   # is_in_current_period_or_last_period determines which sessions occur between the start of the last_period
-  # and the end of the current_period, as selected on the date_range filter in an Explore.
+  # and the end of the current_period, as selected on the flexible_filter_date_range filter in an Explore.
   filter: is_in_current_period_or_last_period {
     type: yesno
     sql:  ${session_start_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
