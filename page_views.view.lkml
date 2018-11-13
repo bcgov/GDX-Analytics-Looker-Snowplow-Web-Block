@@ -713,7 +713,7 @@ view: page_views {
     group_label: "Device"
   }
 
-  dimension: device_ismobile {
+  dimension: device_is_mobile {
     type: yesno
     sql: ${TABLE}.dvce_ismobile ;;
     group_label: "Device"
