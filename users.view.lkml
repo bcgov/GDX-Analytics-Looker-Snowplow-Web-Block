@@ -363,6 +363,7 @@ view: users {
   # Application
 
   dimension: app_id {
+    description: "The application identifier from which the event originated."
     type: string
     sql: ${TABLE}.app_id ;;
     group_label: "Application"

@@ -11,6 +11,7 @@ view: searches {
   # Application
 
   dimension: app_id {
+    description: "The application identifier from which the event originated."
     type: string
     sql: ${TABLE}.app_id ;;
     group_label: "Application"
@@ -18,6 +19,7 @@ view: searches {
 
   # this is only available for WebTrends data
   dimension: dcs_id {
+    description: "The Webtrends profile identifier."
     type: string
     sql: ${TABLE}.dcs_id ;;
     group_label: "Application"
@@ -313,6 +315,7 @@ view: searches {
   # duplicates throughout this section
 
   dimension: is_government {
+    description: "Yes if the IP address maps to a known BC Government network."
     # the filter is put in this view because the IP is defined here in this view
     type: yesno
     # the filter is checking to see if the IP is in the gov network
@@ -320,62 +323,74 @@ view: searches {
   }
 
   dimension: ip_address {
+    description: "The user's IP address, with the final octet replaced with \"1\" to remove personally identifiable information."
     type: string
     sql: ${TABLE}.user_ipaddress ;;
     group_label: "IP"
   }
 
   # Browser
+  # This section contains fields that are duplicated across over view files in this project
 
   dimension: useragent {
+    descrption: "The useragent string for this session."
+    hidden: yes
     type: string
     sql: ${TABLE}.useragent ;;
     group_label: "Browser"
   }
 
   dimension: browser_name {
+    description: "The browser name."
     type: string
     sql: ${TABLE}.br_name ;;
     group_label: "Browser"
   }
 
   dimension: browser_family {
+    description: "The browser family."
     type: string
     sql: ${TABLE}.br_family ;;
     group_label: "Browser"
   }
 
   dimension: browser_version {
+    description: "The browser version."
     type: string
     sql: ${TABLE}.br_version ;;
     group_label: "Browser"
   }
 
   dimension: browser_type {
+    description: "The browser type."
     type: string
     sql: ${TABLE}.br_type ;;
     group_label: "Browser"
   }
 
   dimension: browser_engine {
+    description: "The browser rendering engine."
     type: string
     sql: ${TABLE}.br_renderengine ;;
     group_label: "Browser"
   }
 
-  dimension: browser_viewwidth {
+  dimension: browser_view_width {
+    description: "The browser viewport width."
     type: number
     sql: ${TABLE}.br_viewwidth ;;
     group_label: "Browser"
   }
 
-  dimension: browser_viewheight {
+  dimension: browser_view_height {
+    description: "The browser viewport height."
     type: number
     sql: ${TABLE}.br_viewheight ;;
     group_label: "Browser"
   }
 
   dimension: browser_language {
+    description: "The language the browser is set to."
     type: string
     sql: ${TABLE}.br_lang ;;
     group_label: "Browser"
@@ -417,13 +432,15 @@ view: searches {
   # Device
   # duplicates throughout this section
 
-  dimension: device_type {
+  dimension: device_type \{
+    description: "A label that describes the viewing device type as Mobile or Computer."
     type: string
     sql: ${TABLE}.dvce_type ;;
     group_label: "Device"
   }
 
-  dimension: device_is_mobile {
+  dimension: device_is_mobile \{
+    description: "True if the viewing device is mobile; False otherwise."
     type: yesno
     sql: ${TABLE}.dvce_ismobile ;;
     group_label: "Device"
