@@ -550,7 +550,7 @@ view: clicks {
   # Device
   # This section contains fields that are duplicated across over view files in this project
 
-  dimension: device_type \{
+  dimension: device_type {
     description: "A label that describes the viewing device type as Mobile or Computer."
     type: string
     sql: ${TABLE}.dvce_type ;;

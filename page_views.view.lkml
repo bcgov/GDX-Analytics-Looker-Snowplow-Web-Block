@@ -722,7 +722,7 @@ view: page_views {
 
   # Device
 
-  dimension: device_type \{
+  dimension: device_type {
     description: "A label that describes the viewing device type as Mobile or Computer."
     type: string
     sql: ${TABLE}.dvce_type ;;
