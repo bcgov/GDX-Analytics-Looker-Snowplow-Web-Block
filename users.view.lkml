@@ -102,7 +102,7 @@ view: users {
 
   dimension: network_userid {
     type: string
-    sql: ${TABLE}.network_userid
+    sql: ${TABLE}.network_userid;;
     group_label: "User"
     hidden: yes
   }
