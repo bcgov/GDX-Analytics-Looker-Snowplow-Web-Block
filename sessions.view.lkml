@@ -178,15 +178,16 @@ view: sessions {
     group_label: "Flexible Filter"
     type: number
     sql:  DATEDIFF(DAY, {% date_start flexible_filter_date_range %}, {% date_end flexible_filter_date_range %})  ;;
+    hidden: yes
   }
 
-  # is_in_current_period_or_last_period determines which sessions occur between the start of the last_period
-  # and the end of the current_period, as selected on the flexible_filter_date_range filter in an Explore.
+  # is_in_current_period_or_last_period determines which sessions occur on an after the start of the last_period
+  # and before end of the current_period, as selected on the flexible_filter_date_range filter in an Explore.
   filter: is_in_current_period_or_last_period {
     type: yesno
     sql:  ${session_start_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
-      AND ${session_start_time} <= ${date_end} -- captures all start dates in both current_period and last_period.
-      ;;
+      AND ${session_start_time} <= ${date_end} ;;
+    hidden: yes
   }
 
   # current period identifies sessions falling between the start and end of the date range selected
@@ -194,8 +195,8 @@ view: sessions {
     group_label: "Flexible Filter"
     type: yesno
     sql: ${session_start_time} >= ${date_start}
-      AND ${session_start_time} <= ${date_end}
-      ;;
+      AND ${session_start_time} <= ${date_end} ;;
+    hidden: yes
   }
 
   # last_period selects the the sessions that occurred immediately prior to the current_session and
@@ -205,10 +206,12 @@ view: sessions {
     group_label: "Flexible Filter"
     type: yesno
     sql: ${session_start_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
-      AND ${session_start_time} <= DATEADD(DAY, -${period_difference}, ${date_end})
-      ;;
+      AND ${session_start_time} <= DATEADD(DAY, -${period_difference}, ${date_end}) ;;
+    hidden: yes
   }
 
+  # dimension: date_window provides the pivot label for constructing tables and charts
+  # that compare current_period and last_period
   dimension: date_window {
     group_label: "Flexible Filter"
     case: {
@@ -221,21 +224,21 @@ view: sessions {
         sql: ${last_period} ;;
         label: "last_period"
       }
-
       else: "unknown"
     }
-
-    # hidden: yes
+    description: "Pivot on Date Window to compare measures between the current and last periods, use with Comparison Date"
   }
 
   # comparison_date returns dates in the current_period providing a positive offset of
-  # the last_period date range by. Exploring comparison_date with any Measure and a pivot
+  # the last_period date range. Exploring comparison_date with any measure and a pivot
   # on date_window results in a pointwise comparison of current and last periods
   #
   # Note that we need to put this back into UTC as otherwise, Looker will double convert the timezone later
   dimension: comparison_date {
     group_label: "Flexible Filter"
     required_fields: [date_window]
+    description: "Comparison Date offsets measures from the last period to appear in the range of the current period,
+    allowing a pairwise comparison between these periods when used with Date Window."
     type: date
     sql:
        CASE
@@ -294,6 +297,8 @@ view: sessions {
        END ;;
   }
 
+  # Engagement
+
   dimension: page_views {
     type: number
     sql: ${TABLE}.page_views ;;
@@ -343,12 +348,14 @@ view: sessions {
   # First Page
 
   dimension: first_page_url {
+    description: "The URL of the page where a session began."
     type: string
     sql: ${TABLE}.first_pageurl ;;
     group_label: "First Page"
   }
 
   dimension: first_page_node_id {
+    description: "The identifier of the page where a session began."
     type: string
     sql: ${TABLE}.node_id ;;
     group_label: "First Page"
@@ -362,6 +369,7 @@ view: sessions {
   # }
 
   dimension: first_page_urlhost {
+    description: "The host name of the page where a session began."
     type: string
     sql: ${TABLE}.first_page_urlhost ;;
     group_label: "First Page"
@@ -375,12 +383,14 @@ view: sessions {
   # }
 
   dimension: first_page_urlpath {
+    description: "The URL path of the page where a session began."
     type: string
     sql: ${TABLE}.first_page_urlpath ;;
     group_label: "First Page"
   }
 
   dimension: first_page_urlquery {
+    description: "The URL query of the page where a session began."
     type: string
     sql: ${TABLE}.first_page_urlquery ;;
     group_label: "First Page"
@@ -393,6 +403,7 @@ view: sessions {
   # }
 
   dimension: first_page_title {
+    description: "The Title for the page where a session began."
     type: string
     sql: ${TABLE}.first_page_title ;;
     group_label: "First Page"
@@ -711,7 +722,7 @@ view: sessions {
     group_label: "Device"
   }
 
-  dimension: device_ismobile {
+  dimension: device_is_mobile {
     type: yesno
     sql: ${TABLE}.dvce_ismobile ;;
     group_label: "Device"
