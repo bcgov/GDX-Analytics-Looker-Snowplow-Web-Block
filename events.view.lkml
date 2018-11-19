@@ -11,9 +11,9 @@ view: events {
   # https://github.com/snowplow/snowplow/wiki/canonical-event-model#application
 
   dimension: app_id {
+    description: "The application identifier from which the event originated."
     type: string
     sql: ${TABLE}.app_id ;;
-    description: "The application identifier from which the event originated."
   }
 
   dimension: platform {
@@ -247,10 +247,10 @@ view: events {
   # https://github.com/snowplow/snowplow/wiki/canonical-event-model#device
 
   dimension: useragent {
+    descrption: "The useragent string of the current session."
     group_label: "Device and OS fields"
     type: string
     sql: ${TABLE}.useragent ;;
-    description: "The useragent identification."
   }
 
   dimension: dvce_type {
@@ -686,14 +686,14 @@ view: events {
     group_label: "Browser fields"
     type: string
     sql: ${TABLE}.br_type ;;
-    description: "The browser type"
+    description: "The browser type."
   }
 
   dimension: br_renderengine {
     group_label: "Browser fields"
     type: string
     sql: ${TABLE}.br_renderengine ;;
-    description: "The browser rendering engine"
+    description: "The browser rendering engine."
   }
 
   dimension: br_lang {
