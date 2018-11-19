@@ -736,7 +736,7 @@ view: sessions {
     group_label: "Device"
   }
 
-  dimension: device_is_mobile \{
+  dimension: device_is_mobile {
     description: "True if the viewing device is mobile; False otherwise."
     type: yesno
     sql: ${TABLE}.dvce_ismobile ;;
