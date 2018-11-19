@@ -109,14 +109,23 @@ view: users {
 
   # First Session Time
 
+  # First Session Start does not appear in the Users Explore; but it does appear in the Page Views Explore.
+  # As a result, this dimension cannot be explored, since the value for it requires an explore join to sessions.
+  # In the Snowplow Web Block model, `explore: users` does not join sessions on domain_userid.
+  # TODO: understand why First Session Start does not appear in explores.
   dimension_group: first_session_start {
+    description: "The earliest session start time."
     type: time
     timeframes: [time, minute10, hour, date, week, month, quarter, year]
     sql: ${TABLE}.first_session_start ;;
     #X# group_label:"First Session Time"
   }
 
+  # First Session Start Window
+  # Is hidden and unused elsewhere in this view.
+  # TODO: flagging for removal.
   dimension: first_session_start_window {
+    description: "Labels as current or previous period period: \"current session\" is where the earliest session starts after 28 days; \"previous session\" is where the earliest session between 28 days and 56 days."
     case: {
       when: {
         sql: ${TABLE}.first_session_start >= DATEADD(day, -28, GETDATE()) ;;
@@ -136,6 +145,9 @@ view: users {
 
   # Last Session Time
 
+  # Last session end
+  # does appear in Users Explore
+  # TODO: understand why First Session Start does not appear in explores.
   dimension_group: last_session_end {
     type: time
     timeframes: [time, minute10, hour, date, week, month, quarter, year]
@@ -144,32 +156,38 @@ view: users {
   }
 
   # Engagement
+  ## These are aggregated values from the derived prep table.
 
   dimension: page_views {
+    description: "The sum of page views."
     type: number
     sql: ${TABLE}.page_views ;;
     group_label: "Engagement"
   }
 
   dimension: clicks {
+    description: "The sum of clicks."
     type: number
     sql: ${TABLE}.clicks ;;
     group_label: "Engagement"
   }
 
   dimension: searches {
+    description: "The sum of searches."
     type: number
     sql: ${TABLE}.searches ;;
     group_label: "Engagement"
   }
 
   dimension: sessions {
+    description: "The count sessions."
     type: number
     sql: ${TABLE}.sessions ;;
     group_label: "Engagement"
   }
 
   dimension: time_engaged {
+    description: "The sum of time engaged in seconds."
     type: number
     sql: ${TABLE}.time_engaged_in_s ;;
     group_label: "Engagement"

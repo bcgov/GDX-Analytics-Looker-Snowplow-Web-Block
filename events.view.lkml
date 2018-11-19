@@ -205,21 +205,21 @@ view: events {
     group_label: "User-related fields"
     type: string
     sql: ${TABLE}.user_id ;;
-    description: "A unique ID set by the business."
+    description: "A unique identifier set by the business."
   }
 
   dimension: domain_userid {
     group_label: "User-related fields"
     type: string
     sql: ${TABLE}.domain_userid ;;
-    description: "The user ID set by Snowplow using a first party cookie."
+    description: "The user identifier set by Snowplow using a first party cookie."
   }
 
   dimension: network_userid {
     group_label: "User-related fields"
     type: string
     sql: ${TABLE}.network_userid ;;
-    description: "The user ID set by Snowplow using a third party cookie."
+    description: "The user identifier set by Snowplow using a third party cookie."
   }
 
   dimension: user_ipaddress {
