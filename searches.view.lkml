@@ -480,10 +480,11 @@ view: searches {
   # terms returns a string array of search terms
   # The array can have a size greater than 1 in multi-dimension searches
   # TODO: GDXDSD-1326
-  dimension: terms {
+  dimension: raw_search_terms {
     type: string
     sql: ${TABLE}.terms ;;
     group_label: "Results"
+    hidden: yes
   }
 
   # readable_terms: string
@@ -492,9 +493,10 @@ view: searches {
   # replaces + signs with ' ', rendering a readable string in
   # the case of the term string array containing a single element
   # TODO: GDXDSD-1326 handle multiple-term searches past the first index, and empty searches.
-  dimension: readable_terms {
+  dimension: search_terms {
+    description: "The search term(s) that were queried."
     type:  string
-    sql:  replace(substring(${terms}, 3, length(${terms})-4),'+',' ') ;;
+    sql:  replace(substring(${raw_search_terms}, 3, length(${raw_search_terms})-4),'+',' ') ;;
     group_label: "Results"
   }
 

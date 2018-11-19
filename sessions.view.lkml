@@ -348,12 +348,14 @@ view: sessions {
   # First Page
 
   dimension: first_page_url {
+    description: "The URL of the page where a session began."
     type: string
     sql: ${TABLE}.first_pageurl ;;
     group_label: "First Page"
   }
 
   dimension: first_page_node_id {
+    description: "The identifier of the page where a session began."
     type: string
     sql: ${TABLE}.node_id ;;
     group_label: "First Page"
@@ -367,6 +369,7 @@ view: sessions {
   # }
 
   dimension: first_page_urlhost {
+    description: "The host name of the page where a session began."
     type: string
     sql: ${TABLE}.first_page_urlhost ;;
     group_label: "First Page"
@@ -380,12 +383,14 @@ view: sessions {
   # }
 
   dimension: first_page_urlpath {
+    description: "The URL path of the page where a session began."
     type: string
     sql: ${TABLE}.first_page_urlpath ;;
     group_label: "First Page"
   }
 
   dimension: first_page_urlquery {
+    description: "The URL query of the page where a session began."
     type: string
     sql: ${TABLE}.first_page_urlquery ;;
     group_label: "First Page"
@@ -398,6 +403,7 @@ view: sessions {
   # }
 
   dimension: first_page_title {
+    description: "The Title for the page where a session began."
     type: string
     sql: ${TABLE}.first_page_title ;;
     group_label: "First Page"
