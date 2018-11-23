@@ -247,7 +247,7 @@ view: events {
   # https://github.com/snowplow/snowplow/wiki/canonical-event-model#device
 
   dimension: useragent {
-    descrption: "The useragent string of the current session."
+    description: "The useragent string of the current session."
     group_label: "Device and OS fields"
     type: string
     sql: ${TABLE}.useragent ;;
