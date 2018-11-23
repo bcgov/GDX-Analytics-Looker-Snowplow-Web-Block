@@ -634,7 +634,7 @@ view: sessions {
   # This section contains fields that are duplicated across over view files in this project
 
   dimension: useragent {
-    descrption: "The useragent string for this session."
+    description: "The useragent string for this session."
     hidden: yes
     type: string
     sql: ${TABLE}.useragent ;;

@@ -116,9 +116,10 @@ view: page_views {
     hidden: yes
   }
 
-  # date_range provides the necessary filter for Explores of current_period and last_period
+  # flexible_filter_date_range provides the necessary filter for Explores of current_period and last_period
   # and to filter is_in_current_period_or_last_period.
-  filter: date_range {
+  filter: flexible_filter_date_range {
+    description: "This provides a date range used by dimensions in the Flexible Filters group. NOTE: On its own it does not do anything."
     type: date
   }
 
@@ -130,26 +131,26 @@ view: page_views {
   #   https://discourse.looker.com/t/using-date-start-and-date-end-with-date-filters/2880
   dimension: date_start {
     type: date
-    sql: {% date_start date_range %} ;;
+    sql: {% date_start flexible_filter_date_range %} ;;
     hidden: yes
   }
 
   dimension: date_end {
     type: date
-    sql: {% date_end date_range %} ;;
+    sql: {% date_end flexible_filter_date_range %} ;;
     hidden: yes
   }
 
   # period_difference calculates the number of days between the start and end dates
-  # selected on the date_range filter, as selected in an Explore.
+  # selected on the flexible_filter_date_range filter, as selected in an Explore.
   dimension: period_difference {
     group_label: "Flexible Filter"
     type: number
-    sql:  DATEDIFF(DAY, {% date_start date_range %}, {% date_end date_range %})  ;;
+    sql:  DATEDIFF(DAY, {% date_start flexible_filter_date_range %}, {% date_end flexible_filter_date_range %})  ;;
   }
 
   # is_in_current_period_or_last_period determines which sessions occur between the start of the last_period
-  # and the end of the current_period, as selected on the date_range filter in an Explore.
+  # and the end of the current_period, as selected on the flexible_filter_date_range filter in an Explore.
   filter: is_in_current_period_or_last_period {
     group_label: "Flexible Filter"
     type: yesno
@@ -357,18 +358,20 @@ view: page_views {
   # }
 
   dimension: page_title {
+    description: "The page title."
     type: string
     sql: ${TABLE}.page_title ;;
     group_label: "Page"
   }
 
-  dimension: first_page_title_test {
-    label: "FIRST PAGE TITLE"
+  dimension: first_page_title {
+    description: "The title of the first page visited in the session."
     type: string
     sql: CASE WHEN ${page_view_in_session_index} = 1 THEN ${page_title} ELSE NULL END ;;
   }
 
   dimension: last_page_title {
+    description: "The title of the last page visited in the session."
     type: string
     sql: CASE WHEN ${page_view_in_session_index} = ${sessions_rollup.max_page_view_index} THEN ${page_title} ELSE NULL END ;;
   }
@@ -613,7 +616,7 @@ view: page_views {
   # This section contains fields that are duplicated across over view files in this project
 
   dimension: useragent {
-    descrption: "The useragent string for this session."
+    description: "The useragent string for this session."
     hidden: yes
     type: string
     sql: ${TABLE}.useragent ;;
