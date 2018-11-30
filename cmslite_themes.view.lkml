@@ -4,7 +4,7 @@ view: cmslite_themes {
   # node_id
   # the CMSL node ID
   dimension: node_id {
-    description: "The alphanumeric CMSL node identifier."
+    description: "The alphanumeric CMS Lite node identifier."
     type: string
     sql: ${TABLE}.node_id ;;
   }
@@ -12,7 +12,7 @@ view: cmslite_themes {
   # theme
   # the CMSL theme
   dimension: theme {
-    description: "The CMSL theme."
+    description: "The CMS Lite theme."
     type: string
     sql: ${TABLE}.theme ;;
   }
@@ -26,7 +26,7 @@ view: cmslite_themes {
   #
   # reference - https://docs.aws.amazon.com/redshift/latest/dg/r_NVL_function.html
   dimension: theme_id {
-    description: "The alphanumeric CMSL theme identifer."
+    description: "The alphanumeric CMS Lite theme identifer."
     type: string
     sql: COALESCE(${TABLE}.theme_id,'') ;;
   }
@@ -34,7 +34,7 @@ view: cmslite_themes {
   # subtheme
   # the CMSL subtheme
   dimension: subtheme {
-    description: "The CMSL subtheme."
+    description: "The CMS Lite subtheme."
     type: string
     sql: ${TABLE}.subtheme ;;
   }
@@ -42,7 +42,7 @@ view: cmslite_themes {
   # subtheme ID
   # the CMSL subtheme ID
   dimension: subtheme_id {
-    description: "The alphanumeric CMSL subtheme identifier."
+    description: "The alphanumeric CMS Lite subtheme identifier."
     type: string
     sql: ${TABLE}.subtheme_id ;;
   }
