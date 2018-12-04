@@ -241,12 +241,6 @@ view: shared_fields_common {
 
 ### Referer
 
-  dimension: referer_url {
-    type: string
-    sql: ${TABLE}.page_referrer ;;
-    group_label: "Referer"
-  }
-
   dimension: referer_urlscheme {
     type: string
     sql: ${TABLE}.refr_urlscheme ;;
@@ -515,6 +509,12 @@ view: shared_fields_common {
     # sql: decode(split_part(${page_url},'/search/',2),'%20', ' ');;
     sql: REPLACE(split_part(${page_url},'/search/',2), '%20', ' ')
       ;;
+  }
+
+  dimension: page_referer {
+    type: string
+    sql: ${TABLE}.page_referrer ;;
+    group_label: "Referer"
   }
 
   dimension: page_width {
