@@ -63,6 +63,16 @@ view: clicks {
     hidden: yes
   }
 
+  # slider_clicks
+  #
+  # Compares the element class to 'pull-left', which is the element class attribute on links in the slider.
+  dimension: slider_clicks {
+    description: "Yes if the click came from the main Government slider."
+    type: yesno
+    sql: ${TABLE}.element_classes LIKE '%pull-left%' ;;
+    group_label: "Click"
+  }
+
 
   # Targets
   # This section contains fields that are duplicated across over view files in this project
