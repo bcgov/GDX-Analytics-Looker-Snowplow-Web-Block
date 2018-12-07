@@ -30,42 +30,42 @@ view: shared_fields_common {
   }
 
   dimension: browser_name {
-    description: "The browser name."
+    description: "The browser name. Depending on the browser, name often matches the family, but can also include major version numbers."
     type: string
     sql: ${TABLE}.br_name ;;
     group_label: "Browser"
   }
 
   dimension: browser_family {
-    description: "The browser family."
+    description: "The major family of browser, regardless of name or version. e.g., Chrome, Safari, Internet Explorer, etc."
     type: string
     sql: ${TABLE}.br_family ;;
     group_label: "Browser"
   }
 
   dimension: browser_version {
-    description: "The browser version."
+    description: "The specific version number of the browser."
     type: string
     sql: ${TABLE}.br_version ;;
     group_label: "Browser"
   }
 
   dimension: browser_type {
-    description: "The browser type."
+    description: "Browser types can be mobile or non-mobile."
     type: string
     sql: ${TABLE}.br_type ;;
     group_label: "Browser"
   }
 
   dimension: browser_engine {
-    description: "The browser rendering engine."
+    description: "The browser rendering engine name. e.g.: Blink, WebKit, Trident."
     type: string
     sql: ${TABLE}.br_renderengine ;;
     group_label: "Browser"
   }
 
   dimension: browser_language {
-    description: "The language the browser is set to."
+    description: "The language the browser is set to for localization."
     type: string
     sql: ${TABLE}.br_lang ;;
     group_label: "Browser"
@@ -74,7 +74,7 @@ view: shared_fields_common {
   # browser_view_height is not in Sessions
 
   dimension: browser_view_height {
-    description: "The browser viewport height."
+    description: "The browser viewport height in pixels."
     type: number
     sql: ${TABLE}.br_viewheight ;;
     group_label: "Browser"
@@ -82,7 +82,7 @@ view: shared_fields_common {
 
   # browser_view_width is not in Sessions
   dimension: browser_view_width {
-    description: "The browser viewport width."
+    description: "The browser viewport width in pixels."
     type: number
     sql: ${TABLE}.br_viewwidth ;;
     group_label: "Browser"

@@ -83,10 +83,28 @@ view: clicks {
     group_label: "Target"
   }
 
+  dimension: target_url_case_insensitive {
+    type: string
+    sql: LOWER(${TABLE}.target_url) ;;
+    group_label: "Target"
+  }
+
   dimension: target_url_nopar {
     type: string
     #This removes the parameters from the url, anything including the ?
     sql: regexp_replace(${TABLE}.target_url, '\\?.*$') ;;
+    group_label: "Target"
+  }
+
+  dimension: target_url_nopar_case_insensitive {
+    type: string
+    sql: LOWER(regexp_replace(${TABLE}.target_url, '\\?.*$')) ;;
+    group_label: "Target"
+  }
+
+  dimension: truncated_target_url_nopar_case_insensitive {
+    type: string
+    sql: regexp_replace(regexp_replace(regexp_replace(${target_url_nopar_case_insensitive},'/((index|default)\\.(htm|html))|(default\\.(asp|aspx))/{0,}$','/'),'//$','/'),'%20',' ') ;;
     group_label: "Target"
   }
 
