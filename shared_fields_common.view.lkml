@@ -441,6 +441,17 @@ view: shared_fields_common {
 
   ### Page
 
+  dimension: page_absolute_uri {
+    label: "Page Absolute URI"
+    description: "Absolute URI is comprised of the scheme, authority, path, and query"
+    sql: CASE
+           WHEN ${page_urlquery} = ''
+             THEN 'http://' || ${page_url}
+           ELSE 'http://' || ${page_url} || '?' || RTRIM(${page_urlquery},'&')
+         END;;
+    group_label: "Page"
+  }
+
   dimension: page_url {
     description: "The web page URL."
     type: string

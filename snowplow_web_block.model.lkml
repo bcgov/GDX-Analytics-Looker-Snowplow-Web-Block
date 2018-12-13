@@ -66,9 +66,8 @@ explore: page_views {
     type: left_outer
     sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
-
-
   }
+
   access_filter: {
     field: cmslite_themes.theme_id
     user_attribute: theme
@@ -129,4 +128,10 @@ explore: clicks{
 
 }
 
-explore: searches {}
+explore: searches {
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${searches.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+}
