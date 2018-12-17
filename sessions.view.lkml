@@ -97,6 +97,8 @@ view: sessions {
 
   # is_in_current_period_or_last_period determines which sessions occur on an after the start of the last_period
   # and before end of the current_period, as selected on the flexible_filter_date_range filter in an Explore.
+  # Here's an explanation of why we use DATEDIFF(SECOND and not DAY
+  #    https://www.sqlteam.com/articles/datediff-function-demystified
   filter: is_in_current_period_or_last_period {
     type: yesno
     sql:  DATEDIFF(SECOND,${TABLE}.session_start, {% date_start flexible_filter_date_range %}) / 86400.0 <= ${period_difference}
