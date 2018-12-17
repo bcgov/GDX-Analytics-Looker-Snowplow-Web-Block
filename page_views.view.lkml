@@ -109,16 +109,16 @@ view: page_views {
   filter: is_in_current_period_or_last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql:  ${page_view_start_device_created_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
-      AND ${page_view_start_device_created_time} <= DATEADD(DAY, -${period_difference}, ${date_end}) ;;
+    sql: DATEDIFF(SECOND,${TABLE}.page_view_min_dvce_created_tstamp, {% date_start flexible_filter_date_range %}) / 86400.0 <= ${period_difference}
+    AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_end flexible_filter_date_range %} ;;
   }
 
   # current period identifies sessions falling between the start and end of the date range selected
   dimension: current_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${page_view_start_device_created_time} >= ${date_start}
-      AND ${page_view_start_device_created_time} <= ${date_end} ;;
+    sql: ${TABLE}.page_view_min_dvce_created_tstamp >= {% date_start flexible_filter_date_range %}
+      AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_end flexible_filter_date_range %} ;;
   }
 
   # last_period selects the the sessions that occurred immediately prior to the current_session and
@@ -127,23 +127,24 @@ view: page_views {
   dimension: last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${page_view_start_device_created_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
-      AND ${page_view_start_device_created_time} <= DATEADD(DAY, -${period_difference}, ${date_end}) ;;
+    sql: ${TABLE}.page_view_min_dvce_created_tstamp >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
+      AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_start flexible_filter_date_range %} ;;
   }
+
 
   dimension: date_window {
     group_label: "Flexible Filter"
     case: {
       when: {
-        sql: ${current_period} ;;
+        sql: ${TABLE}.page_view_min_dvce_created_tstamp >= {% date_start flexible_filter_date_range %}
+          AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_end flexible_filter_date_range %} ;;
         label: "current_period"
       }
-
       when: {
-        sql: ${last_period} ;;
+        sql: ${TABLE}.page_view_min_dvce_created_tstamp >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
+          AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_start flexible_filter_date_range %} ;;
         label: "last_period"
       }
-
       else: "unknown"
     }
 
@@ -158,11 +159,13 @@ view: page_views {
     required_fields: [date_window]
     type: date
     sql:
-       CASE
-         WHEN ${date_window} = 'current_period' THEN
-           ${page_view_start_device_created_date}
-         WHEN ${date_window} = 'last_period' THEN
-           DATEADD(DAY,${period_difference},${page_view_start_device_created_date})
+        CASE
+         WHEN ${TABLE}.page_view_min_dvce_created_tstamp >= {% date_start flexible_filter_date_range %}
+             AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_end flexible_filter_date_range %}
+            THEN CONVERT_TIMEZONE('America/Los_Angeles','UTC', ${page_view_start_device_created_date})
+         WHEN ${TABLE}.page_view_min_dvce_created_tstamp >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
+             AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_start flexible_filter_date_range %}
+            THEN DATEADD(DAY,${period_difference},(CONVERT_TIMEZONE('America/Los_Angeles','UTC', ${page_view_start_device_created_date})))
          ELSE
            NULL
        END ;;

@@ -99,17 +99,17 @@ view: sessions {
   # and before end of the current_period, as selected on the flexible_filter_date_range filter in an Explore.
   filter: is_in_current_period_or_last_period {
     type: yesno
-    sql:  ${session_start_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
-      AND ${session_start_time} <= ${date_end} ;;
-    hidden: yes
+    sql:  DATEDIFF(SECOND,${TABLE}.session_start, {% date_start flexible_filter_date_range %}) / 86400.0 <= ${period_difference}
+      AND ${TABLE}.session_start < {% date_end flexible_filter_date_range %} ;;
   }
+
 
   # current period identifies sessions falling between the start and end of the date range selected
   dimension: current_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${session_start_time} >= ${date_start}
-      AND ${session_start_time} <= ${date_end} ;;
+    sql: ${TABLE}.session_start >= {% date_start flexible_filter_date_range %}
+      AND ${TABLE}.session_start < {% date_end flexible_filter_date_range %} ;;
     hidden: yes
   }
 
@@ -119,8 +119,8 @@ view: sessions {
   dimension: last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${session_start_time} >= DATEADD(DAY, -${period_difference}, ${date_start})
-      AND ${session_start_time} <= DATEADD(DAY, -${period_difference}, ${date_end}) ;;
+    sql: ${TABLE}.session_start >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
+      AND ${TABLE}.session_start < {% date_start flexible_filter_date_range %} ;;
     hidden: yes
   }
 
@@ -130,12 +130,13 @@ view: sessions {
     group_label: "Flexible Filter"
     case: {
       when: {
-        sql: ${current_period} ;;
+        sql: ${TABLE}.session_start >= {% date_start flexible_filter_date_range %}
+             AND ${TABLE}.session_start < {% date_end flexible_filter_date_range %} ;;
         label: "current_period"
       }
-
       when: {
-        sql: ${last_period} ;;
+        sql: ${TABLE}.session_start >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
+             AND ${TABLE}.session_start < {% date_start flexible_filter_date_range %} ;;
         label: "last_period"
       }
       else: "unknown"
@@ -156,10 +157,12 @@ view: sessions {
     type: date
     sql:
        CASE
-         WHEN ${date_window} = 'current_period' THEN
-           CONVERT_TIMEZONE('America/Los_Angeles','UTC', ${session_start_date})
-         WHEN ${date_window} = 'last_period' THEN
-           DATEADD(DAY,${period_difference},(CONVERT_TIMEZONE('America/Los_Angeles','UTC', ${session_start_date})))
+         WHEN ${TABLE}.session_start >= {% date_start flexible_filter_date_range %}
+             AND ${TABLE}.session_start < {% date_end flexible_filter_date_range %}
+            THEN CONVERT_TIMEZONE('America/Los_Angeles','UTC', ${session_start_date})
+         WHEN ${TABLE}.session_start >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
+             AND ${TABLE}.session_start < {% date_start flexible_filter_date_range %}
+            THEN DATEADD(DAY,${period_difference},(CONVERT_TIMEZONE('America/Los_Angeles','UTC', ${session_start_date})))
          ELSE
            NULL
        END ;;
