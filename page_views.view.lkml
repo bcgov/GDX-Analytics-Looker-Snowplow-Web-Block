@@ -106,6 +106,8 @@ view: page_views {
 
   # is_in_current_period_or_last_period determines which sessions occur between the start of the last_period
   # and the end of the current_period, as selected on the flexible_filter_date_range filter in an Explore.
+  # Here's an explanation of why we use DATEDIFF(SECOND and not DAY
+  #    https://www.sqlteam.com/articles/datediff-function-demystified
   filter: is_in_current_period_or_last_period {
     group_label: "Flexible Filter"
     type: yesno
