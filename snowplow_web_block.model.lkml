@@ -27,6 +27,11 @@ include: "*.view"
 include: "*.dashboard"
 
 explore: page_views {
+  # exclude when people are viewing files on locally downloaded or hosted copies of webpages
+  sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
+      AND ${page_url} NOT LIKE '%$/%'
+      AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' ;;
+
   access_filter: {
     field: browser_family
     user_attribute: browser
@@ -103,6 +108,11 @@ explore: page_views {
 # }
 
 explore: sessions {
+  # exclude when people are viewing files on locally downloaded or hosted copies of webpages
+  sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
+      AND ${page_url} NOT LIKE '%$/%'
+      AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' ;;
+
   join: users {
     sql_on: ${sessions.domain_userid} = ${users.domain_userid} ;;
     relationship: many_to_one
@@ -120,6 +130,11 @@ explore: users {
 }
 
 explore: clicks{
+  # exclude when people are viewing files on locally downloaded or hosted copies of webpages
+  sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
+      AND ${page_url} NOT LIKE '%$/%'
+      AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' ;;
+
   join: cmslite_themes {
     type: left_outer
     sql_on: ${clicks.node_id} = ${cmslite_themes.node_id} ;;
@@ -129,6 +144,11 @@ explore: clicks{
 }
 
 explore: searches {
+  # exclude when people are viewing files on locally downloaded or hosted copies of webpages
+  sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
+      AND ${page_url} NOT LIKE '%$/%'
+      AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' ;;
+
   join: cmslite_themes {
     type: left_outer
     sql_on: ${searches.node_id} = ${cmslite_themes.node_id} ;;
