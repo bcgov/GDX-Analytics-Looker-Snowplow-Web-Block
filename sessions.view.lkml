@@ -28,7 +28,7 @@ view: sessions {
   # session_start: time
   # Table reference: TIMESTAMP
   #
-  # session_start corresponds to the first value of page_view_start_time within that session.
+  # session_start corresponds to the first value of session_start_time within that session.
   # Explores can reference any timeframe except raw;
   # LookML can reference raw without any formatting or timezone conversions, and all other timeframes can be referenced with conversion.
   #
@@ -409,4 +409,41 @@ view: sessions {
     value_format: "0.00\"s\""
     group_label: "Engagement"
   }
+
+
+  parameter: summary_granularity {
+    type: string
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Month" }
+    # allowed_value: { value: "Quarter" }
+    allowed_value: { value: "Year" }
+  }
+
+  dimension: in_summary_period {
+    group_label: "Summary"
+    type: yesno
+    sql: ${TABLE}.session_start >= CONVERT_TIMEZONE('America/Los_Angeles', 'UTC', date_trunc({% parameter summary_granularity %}, {% date_start flexible_filter_date_range %}::date ))
+          AND ${TABLE}.session_start < CONVERT_TIMEZONE('America/Los_Angeles', 'UTC', date_trunc({% parameter summary_granularity %}, {% date_end flexible_filter_date_range %}::date - interval '1 day') + interval '1 '{% parameter summary_granularity %})
+        ;;
+  }
+
+  dimension: summary_date {
+    label_from_parameter: summary_granularity
+    sql:
+       CASE
+         WHEN {% parameter summary_granularity %} = 'Day' THEN
+           ${session_start_date}::VARCHAR
+         WHEN {% parameter summary_granularity %} = 'Month' THEN
+           ${session_start_month}--::VARCHAR
+         WHEN {% parameter summary_granularity %} = 'Quarter' THEN
+           ${session_start_quarter}::VARCHAR
+         WHEN {% parameter summary_granularity %} = 'Year' THEN
+         ${session_start_year}::VARCHAR
+         ELSE
+           NULL
+       END
+      ;;
+  }
+
+
 }
