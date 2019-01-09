@@ -135,12 +135,12 @@ view: sessions {
       when: {
         sql: ${TABLE}.session_start >= {% date_start flexible_filter_date_range %}
              AND ${TABLE}.session_start < {% date_end flexible_filter_date_range %} ;;
-        label: "current_period"
+        label: "Current Period"
       }
       when: {
         sql: ${TABLE}.session_start >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
              AND ${TABLE}.session_start < {% date_start flexible_filter_date_range %} ;;
-        label: "last_period"
+        label: "Last Period"
       }
       else: "unknown"
     }
