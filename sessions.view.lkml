@@ -19,6 +19,7 @@ view: sessions {
   dimension: page_urlquery { hidden: yes }
   dimension: page_width { hidden: yes }
   dimension: search_field { hidden: yes }
+  dimension: page_absolute_uri { hidden: yes }
 
   # DIMENSIONS
 
