@@ -114,11 +114,12 @@ view: shared_fields_common {
     group_label: "Location"
   }
 
-  dimension: city_and_region {
+  dimension: geo_city_and_region {
     type: string
     sql: CASE
-       WHEN (${TABLE}.geo_country = 'CA') THEN ${TABLE}.geo_city || ', ' || ${TABLE}.geo_region_name
-       ELSE ${TABLE}.geo_city || ', ' || ${TABLE}.geo_country
+       WHEN (${TABLE}.geo_city = '' OR ${TABLE}.geo_city IS NULL) THEN ${TABLE}.geo_country
+       WHEN (${TABLE}.geo_country = 'CA') THEN ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_region_name
+       ELSE ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_country
       END;;
     group_label: "Location"
   }
