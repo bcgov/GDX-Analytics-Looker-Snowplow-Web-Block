@@ -16,7 +16,7 @@
 # License:     Apache License Version 2.0
 
 
-connection: "redshift"
+connection: "redshift_pacific_time"
 # Set the week start day to Sunday. Default is Monday
 week_start_day: sunday
 

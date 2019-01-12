@@ -134,12 +134,12 @@ view: sessions {
     case: {
       when: {
         sql: ${TABLE}.session_start >= {% date_start flexible_filter_date_range %}
-             AND ${TABLE}.session_start < {% date_end flexible_filter_date_range %} ;;
+          AND ${TABLE}.session_start < {% date_end flexible_filter_date_range %} ;;
         label: "Current Period"
       }
       when: {
         sql: ${TABLE}.session_start >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
-             AND ${TABLE}.session_start < {% date_start flexible_filter_date_range %} ;;
+          AND ${TABLE}.session_start < {% date_start flexible_filter_date_range %} ;;
         label: "Last Period"
       }
       else: "unknown"
@@ -151,7 +151,6 @@ view: sessions {
   # the last_period date range. Exploring comparison_date with any measure and a pivot
   # on date_window results in a pointwise comparison of current and last periods
   #
-  # Note that we need to put this back into UTC as otherwise, Looker will double convert the timezone later
   dimension: comparison_date {
     group_label: "Flexible Filter"
     required_fields: [date_window]
@@ -162,10 +161,10 @@ view: sessions {
        CASE
          WHEN ${TABLE}.session_start >= {% date_start flexible_filter_date_range %}
              AND ${TABLE}.session_start < {% date_end flexible_filter_date_range %}
-            THEN CONVERT_TIMEZONE('America/Los_Angeles','UTC', ${session_start_date})
+            THEN ${session_start_date}
          WHEN ${TABLE}.session_start >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
              AND ${TABLE}.session_start < {% date_start flexible_filter_date_range %}
-            THEN DATEADD(DAY,${period_difference},(CONVERT_TIMEZONE('America/Los_Angeles','UTC', ${session_start_date})))
+            THEN DATEADD(DAY,${period_difference},(${session_start_date}))
          ELSE
            NULL
        END ;;
@@ -422,8 +421,8 @@ view: sessions {
   dimension: in_summary_period {
     group_label: "Summary"
     type: yesno
-    sql: ${TABLE}.session_start >= CONVERT_TIMEZONE('America/Los_Angeles', 'UTC', date_trunc({% parameter summary_granularity %}, {% date_start flexible_filter_date_range %}::date ))
-          AND ${TABLE}.session_start < CONVERT_TIMEZONE('America/Los_Angeles', 'UTC', date_trunc({% parameter summary_granularity %}, {% date_end flexible_filter_date_range %}::date - interval '1 day') + interval '1 '{% parameter summary_granularity %})
+    sql: ${TABLE}.session_start >= date_trunc({% parameter summary_granularity %}, {% date_start flexible_filter_date_range %}::date )
+          AND ${TABLE}.session_start < date_trunc({% parameter summary_granularity %}, {% date_end flexible_filter_date_range %}::date - interval '1 day') + interval '1 '{% parameter summary_granularity %}
         ;;
   }
 

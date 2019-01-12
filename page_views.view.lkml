@@ -164,10 +164,10 @@ view: page_views {
         CASE
          WHEN ${TABLE}.page_view_min_dvce_created_tstamp >= {% date_start flexible_filter_date_range %}
              AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_end flexible_filter_date_range %}
-            THEN CONVERT_TIMEZONE('America/Los_Angeles','UTC', ${page_view_start_device_created_date})
+            THEN ${page_view_start_device_created_date}
          WHEN ${TABLE}.page_view_min_dvce_created_tstamp >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
              AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_start flexible_filter_date_range %}
-            THEN DATEADD(DAY,${period_difference},(CONVERT_TIMEZONE('America/Los_Angeles','UTC', ${page_view_start_device_created_date})))
+            THEN DATEADD(DAY,${period_difference},(${page_view_start_device_created_date}))
          ELSE
            NULL
        END ;;
@@ -394,21 +394,21 @@ view: page_views {
     type: string
     allowed_value: { value: "Day" }
     allowed_value: { value: "Month" }
-   # allowed_value: { value: "Quarter" }
+    # allowed_value: { value: "Quarter" }
     allowed_value: { value: "Year" }
   }
 
   dimension: in_summary_period {
     group_label: "Summary"
     type: yesno
-    sql: ${TABLE}.page_view_start_time >= CONVERT_TIMEZONE('America/Los_Angeles', 'UTC', date_trunc({% parameter summary_granularity %}, {% date_start flexible_filter_date_range %}::date ))
-          AND ${TABLE}.page_view_start_time < CONVERT_TIMEZONE('America/Los_Angeles', 'UTC', date_trunc({% parameter summary_granularity %}, {% date_end flexible_filter_date_range %}::date - interval '1 day') + interval '1 '{% parameter summary_granularity %})
+    sql: ${TABLE}.page_view_start_time >= date_trunc({% parameter summary_granularity %}, {% date_start flexible_filter_date_range %}::date )
+          AND ${TABLE}.page_view_start_time < date_trunc({% parameter summary_granularity %}, {% date_end flexible_filter_date_range %}::date - interval '1 day') + interval '1 '{% parameter summary_granularity %}
         ;;
-    }
+  }
 
-    dimension: summary_date {
-      label_from_parameter: summary_granularity
-      sql:
+  dimension: summary_date {
+    label_from_parameter: summary_granularity
+    sql:
        CASE
          WHEN {% parameter summary_granularity %} = 'Day' THEN
            ${page_view_start_date}::VARCHAR
@@ -422,29 +422,29 @@ view: page_views {
            NULL
        END
       ;;
-    }
-
-
   }
+
+
+}
 
 # If necessary, uncomment the line below to include explore_source.
 # include: "snowplow_web_block.model.lkml"
-  explore: max_page_view_rollup {}
-  view: max_page_view_rollup {
-    derived_table: {
-      explore_source: page_views {
-        column: page_view_id {}
-        column: page_title {}
-        column: max_page_view_index {}
-        derived_column: p_key {
-          sql: ROW_NUMBER() OVER (order by true) ;;
-        }
+explore: max_page_view_rollup {}
+view: max_page_view_rollup {
+  derived_table: {
+    explore_source: page_views {
+      column: page_view_id {}
+      column: page_title {}
+      column: max_page_view_index {}
+      derived_column: p_key {
+        sql: ROW_NUMBER() OVER (order by true) ;;
       }
     }
-    dimension: p_key {primary_key:yes}
-    dimension: page_view_id {}
-    dimension: page_title {}
-    dimension: max_page_view_index {
-      type: number
-    }
   }
+  dimension: p_key {primary_key:yes}
+  dimension: page_view_id {}
+  dimension: page_title {}
+  dimension: max_page_view_index {
+    type: number
+  }
+}
