@@ -111,16 +111,16 @@ view: page_views {
   filter: is_in_current_period_or_last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql:  ${TABLE}.page_view_min_dvce_created_tstamp >= DATEADD('day', -${period_difference}, {% date_start flexible_filter_date_range %})
-      AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_end flexible_filter_date_range %} ;;
+    sql:  ${TABLE}.page_view_start_time >= DATEADD('day', -${period_difference}, {% date_start flexible_filter_date_range %})
+      AND ${TABLE}.page_view_start_time < {% date_end flexible_filter_date_range %} ;;
   }
 
   # current period identifies sessions falling between the start and end of the date range selected
   dimension: current_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${TABLE}.page_view_min_dvce_created_tstamp >= {% date_start flexible_filter_date_range %}
-      AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_end flexible_filter_date_range %} ;;
+    sql: ${TABLE}.page_view_start_time >= {% date_start flexible_filter_date_range %}
+      AND ${TABLE}.page_view_start_time < {% date_end flexible_filter_date_range %} ;;
   }
 
   # last_period selects the the sessions that occurred immediately prior to the current_session and
@@ -129,8 +129,8 @@ view: page_views {
   dimension: last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${TABLE}.page_view_min_dvce_created_tstamp >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
-      AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_start flexible_filter_date_range %} ;;
+    sql: ${TABLE}.page_view_start_time >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
+      AND ${TABLE}.page_view_start_time < {% date_start flexible_filter_date_range %} ;;
   }
 
 
@@ -138,13 +138,13 @@ view: page_views {
     group_label: "Flexible Filter"
     case: {
       when: {
-        sql: ${TABLE}.page_view_min_dvce_created_tstamp >= {% date_start flexible_filter_date_range %}
-          AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_end flexible_filter_date_range %} ;;
+        sql: ${TABLE}.page_view_start_time >= {% date_start flexible_filter_date_range %}
+          AND ${TABLE}.page_view_start_time < {% date_end flexible_filter_date_range %} ;;
         label: "current_period"
       }
       when: {
-        sql: ${TABLE}.page_view_min_dvce_created_tstamp >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
-          AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_start flexible_filter_date_range %} ;;
+        sql: ${TABLE}.page_view_start_time >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
+          AND ${TABLE}.page_view_start_time < {% date_start flexible_filter_date_range %} ;;
         label: "last_period"
       }
       else: "unknown"
@@ -162,12 +162,12 @@ view: page_views {
     type: date
     sql:
         CASE
-         WHEN ${TABLE}.page_view_min_dvce_created_tstamp >= {% date_start flexible_filter_date_range %}
-             AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_end flexible_filter_date_range %}
-            THEN ${page_view_start_device_created_date}
-         WHEN ${TABLE}.page_view_min_dvce_created_tstamp >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
-             AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_start flexible_filter_date_range %}
-            THEN DATEADD(DAY,${period_difference},(${page_view_start_device_created_date}))
+         WHEN ${TABLE}.page_view_start_time >= {% date_start flexible_filter_date_range %}
+             AND ${TABLE}.page_view_start_time < {% date_end flexible_filter_date_range %}
+            THEN ${page_view_start_date}
+         WHEN ${TABLE}.page_view_start_time >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
+             AND ${TABLE}.page_view_start_time < {% date_start flexible_filter_date_range %}
+            THEN DATEADD(DAY,${period_difference},(${page_view_start_date}))
          ELSE
            NULL
        END ;;
