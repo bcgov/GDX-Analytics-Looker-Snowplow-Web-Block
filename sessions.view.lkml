@@ -102,7 +102,7 @@ view: sessions {
   #    https://www.sqlteam.com/articles/datediff-function-demystified
   filter: is_in_current_period_or_last_period {
     type: yesno
-    sql:  DATEDIFF(SECOND,${TABLE}.session_start, {% date_start flexible_filter_date_range %}) / 86400.0 <= ${period_difference}
+    sql:  ${TABLE}.session_start >= DATEADD('day', -${period_difference}, {% date_start flexible_filter_date_range %})
       AND ${TABLE}.session_start < {% date_end flexible_filter_date_range %} ;;
   }
 
