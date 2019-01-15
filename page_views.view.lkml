@@ -111,7 +111,7 @@ view: page_views {
   filter: is_in_current_period_or_last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: DATEDIFF(SECOND,${TABLE}.page_view_min_dvce_created_tstamp, {% date_start flexible_filter_date_range %}) / 86400.0 <= ${period_difference}
+    sql:  ${TABLE}.page_view_min_dvce_created_tstamp >= DATEADD('day', -${period_difference}, {% date_start flexible_filter_date_range %})
       AND ${TABLE}.page_view_min_dvce_created_tstamp < {% date_end flexible_filter_date_range %} ;;
   }
 
