@@ -131,6 +131,15 @@ view: clicks {
     group_label: "Target"
   }
 
+  #was the click to a different domain name (url host)
+  dimension: offsite_click {
+    type:  yesno
+    sql: ${TABLE}.offsite_click ;;
+    group_label: "Target"
+  }
+
+
+
   # MEASURES
 
   # duplicate
