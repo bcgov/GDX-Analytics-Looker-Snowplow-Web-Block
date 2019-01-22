@@ -1,9 +1,14 @@
-include: "shared_fields_common.view.lkml"
+include: "shared_fields_common.view"
+include: "date_comparisons_common.view"
 
 view: page_views {
   sql_table_name: derived.page_views ;;
 
-  extends: [shared_fields_common]
+  extends: [shared_fields_common,date_comparisons_common]
+
+  dimension_group: filter_start {
+    sql: ${TABLE}.page_view_start_time ;;
+  }
 
   # Modifying extended fields
   dimension: os_version { hidden: yes }
@@ -69,108 +74,6 @@ view: page_views {
     sql: ${TABLE}.page_view_max_dvce_created_tstamp ;;
     #X# group_label:"Page View Time (User Timezone)"
     hidden: yes
-  }
-
-  # flexible_filter_date_range provides the necessary filter for Explores of current_period and last_period
-  # and to filter is_in_current_period_or_last_period.
-  filter: flexible_filter_date_range {
-    description: "This provides a date range used by dimensions in the Flexible Filters group. NOTE: On its own it does not do anything."
-    type: date
-  }
-
-  # date_start and date_end provide date range timezone corrections for
-  # use in the dimensions current_period, is_in_current_period_or_last_period, and last_period
-  #
-  # Using liquid variables: https://docs.looker.com/reference/liquid-variables
-  # Using date_start and date_end with date filters:
-  #   https://discourse.looker.com/t/using-date-start-and-date-end-with-date-filters/2880
-  dimension: date_start {
-    type: date
-    sql: {% date_start flexible_filter_date_range %} ;;
-    hidden: yes
-  }
-
-  dimension: date_end {
-    type: date
-    sql: {% date_end flexible_filter_date_range %} ;;
-    hidden: yes
-  }
-
-  # period_difference calculates the number of days between the start and end dates
-  # selected on the flexible_filter_date_range filter, as selected in an Explore.
-  dimension: period_difference {
-    group_label: "Flexible Filter"
-    type: number
-    sql:  DATEDIFF(DAY, {% date_start flexible_filter_date_range %}, {% date_end flexible_filter_date_range %})  ;;
-  }
-
-  # is_in_current_period_or_last_period determines which sessions occur between the start of the last_period
-  # and the end of the current_period, as selected on the flexible_filter_date_range filter in an Explore.
-  # Here's an explanation of why we use DATEDIFF(SECOND and not DAY
-  #    https://www.sqlteam.com/articles/datediff-function-demystified
-  filter: is_in_current_period_or_last_period {
-    group_label: "Flexible Filter"
-    type: yesno
-    sql:  ${TABLE}.page_view_start_time >= DATEADD('day', -${period_difference}, {% date_start flexible_filter_date_range %})
-      AND ${TABLE}.page_view_start_time < {% date_end flexible_filter_date_range %} ;;
-  }
-
-  # current period identifies sessions falling between the start and end of the date range selected
-  dimension: current_period {
-    group_label: "Flexible Filter"
-    type: yesno
-    sql: ${TABLE}.page_view_start_time >= {% date_start flexible_filter_date_range %}
-      AND ${TABLE}.page_view_start_time < {% date_end flexible_filter_date_range %} ;;
-  }
-
-  # last_period selects the the sessions that occurred immediately prior to the current_session and
-  # over the same number of days as the current_session.
-  # For instance, it would provide a suitable comparison of data from one week to the next.
-  dimension: last_period {
-    group_label: "Flexible Filter"
-    type: yesno
-    sql: ${TABLE}.page_view_start_time >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
-      AND ${TABLE}.page_view_start_time < {% date_start flexible_filter_date_range %} ;;
-  }
-
-
-  dimension: date_window {
-    group_label: "Flexible Filter"
-    case: {
-      when: {
-        sql: ${TABLE}.page_view_start_time >= {% date_start flexible_filter_date_range %}
-          AND ${TABLE}.page_view_start_time < {% date_end flexible_filter_date_range %} ;;
-        label: "current_period"
-      }
-      when: {
-        sql: ${TABLE}.page_view_start_time >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
-          AND ${TABLE}.page_view_start_time < {% date_start flexible_filter_date_range %} ;;
-        label: "last_period"
-      }
-      else: "unknown"
-    }
-
-    # hidden: yes
-  }
-
-  # comparison_date returns dates in the current_period providing a positive offset of
-  # the last_period date range by. Exploring comparison_date with any Measure and a pivot
-  # on date_window results in a pointwise comparison of current and last periods
-  dimension: comparison_date {
-    group_label: "Flexible Filter"
-    required_fields: [date_window]
-    type: date
-    sql:
-        CASE
-         WHEN ${TABLE}.page_view_start_time >= {% date_start flexible_filter_date_range %}
-             AND ${TABLE}.page_view_start_time < {% date_end flexible_filter_date_range %}
-            THEN ${page_view_start_date}
-         WHEN ${TABLE}.page_view_start_time >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
-             AND ${TABLE}.page_view_start_time < {% date_start flexible_filter_date_range %}
-            THEN DATEADD(DAY,${period_difference},(${page_view_start_date}))
-         ELSE
-           NULL
-       END ;;
   }
 
   # Engagement
