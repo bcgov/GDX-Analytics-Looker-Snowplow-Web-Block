@@ -11,7 +11,7 @@ view: date_comparisons_common {
   dimension_group: filter_start {
     type: time
     # sql: ${MODIFY THIS IN EXTENDS} ;;
-    timeframes: [raw, time, date]
+    timeframes: [raw, date]
     hidden: yes
   }
 
@@ -57,8 +57,8 @@ view: date_comparisons_common {
   #    https://www.sqlteam.com/articles/datediff-function-demystified
   filter: is_in_current_period_or_last_period {
     type: yesno
-    sql:  ${filter_start_time} >= DATEADD('day', -${period_difference}, {% date_start flexible_filter_date_range %})
-      AND ${filter_start_time} < {% date_end flexible_filter_date_range %} ;;
+    sql:  ${filter_start_raw} >= DATEADD('day', -${period_difference}, {% date_start flexible_filter_date_range %})
+      AND ${filter_start_raw} < {% date_end flexible_filter_date_range %} ;;
   }
 
 
@@ -66,8 +66,8 @@ view: date_comparisons_common {
   dimension: current_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${filter_start_time} >= {% date_start flexible_filter_date_range %}
-      AND ${filter_start_time} < {% date_end flexible_filter_date_range %} ;;
+    sql: ${filter_start_raw} >= {% date_start flexible_filter_date_range %}
+      AND ${filter_start_raw} < {% date_end flexible_filter_date_range %} ;;
     hidden: yes
   }
 
@@ -77,8 +77,8 @@ view: date_comparisons_common {
   dimension: last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${filter_start_time} >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
-      AND ${filter_start_time} < {% date_start flexible_filter_date_range %} ;;
+    sql: ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
+      AND ${filter_start_raw} < {% date_start flexible_filter_date_range %} ;;
     hidden: yes
   }
 
@@ -88,13 +88,13 @@ view: date_comparisons_common {
     group_label: "Flexible Filter"
     case: {
       when: {
-        sql: ${filter_start_time} >= {% date_start flexible_filter_date_range %}
-          AND ${filter_start_time} < {% date_end flexible_filter_date_range %} ;;
+        sql: ${filter_start_raw} >= {% date_start flexible_filter_date_range %}
+          AND ${filter_start_raw} < {% date_end flexible_filter_date_range %} ;;
         label: "Current Period"
       }
       when: {
-        sql: ${filter_start_time} >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
-          AND ${filter_start_time} < {% date_start flexible_filter_date_range %} ;;
+        sql: ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
+          AND ${filter_start_raw} < {% date_start flexible_filter_date_range %} ;;
         label: "Last Period"
       }
       else: "unknown"
@@ -114,11 +114,11 @@ view: date_comparisons_common {
     type: date
     sql:
        CASE
-         WHEN ${filter_start_time} >= {% date_start flexible_filter_date_range %}
-             AND ${filter_start_time} < {% date_end flexible_filter_date_range %}
+         WHEN ${filter_start_raw} >= {% date_start flexible_filter_date_range %}
+             AND ${filter_start_raw} < {% date_end flexible_filter_date_range %}
             THEN ${filter_start_date}
-         WHEN ${filter_start_time} >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
-             AND ${filter_start_time} < {% date_start flexible_filter_date_range %}
+         WHEN ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, {% date_start flexible_filter_date_range %})
+             AND ${filter_start_raw} < {% date_start flexible_filter_date_range %}
             THEN DATEADD(DAY,${period_difference},(${filter_start_date}))
          ELSE
            NULL
