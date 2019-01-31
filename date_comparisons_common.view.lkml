@@ -11,7 +11,7 @@ view: date_comparisons_common {
   dimension_group: filter_start {
     type: time
     # sql: ${MODIFY THIS IN EXTENDS} ;;
-    timeframes: [raw, date]
+    timeframes: [raw, date, month, quarter, year]
     hidden: yes
   }
 
@@ -124,4 +124,54 @@ view: date_comparisons_common {
            NULL
        END ;;
   }
+
+  parameter: summary_granularity {
+    type: string
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Month" }
+    # allowed_value: { value: "Quarter" }
+    allowed_value: { value: "Year" }
+  }
+
+  dimension: summary_start {
+    type: date
+    sql:  {% date_start flexible_filter_date_range %}::date;;
+    hidden: yes
+  }
+
+  dimension: summary_end {
+    type: date
+    sql:  CASE WHEN {% date_start flexible_filter_date_range %}::date = {% date_end flexible_filter_date_range %}::date
+                  THEN DATE_ADD('day',1, {% date_start flexible_filter_date_range %}::date)
+                ELSE {% date_end flexible_filter_date_range %}::date
+            END ;;
+    hidden: yes
+  }
+
+  dimension: in_summary_period {
+    group_label: "Summary"
+    type: yesno
+    sql: ${filter_start_raw} >= date_trunc({% parameter summary_granularity %}, ${summary_start} )
+          AND ${filter_start_raw} < date_trunc({% parameter summary_granularity %}, ${summary_end} - interval '1 day') + interval '1 '{% parameter summary_granularity %}
+        ;;
+  }
+
+  dimension: summary_date {
+    label_from_parameter: summary_granularity
+    sql:
+       CASE
+         WHEN {% parameter summary_granularity %} = 'Day' THEN
+           ${filter_start_date}::VARCHAR
+         WHEN {% parameter summary_granularity %} = 'Month' THEN
+           ${filter_start_month}--::VARCHAR
+         WHEN {% parameter summary_granularity %} = 'Quarter' THEN
+           ${filter_start_quarter}::VARCHAR
+         WHEN {% parameter summary_granularity %} = 'Year' THEN
+         ${filter_start_year}::VARCHAR
+         ELSE
+           NULL
+       END
+      ;;
+  }
+
 }

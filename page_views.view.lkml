@@ -293,41 +293,6 @@ view: page_views {
   }
 
 
-  parameter: summary_granularity {
-    type: string
-    allowed_value: { value: "Day" }
-    allowed_value: { value: "Month" }
-    # allowed_value: { value: "Quarter" }
-    allowed_value: { value: "Year" }
-  }
-
-  dimension: in_summary_period {
-    group_label: "Summary"
-    type: yesno
-    sql: ${TABLE}.page_view_start_time >= date_trunc({% parameter summary_granularity %}, {% date_start flexible_filter_date_range %}::date )
-          AND ${TABLE}.page_view_start_time < date_trunc({% parameter summary_granularity %}, {% date_end flexible_filter_date_range %}::date - interval '1 day') + interval '1 '{% parameter summary_granularity %}
-        ;;
-  }
-
-  dimension: summary_date {
-    label_from_parameter: summary_granularity
-    sql:
-       CASE
-         WHEN {% parameter summary_granularity %} = 'Day' THEN
-           ${page_view_start_date}::VARCHAR
-         WHEN {% parameter summary_granularity %} = 'Month' THEN
-           ${page_view_start_month}--::VARCHAR
-         WHEN {% parameter summary_granularity %} = 'Quarter' THEN
-           ${page_view_start_quarter}::VARCHAR
-         WHEN {% parameter summary_granularity %} = 'Year' THEN
-         ${page_view_start_year}::VARCHAR
-         ELSE
-           NULL
-       END
-      ;;
-  }
-
-
 }
 
 # If necessary, uncomment the line below to include explore_source.
