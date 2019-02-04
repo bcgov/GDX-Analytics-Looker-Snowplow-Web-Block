@@ -42,6 +42,11 @@ explore: page_views {
     field: node_id
     user_attribute: node_id
   }
+  access_filter: {
+    field: page_urlhost
+    user_attribute: urlhost
+  }
+
 
   fields: [ALL_FIELDS*,-page_views.last_page_title]
   # sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
@@ -124,6 +129,12 @@ explore: sessions {
     sql_on: ${sessions.first_page_node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
+
+  access_filter: {
+    field: first_page_urlhost
+    user_attribute: urlhost
+  }
+
 }
 
 explore: users {
@@ -141,6 +152,10 @@ explore: clicks{
     sql_on: ${clicks.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
+  access_filter: {
+    field: page_urlhost
+    user_attribute: urlhost
+  }
 
 }
 
@@ -155,4 +170,9 @@ explore: searches {
     sql_on: ${searches.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
+  access_filter: {
+    field: page_urlhost
+    user_attribute: urlhost
+  }
+
 }
