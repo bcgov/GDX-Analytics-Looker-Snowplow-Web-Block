@@ -27,6 +27,7 @@ include: "*.view"
 include: "*.dashboard"
 
 explore: page_views {
+  persist_for: "10 minutes"
   # exclude when people are viewing files on locally downloaded or hosted copies of webpages
   sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
       AND ${page_url} NOT LIKE '%$/%'
@@ -113,6 +114,8 @@ explore: page_views {
 # }
 
 explore: sessions {
+  persist_for: "10 minutes"
+
   # exclude when people are viewing files on locally downloaded or hosted copies of webpages
   # Note that we are using first_page here instead of page, as there is no "page" for sessions
   sql_always_where: (${first_page_urlhost} <> 'localhost' OR ${first_page_urlhost} IS NULL)
@@ -138,10 +141,14 @@ explore: sessions {
 }
 
 explore: users {
+  persist_for: "10 minutes"
+
   # sql_always_where: ${first_page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
 }
 
 explore: clicks{
+  persist_for: "10 minutes"
+
   # exclude when people are viewing files on locally downloaded or hosted copies of webpages
   sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
       AND ${page_url} NOT LIKE '%$/%'
@@ -160,6 +167,7 @@ explore: clicks{
 }
 
 explore: searches {
+  persist_for: "10 minutes"
   # exclude when people are viewing files on locally downloaded or hosted copies of webpages
   sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
       AND ${page_url} NOT LIKE '%$/%'
