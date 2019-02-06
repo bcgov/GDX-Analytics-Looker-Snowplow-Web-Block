@@ -47,6 +47,10 @@ explore: page_views {
     field: page_urlhost
     user_attribute: urlhost
   }
+  access_filter: {
+    field: cmslite_themes.theme_id
+    user_attribute: theme
+  }
 
 
   fields: [ALL_FIELDS*,-page_views.last_page_title]
@@ -78,12 +82,6 @@ explore: page_views {
     sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
-
-  access_filter: {
-    field: cmslite_themes.theme_id
-    user_attribute: theme
-  }
-
 
 #   join: sessions_rollup {
 #     sql_on: ${sessions_rollup.session_id} = ${sessions.session_id}
@@ -134,14 +132,26 @@ explore: sessions {
   }
 
   access_filter: {
+    field: node_id
+    user_attribute: node_id
+  }
+  access_filter: {
     field: first_page_urlhost
     user_attribute: urlhost
   }
+
+  access_filter: {
+    field: cmslite_themes.theme_id
+    user_attribute: theme
+  }
+
 
 }
 
 explore: users {
   persist_for: "10 minutes"
+
+
 
   # sql_always_where: ${first_page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
 }
@@ -160,8 +170,16 @@ explore: clicks{
     relationship: one_to_one
   }
   access_filter: {
+    field: node_id
+    user_attribute: node_id
+  }
+  access_filter: {
     field: page_urlhost
     user_attribute: urlhost
+  }
+  access_filter: {
+    field: cmslite_themes.theme_id
+    user_attribute: theme
   }
 
 }
@@ -179,8 +197,16 @@ explore: searches {
     relationship: one_to_one
   }
   access_filter: {
+    field: node_id
+    user_attribute: node_id
+  }
+  access_filter: {
     field: page_urlhost
     user_attribute: urlhost
+  }
+  access_filter: {
+    field: cmslite_themes.theme_id
+    user_attribute: theme
   }
 
 }
