@@ -233,21 +233,21 @@ view: sessions {
     type: count_distinct
     sql: ${session_id};;
     group_label: "Counts"
-    drill_fields: [session_count]
+    #drill_fields: [session_count]
   }
-  set: session_count{
-    fields: [session_id, session_start_date, first_page_url, referer_medium, page_view_count, total_time_engaged]
-  }
+  #set: session_count{
+  #  fields: [session_id, session_start_date, first_page_url, referer_medium, page_view_count, total_time_engaged]
+  #}
 
   measure: user_count {
     type: count_distinct
     sql: ${domain_userid} ;;
     group_label: "Counts"
-    drill_fields: [user_count]
+    #drill_fields: [user_count]
   }
-  set: user_count{
-    fields: [domain_userid, users.first_page_url, session_count, average_time_engaged, total_time_engaged]
-  }
+  #set: user_count{
+  #  fields: [domain_userid, users.first_page_url, session_count, average_time_engaged, total_time_engaged]
+  #}
 
   measure: new_user_count {
     type: count_distinct
@@ -259,11 +259,11 @@ view: sessions {
     }
 
     group_label: "Counts"
-    drill_fields: [new_user_count]
+    #drill_fields: [new_user_count]
   }
-  set: new_user_count{
-    fields: [domain_userid, users.first_page_url, session_count, average_time_engaged, total_time_engaged]
-  }
+  #set: new_user_count{
+  #  fields: [domain_userid, users.first_page_url, session_count, average_time_engaged, total_time_engaged]
+  #}
 
   measure: bounced_user_count {
     type: count_distinct
