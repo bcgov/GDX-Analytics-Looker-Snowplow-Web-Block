@@ -291,7 +291,10 @@ view: shared_fields_common {
 
   dimension: referer_medium {
     type: string
-    sql: ${TABLE}.refr_medium ;;
+    sql: CASE
+          WHEN ${TABLE}.refr_medium IS NULL THEN 'direct'
+          WHEN ${TABLE}.refr_medium = 'unknown' THEN 'other'
+          ELSE  ${TABLE}.refr_medium END;;
     group_label: "Referer"
   }
 
