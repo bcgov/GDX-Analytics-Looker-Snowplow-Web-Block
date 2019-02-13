@@ -296,6 +296,7 @@ view: shared_fields_common {
           WHEN ${TABLE}.refr_medium = 'unknown' THEN 'other'
           ELSE  ${TABLE}.refr_medium END;;
     group_label: "Referer"
+    drill_fields: [referer_medium, referer_source, referer_urlhost]
   }
 
   dimension: referer_source {
