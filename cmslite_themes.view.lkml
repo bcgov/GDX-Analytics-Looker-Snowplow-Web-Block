@@ -1,3 +1,30 @@
+view: theme_cache {
+  derived_table: {
+    sql: SELECT DISTINCT theme FROM cmslite.themes ORDER BY 1 ;;
+    sql_trigger_value: SELECT endtime FROM cmslite.microservice_log ORDER BY endtime DESC LIMIT 1 ;;
+    distribution_style: all
+  }
+  dimension: theme {}
+}
+
+view: subtheme_cache {
+  derived_table: {
+    sql: SELECT DISTINCT subtheme FROM cmslite.themes ORDER BY 1 ;;
+    sql_trigger_value: SELECT endtime FROM cmslite.microservice_log ORDER BY endtime DESC LIMIT 1 ;;
+    distribution_style: all
+  }
+  dimension: subtheme {}
+}
+
+# hidden explores for suggest_explore and suggest_dimensions to reference
+explore: theme_cache {
+  hidden: yes
+}
+
+explore: subtheme_cache {
+  hidden: yes
+}
+
 view: cmslite_themes {
   sql_table_name: cmslite.themes ;;
 
@@ -15,6 +42,8 @@ view: cmslite_themes {
     description: "The CMS Lite theme."
     type: string
     sql: ${TABLE}.theme ;;
+    suggest_explore: theme_cache
+    suggest_dimension: theme_cache.theme
   }
 
   # node_id
@@ -37,6 +66,8 @@ view: cmslite_themes {
     description: "The CMS Lite subtheme."
     type: string
     sql: ${TABLE}.subtheme ;;
+    suggest_explore: subtheme_cache
+    suggest_dimension: subtheme_cache.subtheme
   }
 
   # subtheme ID
