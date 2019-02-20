@@ -466,6 +466,18 @@ view: shared_fields_common {
     group_label: "Page"
   }
 
+  dimension: page_display_url {
+    label: "Page Display URL"
+    # when editing also see clicks.truncated_target_url_nopar_case_insensitive
+    description: "Cleaned URL of the page without query string or standard file names like index.html"
+    sql:  ${page_url_scheme} || ${page_urlhost} || regexp_replace(${page_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
+    group_label: "Page"
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+  }
   dimension: page_url {
     description: "The web page URL."
     type: string
@@ -480,12 +492,12 @@ view: shared_fields_common {
     group_label: "Page"
   }
 
-  # dimension: page_url_scheme {
-  # type: string
-  # sql: ${TABLE}.page_url_scheme ;;
-  # group_label: "Page"
-  # hidden: yes
-  # }
+  dimension: page_url_scheme { #NOTE: this needs to be changed to use the real table value when it has been added to the table
+    type: string
+    sql: 'https://' ;; # ${TABLE}.page_url_scheme ;;
+    group_label: "Page"
+    hidden: yes
+  }
 
   dimension: page_urlhost {
     description: "The web page domain or host."
@@ -540,17 +552,18 @@ view: shared_fields_common {
     type: string
     sql: ${TABLE}.page_referrer ;;
     group_label: "Referer"
+
   }
 
   dimension: page_width {
     type: number
-    sql: ${TABLE}.page_width ;;
+    sql: ${TABLE}.doc_width ;;
     group_label: "Page"
   }
 
   dimension: page_height {
     type: number
-    sql: ${TABLE}.page_height ;;
+    sql: ${TABLE}.doc_height ;;
     group_label: "Page"
   }
 
