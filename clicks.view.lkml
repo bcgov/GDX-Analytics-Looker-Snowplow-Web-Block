@@ -81,12 +81,22 @@ view: clicks {
     type: string
     sql: ${TABLE}.target_url ;;
     group_label: "Target"
+    link: {
+      label: "Visit Link"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: target_url_case_insensitive {
     type: string
     sql: LOWER(${TABLE}.target_url) ;;
     group_label: "Target"
+    link: {
+      label: "Visit Link"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: target_url_nopar {
@@ -94,18 +104,34 @@ view: clicks {
     #This removes the parameters from the url, anything including the ?
     sql: regexp_replace(${TABLE}.target_url, '\\?.*$') ;;
     group_label: "Target"
+    link: {
+      label: "Visit Link"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: target_url_nopar_case_insensitive {
     type: string
     sql: LOWER(regexp_replace(${TABLE}.target_url, '\\?.*$')) ;;
     group_label: "Target"
+    link: {
+      label: "Visit Link"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: truncated_target_url_nopar_case_insensitive {
     type: string
-    sql: regexp_replace(regexp_replace(regexp_replace(${target_url_nopar_case_insensitive},'/((index|default)\\.(htm|html))|(default\\.(asp|aspx))/{0,}$','/'),'//$','/'),'%20',' ') ;;
+    #when editing, also see shared_fields_common.page_display_url
+    sql: regexp_replace(regexp_replace(regexp_replace(${target_url_nopar_case_insensitive},'/((index|default)\\.(htm|html|cgi|shtml|shtm))|(default\\.(asp|aspx))/{0,}$','/'),'//$','/'),'%20',' ') ;;
     group_label: "Target"
+    link: {
+      label: "Visit Link"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   #substring select the host only
@@ -115,6 +141,11 @@ view: clicks {
     # https://stackoverflow.com/questions/17310972/how-to-parse-host-out-of-a-string-in-redshift
     sql:  REGEXP_SUBSTR(${TABLE}.target_url, '[^/]+\\.[^/:]+') ;;
     group_label: "Target"
+    link: {
+      label: "Visit Link"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   #substring select the filename with extension
