@@ -11,7 +11,7 @@ view: date_comparisons_common {
   dimension_group: filter_start {
     type: time
     # sql: ${MODIFY THIS IN EXTENDS} ;;
-    timeframes: [raw, date, month, quarter, year]
+    timeframes: [raw, date, week, month, quarter, year]
     hidden: yes
   }
 
@@ -128,6 +128,7 @@ view: date_comparisons_common {
   parameter: summary_granularity {
     type: string
     allowed_value: { value: "Day" }
+    allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
     # allowed_value: { value: "Quarter" }
     allowed_value: { value: "Year" }
@@ -162,6 +163,8 @@ view: date_comparisons_common {
        CASE
          WHEN {% parameter summary_granularity %} = 'Day' THEN
            ${filter_start_date}::VARCHAR
+         WHEN {% parameter summary_granularity %} = 'Week' THEN
+           ${filter_start_week}::VARCHAR
          WHEN {% parameter summary_granularity %} = 'Month' THEN
            ${filter_start_month}--::VARCHAR
          WHEN {% parameter summary_granularity %} = 'Quarter' THEN
