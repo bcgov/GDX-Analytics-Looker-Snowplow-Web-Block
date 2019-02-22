@@ -483,6 +483,11 @@ view: shared_fields_common {
     type: string
     sql: ${TABLE}.page_url ;;
     group_label: "Page"
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: node_id {
