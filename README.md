@@ -1,5 +1,5 @@
 # GDX Looker
-This is for the Government of British Columbia’s instance their LookerML project.  LookerML is a language for describing dimensions, aggregates, calculations and data relationships in a SQL database
+This is for the Government of British Columbia’s instance their LookerML project. LookerML is a language for describing dimensions, aggregates, calculations and data relationships in a SQL database
 
 # Features
 
@@ -15,7 +15,7 @@ Please Contact the GDX Service desk for any analytics service help, for inquirie
 
 # Contributors
 
-The GDX analytics team will be the main contributors to this project currently.  They will also maintain the code as well.
+The GDX analytics team will be the main contributors to this project currently. They will also maintain the code as well.
 
 # License
 
