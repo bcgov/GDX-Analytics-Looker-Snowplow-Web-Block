@@ -26,6 +26,16 @@ include: "*.view"
 # include all dashboards in this project
 include: "*.dashboard"
 
+# hidden theme_cache explore supports suggest_explore for theme and subtheme filters
+explore: theme_cache {
+  hidden: yes
+
+  access_filter: {
+    field: theme_id
+    user_attribute: theme
+  }
+}
+
 explore: page_views {
   persist_for: "10 minutes"
   # exclude when people are viewing files on locally downloaded or hosted copies of webpages

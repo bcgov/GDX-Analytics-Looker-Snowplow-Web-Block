@@ -15,6 +15,8 @@ view: cmslite_themes {
     description: "The CMS Lite theme."
     type: string
     sql: ${TABLE}.theme ;;
+    suggest_explore: theme_cache
+    suggest_dimension: theme_cache.theme
   }
 
   # node_id
@@ -37,6 +39,8 @@ view: cmslite_themes {
     description: "The CMS Lite subtheme."
     type: string
     sql: ${TABLE}.subtheme ;;
+    suggest_explore: theme_cache
+    suggest_dimension: theme_cache.subtheme
   }
 
   # subtheme ID
