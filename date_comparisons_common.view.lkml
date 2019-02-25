@@ -166,7 +166,7 @@ view: date_comparisons_common {
          WHEN {% parameter summary_granularity %} = 'Week' THEN
            ${filter_start_week}::VARCHAR
          WHEN {% parameter summary_granularity %} = 'Month' THEN
-           ${filter_start_month}--::VARCHAR
+           ${filter_start_month}::VARCHAR
          WHEN {% parameter summary_granularity %} = 'Quarter' THEN
            ${filter_start_quarter}::VARCHAR
          WHEN {% parameter summary_granularity %} = 'Year' THEN
