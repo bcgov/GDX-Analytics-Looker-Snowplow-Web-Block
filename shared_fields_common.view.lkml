@@ -454,23 +454,11 @@ view: shared_fields_common {
   }
 
   ### Page
-
-  dimension: page_absolute_uri {
-    label: "Page Absolute URI"
-    description: "Absolute URI is comprised of the scheme, authority, path, and query"
-    sql: CASE
-           WHEN ${page_urlquery} = ''
-             THEN 'http://' || ${page_url}
-           ELSE 'http://' || ${page_url} || '?' || RTRIM(${page_urlquery},'&')
-         END;;
-    group_label: "Page"
-  }
-
   dimension: page_display_url {
     label: "Page Display URL"
     # when editing also see clicks.truncated_target_url_nopar_case_insensitive
     description: "Cleaned URL of the page without query string or standard file names like index.html"
-    sql:  ${page_url_scheme} || ${page_urlhost} || regexp_replace(${page_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
+    sql:  ${page_url_scheme} || '://' || ${page_urlhost} || regexp_replace(${page_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
     group_label: "Page"
     link: {
       label: "Visit Page"
@@ -497,9 +485,9 @@ view: shared_fields_common {
     group_label: "Page"
   }
 
-  dimension: page_url_scheme { #NOTE: this needs to be changed to use the real table value when it has been added to the table
+  dimension: page_url_scheme {
     type: string
-    sql: 'https://' ;; # ${TABLE}.page_url_scheme ;;
+    sql: ${TABLE}.page_urlscheme ;;
     group_label: "Page"
     hidden: yes
   }
@@ -507,7 +495,7 @@ view: shared_fields_common {
   dimension: page_urlhost {
     description: "The web page domain or host."
     type: string
-    sql: ${TABLE}.page_urlhost ;;
+    sql: LOWER(${TABLE}.page_urlhost) ;;
     group_label: "Page"
   }
 
@@ -522,6 +510,13 @@ view: shared_fields_common {
     description: "The path of the page, after the domain."
     type: string
     sql: ${TABLE}.page_urlpath ;;
+    group_label: "Page"
+  }
+
+  dimension: page_engagement {
+    description: "The identifier for an engagement on engage.gov.bc.ca."
+    type: string
+    sql: SPLIT_PART(${TABLE}.page_urlpath,'/',2) ;;
     group_label: "Page"
   }
 
