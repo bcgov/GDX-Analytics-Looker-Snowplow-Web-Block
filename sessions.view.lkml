@@ -26,6 +26,7 @@ view: sessions {
   dimension: page_width { hidden: yes }
   dimension: search_field { hidden: yes }
   dimension: page_absolute_uri { hidden: yes }
+  dimension: page_engagement { hidden: yes }
 
   # DIMENSIONS
 
@@ -141,6 +142,14 @@ view: sessions {
     sql: ${TABLE}.first_page_url ;;
     group_label: "First Page"
   }
+
+  dimension: first_page_engagement {
+    description: "The identifier for an engagement on engage.gov.bc.ca."
+    type: string
+    sql: SPLIT_PART(${TABLE}.first_page_urlpath,'/',2) ;;
+    group_label: "First Page"
+  }
+
 
   dimension: first_page_node_id {
     description: "The identifier of the page where a session began."
