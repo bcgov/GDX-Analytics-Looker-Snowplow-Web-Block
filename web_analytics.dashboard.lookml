@@ -25,9 +25,9 @@
   rows:
     - elements: [number_of_users, number_of_new_users, number_of_engaged_new_users, number_of_new_users_that_returned]
       height: 200
-    - elements: [referer_breakdown, map]
+    - elements: [referrer_breakdown, map]
       height: 450
-    - elements: [sessions_per_referer_medium]
+    - elements: [sessions_per_referrer_medium]
       height: 450
     - elements: [devices_per_hour]
       height: 450
@@ -110,15 +110,15 @@
 
   # Row 2
 
-  - name: referer_breakdown
+  - name: referrer_breakdown
     title: Referer breakdown
     type: looker_donut_multiples
     model: snowplow_web_block
     explore: sessions
-    dimensions: [sessions.first_or_returning_session, sessions.referer_medium]
-    pivots: sessions.referer_medium
+    dimensions: [sessions.first_or_returning_session, sessions.referrer_medium]
+    pivots: sessions.referrer_medium
     measures: sessions.row_count
-    sorts: [sessions.first_or_returning_session, sessions.referer_medium]
+    sorts: [sessions.first_or_returning_session, sessions.referrer_medium]
     filters:
       sessions.session_start_time: 28 days
 
@@ -141,17 +141,17 @@
 
   # Row 3
 
-  - name: sessions_per_referer_medium
-    title: Sessions per referer medium
+  - name: sessions_per_referrer_medium
+    title: Sessions per referrer medium
     type: looker_area
     model: snowplow_web_block
     explore: sessions
-    dimensions: [sessions.referer_medium, sessions.session_start_date]
-    pivots: sessions.referer_medium
+    dimensions: [sessions.referrer_medium, sessions.session_start_date]
+    pivots: sessions.referrer_medium
     measures: sessions.session_count
     filters:
       sessions.session_start_date: 28 days
-    sorts: [sessions.referer_medium, sessions.session_start_date desc]
+    sorts: [sessions.referrer_medium, sessions.session_start_date desc]
     stacking: normal
     x_axis_label: Date
     y_axis_labels: Sessions

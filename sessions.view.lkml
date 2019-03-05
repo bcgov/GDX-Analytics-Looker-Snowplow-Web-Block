@@ -245,7 +245,7 @@ view: sessions {
     #drill_fields: [session_count]
   }
   #set: session_count{
-  #  fields: [session_id, session_start_date, first_page_url, referer_medium, page_view_count, total_time_engaged]
+  #  fields: [session_id, session_start_date, first_page_url, referrer_medium, page_view_count, total_time_engaged]
   #}
 
   measure: user_count {
