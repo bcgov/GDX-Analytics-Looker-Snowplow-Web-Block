@@ -249,66 +249,66 @@ view: shared_fields_common {
     hidden: yes
   }
 
-### Referer
+### Referrer
 
-  dimension: referer_urlscheme {
+  dimension: referrer_urlscheme {
     type: string
     sql: ${TABLE}.refr_urlscheme ;;
-    group_label: "Referer"
+    group_label: "Referrer"
     hidden: yes
   }
 
-  dimension: referer_urlhost {
+  dimension: referrer_urlhost {
     type: string
     sql: ${TABLE}.refr_urlhost ;;
-    group_label: "Referer"
+    group_label: "Referrer"
   }
 
-  # dimension: referer_urlport {
+  # dimension: referrer_urlport {
   # type: number
   # sql: ${TABLE}.refr_urlport ;;
-  # group_label: "Referer"
+  # group_label: "Referrer"
   # hidden: yes
   # }
 
-  dimension: referer_urlpath {
+  dimension: referrer_urlpath {
     type: string
     sql: ${TABLE}.refr_urlpath ;;
-    group_label: "Referer"
+    group_label: "Referrer"
   }
 
-  dimension: referer_urlquery {
+  dimension: referrer_urlquery {
     type: string
     sql: ${TABLE}.refr_urlquery ;;
-    group_label: "Referer"
+    group_label: "Referrer"
   }
 
-  # dimension: referer_urlfragment {
+  # dimension: referrer_urlfragment {
   # type: string
   # sql: ${TABLE}.refr_urlfragment ;;
-  # group_label: "Referer"
+  # group_label: "Referrer"
   # }
 
-  dimension: referer_medium {
+  dimension: referrer_medium {
     type: string
     sql: CASE
           WHEN ${TABLE}.refr_medium IS NULL THEN 'direct'
           WHEN ${TABLE}.refr_medium = 'unknown' THEN 'other'
           ELSE  ${TABLE}.refr_medium END;;
-    group_label: "Referer"
-    drill_fields: [referer_medium, referer_source, referer_urlhost]
+    group_label: "Referrer"
+    drill_fields: [referrer_medium, referrer_source, referrer_urlhost]
   }
 
-  dimension: referer_source {
+  dimension: referrer_source {
     type: string
     sql: ${TABLE}.refr_source ;;
-    group_label: "Referer"
+    group_label: "Referrer"
   }
 
-  dimension: referer_term {
+  dimension: referrer_term {
     type: string
     sql: ${TABLE}.refr_term ;;
-    group_label: "Referer"
+    group_label: "Referrer"
   }
 
   ### Marketing
@@ -548,11 +548,15 @@ view: shared_fields_common {
       ;;
   }
 
-  dimension: page_referer {
+  dimension: page_referrer {
     type: string
     sql: ${TABLE}.page_referrer ;;
-    group_label: "Referer"
-
+    group_label: "Referrer"
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: page_width {

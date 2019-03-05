@@ -535,15 +535,15 @@
     explore: sessions
     type: looker_column
     fields:
-    - sessions.referer_medium
+    - sessions.referrer_medium
     - sessions.session_start_date
     - sessions.session_count
     pivots:
-    - sessions.referer_medium
+    - sessions.referrer_medium
     fill_fields:
     - sessions.session_start_date
     sorts:
-    - sessions.referer_medium 0
+    - sessions.referrer_medium 0
     - sessions.session_start_date
     limit: 1000
     column_limit: 50
@@ -835,7 +835,7 @@
     type: looker_column
     fields:
     - sessions.session_count
-    - sessions.referer_urlhost
+    - sessions.referrer_urlhost
     sorts:
     - sessions.session_count desc
     limit: 20
