@@ -4,7 +4,7 @@ This block represents an instance of the Government of British Columbia’s [Loo
 
 # Features
 
-Looker is a data vision tool that is used with Snowplow Analytics, it displays the data in dashboards that a user can customize.
+Looker is a data vision tool that is used with Snowplow Analytics, it presents the data in various formats such as visuals, tables and maps and allows the user to customize the results with an interactive model.
 
 # Project Status
 
