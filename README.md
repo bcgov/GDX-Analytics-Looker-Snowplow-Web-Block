@@ -17,7 +17,7 @@ Represents an instance of Government of British Columbia’s Snowplow tracking. 
 
 ## Getting Help
 
-Please Contact the GDX Service desk at gcpe.servicedesk@gov.bc.ca for any analytics service help, for inquiries about starting a new analytics account for Government please contact The GDX Analytics team.
+Please Contact the GDX Service desk at gdx.servicedesk@gov.bc.ca for any analytics service help, for inquiries about starting a new analytics account for Government please contact The GDX Analytics team.
 
 ## Contributors
 
