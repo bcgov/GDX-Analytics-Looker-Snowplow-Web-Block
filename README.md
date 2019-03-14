@@ -1,6 +1,6 @@
 ## GDX Looker
 
-This Block represents an instance of the Government of British Columbia’s [LookerML](https://docs.looker.com/data-modeling/learning-lookml/what-is-lookml) project. [LookerML](https://docs.looker.com/data-modeling/learning-lookml/what-is-lookml) is a language for describing dimensions, aggregates, calculations and data relationships in a SQL database.
+This Block represents an instance of the Government of British Columbia’s [LookerML](https://docs.looker.com/data-modeling/learning-lookml/what-is-lookml) project used for Web Analytics. 
 
 ## Features
 
@@ -17,11 +17,11 @@ Represents an instance of Government of British Columbia’s Snowplow tracking. 
 
 ## Getting Help
 
-Please contact the GDX Service desk via [GCPE GDX Client Service Desk Portal](https://apps.gcpe.gov.bc.ca/jira/servicedesk/customer/portal/9). For inquiries about starting a new analytics account please contact The GDX Analytics Team.
+Please contact the GDX Service desk via the [GCPE GDX Client Service Desk Portal](https://apps.gcpe.gov.bc.ca/jira/servicedesk/customer/portal/9). For inquiries about starting a new analytics account please contact the GDX Analytics Team.
 
 ## Contributors
 
-The GDX analytics team will be the main contributors to this project currently. They will maintain the code as well.
+The GDX analytics are the main contributors to this project and maintain the code.
 
 ## License
 
