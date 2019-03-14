@@ -8,7 +8,7 @@ Looker is a data vision tool that is used with Snowplow Analytics. It presents t
 
 # Project Status
 
-Currently this project is still in development.
+This project is currently at final development phases, however, GDX Analytics team will continue to update and maintain the code as required.
 
 # Getting Help
 
