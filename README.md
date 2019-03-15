@@ -21,7 +21,7 @@ Please contact the GDX Service desk via the [GCPE GDX Client Service Desk Portal
 
 ## Contributors
 
-The GDX analytics are the main contributors to this project and maintain the code.
+The GDX Analytics Team are the main contributors to this project and maintain the code.
 
 ## License
 
