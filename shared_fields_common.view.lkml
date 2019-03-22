@@ -372,11 +372,16 @@ view: shared_fields_common {
 
   dimension: is_government {
     description: "Yes if the IP address maps to a known BC Government network."
-    # the filter is put in this view because the IP is defined here in this view
-    # ATTENTION: This is_government filter is replicated by both page_views.view.lkml and sessions.view.lkml. ANY update to this code block must also be reflected in the corresponding code block of the other lkml file
     type: yesno
     # the filter is checking to see if the IP is in the gov network
     sql: ${ip_address} LIKE '142.22.%' OR ${ip_address} LIKE '142.23.%' OR ${ip_address} LIKE '142.24.%' OR ${ip_address} LIKE '142.25.%' OR ${ip_address} LIKE '142.26.%' OR ${ip_address} LIKE '142.27.%' OR ${ip_address} LIKE '142.28.%' OR ${ip_address} LIKE '142.29.%' OR ${ip_address} LIKE '142.30.%' OR ${ip_address} LIKE '142.31.%' OR  ${ip_address} LIKE '142.32.%' OR ${ip_address} LIKE '142.33.%' OR ${ip_address} LIKE '142.34.%' OR ${ip_address} LIKE '142.35.%' OR ${ip_address} LIKE '142.36.%' ;;
+  }
+
+  dimension: is_efficiencybc_dev {
+    description: "Yes if the IP address maps to EfficiencyBC's development IPs."
+    type: yesno
+    # the filter is checking to see if the IP belongs to City Green (184.69.13.226) or Caorda (184.71.25.166)
+    sql: ${ip_address} = '184.69.13.226' OR ${ip_address} = '184.71.25.166' ;;
   }
 
   # dimension: ip_isp {
@@ -515,6 +520,12 @@ view: shared_fields_common {
 
   dimension: page_engagement {
     description: "The identifier for an engagement on engage.gov.bc.ca."
+    type: string
+    sql: SPLIT_PART(${TABLE}.page_urlpath,'/',2) ;;
+    group_label: "Page"
+  }
+  dimension: page_section {
+    description: "The identifier for a section of a website. The part of the URL after the domain before the next '/'"
     type: string
     sql: SPLIT_PART(${TABLE}.page_urlpath,'/',2) ;;
     group_label: "Page"
