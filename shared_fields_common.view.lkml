@@ -521,7 +521,9 @@ view: shared_fields_common {
   dimension: page_engagement {
     description: "The identifier for an engagement on engage.gov.bc.ca."
     type: string
-    sql: SPLIT_PART(${TABLE}.page_urlpath,'/',2) ;;
+    sql: CASE WHEN ${TABLE}.page_urlpath LIKE '/govtogetherbc/consultation/%'
+      THEN SPLIT_PART(${TABLE}.page_urlpath,'/',4)
+      ELSE SPLIT_PART(${TABLE}.page_urlpath,'/',2) END ;;
     group_label: "Page"
   }
   dimension: page_section {
