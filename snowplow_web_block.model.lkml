@@ -61,6 +61,11 @@ explore: page_views {
     field: cmslite_themes.theme_id
     user_attribute: theme
   }
+  #access filter based on the first part of the URL (eg https://site.com/section/page.html)
+  access_filter: {
+    field: page_section
+    user_attribute: section
+  }
 
 
   fields: [ALL_FIELDS*,-page_views.last_page_title]
@@ -149,6 +154,11 @@ explore: sessions {
     field: first_page_urlhost
     user_attribute: urlhost
   }
+  #access filter based on the first part of the URL (eg https://site.com/section/page.html)
+  access_filter: {
+    field: first_page_section
+    user_attribute: section
+  }
 
   access_filter: {
     field: cmslite_themes.theme_id
@@ -192,6 +202,13 @@ explore: clicks{
     user_attribute: theme
   }
 
+  #access filter based on the first part of the URL (eg https://site.com/section/page.html)
+  access_filter: {
+    field: page_section
+    user_attribute: section
+  }
+
+
 }
 
 explore: searches {
@@ -218,5 +235,12 @@ explore: searches {
     field: cmslite_themes.theme_id
     user_attribute: theme
   }
+
+  #access filter based on the first part of the URL (eg https://site.com/section/page.html)
+  access_filter: {
+    field: page_section
+    user_attribute: section
+  }
+
 
 }

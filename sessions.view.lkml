@@ -20,6 +20,7 @@ view: sessions {
   dimension: page_height { hidden: yes }
   dimension: page_title { hidden: yes }
   dimension: page_url { hidden: yes }
+  dimension: page_section { hidden: yes }
   dimension: page_urlhost { hidden: yes }
   dimension: page_urlpath { hidden: yes }
   dimension: page_urlquery { hidden: yes }
@@ -143,8 +144,17 @@ view: sessions {
     group_label: "First Page"
   }
 
+
+
   dimension: first_page_engagement {
     description: "The identifier for an engagement on engage.gov.bc.ca."
+    type: string
+    sql: SPLIT_PART(${TABLE}.first_page_urlpath,'/',2) ;;
+    group_label: "First Page"
+  }
+
+  dimension: first_page_section {
+    description: "The identifier for a section of a website. The part of the URL after the domain before the next '/'"
     type: string
     sql: SPLIT_PART(${TABLE}.first_page_urlpath,'/',2) ;;
     group_label: "First Page"
