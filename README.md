@@ -1,23 +1,29 @@
-# GDX Looker
-This is for the Government of British Columbia’s instance their LookerML project. LookerML is a language for describing dimensions, aggregates, calculations and data relationships in a SQL database
+## GDX Looker
 
-# Features
+This Block represents an instance of the Government of British Columbia’s [LookerML](https://docs.looker.com/data-modeling/learning-lookml/what-is-lookml) project used for Web Analytics. 
 
-Looker is a data vision tool that is used with Snowplow Analytics, it displays the data in dashboards that a user can customize.
+## Features
 
-# Project Status
+Looker is a data vision tool that is used with Snowplow Analytics. It presents the data in various formats such as visuals, tables and maps and allows the user to customize the results with an interactive model.
 
-Currently this project is still in development.
+## Project Status
 
-# Getting Help
+This project is currently at final development phases, however, GDX Analytics team will continue to update and maintain the code as required.
 
-Please Contact the GDX Service desk for any analytics service help, for inquiries about starting a new analytics account for Government please contact The GDX Analytics team.
+## Relevant Repositories
+[GDX-Analytics/](https://github.com/bcgov/GDX-Analytics/)
 
-# Contributors
+Represents an instance of Government of British Columbia’s Snowplow tracking. This includes pushing custom events to the Snowplow Tracker, and generation of cryptographically signed SSO embed URL pointing to a dashboard.
 
-The GDX analytics team will be the main contributors to this project currently. They will also maintain the code as well.
+## Getting Help
 
-# License
+Please contact the GDX Service desk via the [GCPE GDX Client Service Desk Portal](https://apps.gcpe.gov.bc.ca/jira/servicedesk/customer/portal/9). For inquiries about starting a new analytics account please contact the GDX Analytics Team.
+
+## Contributors
+
+The GDX Analytics Team are the main contributors to this project and maintain the code.
+
+## License
 
 Copyright 2015 Province of British Columbia
 
