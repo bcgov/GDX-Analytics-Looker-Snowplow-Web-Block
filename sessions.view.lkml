@@ -184,7 +184,7 @@ view: sessions {
   }
 
   dimension: first_page_urlhost_filter {
-    description: "Temporary fix for bug in RA-1161"
+    description: "Temporary fix for bug in CLD-2823"
     type: string
     sql: CASE
        WHEN LOWER(${TABLE}.first_page_urlhost) = 'www2.gov.bc.ca' THEN 'https://www2.gov.bc.ca'
