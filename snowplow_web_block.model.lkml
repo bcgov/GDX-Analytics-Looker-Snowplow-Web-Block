@@ -36,6 +36,11 @@ explore: theme_cache {
   }
 }
 
+# hidden cicy_cache explore supports suggest_explore for the city filter
+explore: city_cache {
+  hidden: yes
+}
+
 explore: page_views {
   persist_for: "10 minutes"
   # exclude when people are viewing files on locally downloaded or hosted copies of webpages

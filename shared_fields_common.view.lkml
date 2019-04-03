@@ -121,6 +121,8 @@ view: shared_fields_common {
        WHEN (${TABLE}.geo_country = 'CA' OR ${TABLE}.geo_country = 'US') THEN ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_region_name
        ELSE ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_country
       END;;
+    suggest_explore: city_cache
+    suggest_dimension: city_cache.geo_city_and_region
     group_label: "Location"
   }
 
