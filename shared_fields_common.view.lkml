@@ -509,8 +509,8 @@ view: shared_fields_common {
     description: "Temporary fix for bug in RA-1161"
     type: string
     sql: CASE
-       WHEN LOWER(${TABLE}.page_urlhost) = 'www2.gov.bc.ca' THEN 'https://www2.gov.bc.ca/'
-       WHEN LOWER(${TABLE}.page_urlhost) = 'intranet.gov.bc.ca' THEN 'https://intranet.gov.bc.ca/'
+       WHEN LOWER(${TABLE}.page_urlhost) = 'www2.gov.bc.ca' THEN 'https://www2.gov.bc.ca'
+       WHEN LOWER(${TABLE}.page_urlhost) = 'intranet.gov.bc.ca' THEN 'https://intranet.gov.bc.ca'
        ELSE LOWER(${TABLE}.page_urlhost) END
     ;;
     group_label: "Page"
