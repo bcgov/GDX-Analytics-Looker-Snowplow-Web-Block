@@ -504,6 +504,18 @@ view: shared_fields_common {
     group_label: "Page"
   }
 
+
+  dimension: page_urlhost_filter {
+    description: "Temporary fix for bug in RA-1161"
+    type: string
+    sql: CASE
+       WHEN LOWER(${TABLE}.page_urlhost) = 'www2.gov.bc.ca' THEN 'https://www2.gov.bc.ca/'
+       WHEN LOWER(${TABLE}.page_urlhost) = 'intranet.gov.bc.ca' THEN 'https://intranet.gov.bc.ca/'
+       ELSE LOWER(${TABLE}.page_urlhost) END
+    ;;
+    group_label: "Page"
+    hidden: yes
+  }
   # dimension: page_url_port {
   # type: number
   # sql: ${TABLE}.page_url_port ;;

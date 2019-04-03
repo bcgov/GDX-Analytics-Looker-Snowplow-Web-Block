@@ -22,6 +22,7 @@ view: sessions {
   dimension: page_url { hidden: yes }
   dimension: page_section { hidden: yes }
   dimension: page_urlhost { hidden: yes }
+  dimension: page_urlhost_filter { hidden: yes }
   dimension: page_urlpath { hidden: yes }
   dimension: page_urlquery { hidden: yes }
   dimension: page_width { hidden: yes }
@@ -180,6 +181,18 @@ view: sessions {
     type: string
     sql: ${TABLE}.first_page_urlhost ;;
     group_label: "First Page"
+  }
+
+  dimension: first_page_urlhost_filter {
+    description: "Temporary fix for bug in RA-1161"
+    type: string
+    sql: CASE
+       WHEN LOWER(${TABLE}.first_page_urlhost) = 'www2.gov.bc.ca' THEN 'https://www2.gov.bc.ca/'
+       WHEN LOWER(${TABLE}.first_page_urlhost) = 'intranet.gov.bc.ca' THEN 'https://intranet.gov.bc.ca/'
+       ELSE LOWER(${TABLE}.first_page_urlhost) END
+    ;;
+    group_label: "Page"
+    hidden: yes
   }
 
   # dimension: first_page_urlport {
