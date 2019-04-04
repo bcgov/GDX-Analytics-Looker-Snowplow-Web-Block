@@ -22,7 +22,6 @@ view: sessions {
   dimension: page_url { hidden: yes }
   dimension: page_section { hidden: yes }
   dimension: page_urlhost { hidden: yes }
-  dimension: page_urlhost_filter { hidden: yes }
   dimension: page_urlpath { hidden: yes }
   dimension: page_urlquery { hidden: yes }
   dimension: page_width { hidden: yes }
