@@ -54,7 +54,7 @@ explore: page_views {
     user_attribute: node_id
   }
   access_filter: {
-    field: page_urlhost_filter
+    field: page_urlhost
     user_attribute: urlhost
   }
   access_filter: {
@@ -151,7 +151,7 @@ explore: sessions {
     user_attribute: node_id
   }
   access_filter: {
-    field: first_page_urlhost_filter
+    field: first_page_urlhost
     user_attribute: urlhost
   }
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
@@ -194,7 +194,7 @@ explore: clicks{
     user_attribute: node_id
   }
   access_filter: {
-    field: page_urlhost_filter
+    field: page_urlhost
     user_attribute: urlhost
   }
   access_filter: {
@@ -228,7 +228,7 @@ explore: searches {
     user_attribute: node_id
   }
   access_filter: {
-    field: page_urlhost_filter
+    field: page_urlhost
     user_attribute: urlhost
   }
   access_filter: {
