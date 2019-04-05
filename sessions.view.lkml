@@ -141,6 +141,8 @@ view: sessions {
     description: "The URL of the page where a session began."
     type: string
     sql: ${TABLE}.first_page_url ;;
+    suggest_explore: site_cache
+    suggest_dimension: first_page_url
     group_label: "First Page"
   }
 
