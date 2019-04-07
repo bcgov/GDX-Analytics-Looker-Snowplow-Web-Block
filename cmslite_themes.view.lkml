@@ -1,3 +1,7 @@
+# ================================================================================
+# NOTE: Changes here should be replicated in https://analytics.gov.bc.ca/projects/google_api/files/cmslite_themes.view.lkml
+# ================================================================================
+
 view: cmslite_themes {
   sql_table_name: cmslite.themes ;;
 
@@ -14,7 +18,8 @@ view: cmslite_themes {
   dimension: theme {
     description: "The CMS Lite theme."
     type: string
-    sql: ${TABLE}.theme ;;
+    drill_fields: [subtheme]
+    sql: COALESCE(${TABLE}.theme, '(no theme)') ;;
     suggest_explore: theme_cache
     suggest_dimension: theme_cache.theme
   }
@@ -38,7 +43,7 @@ view: cmslite_themes {
   dimension: subtheme {
     description: "The CMS Lite subtheme."
     type: string
-    sql: ${TABLE}.subtheme ;;
+    sql: COALESCE(${TABLE}.subtheme, '(no subtheme)') ;;
     suggest_explore: theme_cache
     suggest_dimension: theme_cache.subtheme
   }
