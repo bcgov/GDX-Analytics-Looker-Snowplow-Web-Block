@@ -141,25 +141,26 @@ view: date_comparisons_common {
 
   dimension: summary_start {
     type: date
-    sql:  ${date_start}::date;;
+    sql:  ${date_start}::date ;;
     hidden: yes
   }
 
   dimension: summary_end {
     type: date
-    sql:  CASE WHEN ${date_start}::date = ${date_end}::date
-                  THEN DATE_ADD('day',1, ${date_start}::date)
-                ELSE ${date_end}::date
-            END ;;
+    sql: CASE WHEN {% date_start flexible_filter_date_range %}::date = {% date_end flexible_filter_date_range %}::date
+                 THEN DATE_ADD('day',1, {% date_start flexible_filter_date_range %}::date)
+              ELSE {% date_end flexible_filter_date_range %}::date
+          END ;;
     hidden: yes
   }
 
   dimension: in_summary_period {
     group_label: "Summary"
     type: yesno
-    sql: ${filter_start_raw} >= date_trunc({% parameter summary_granularity %}, ${summary_start} )
+    sql: CASE WHEN ({% date_start flexible_filter_date_range %} IS NULL AND {% date_end flexible_filter_date_range %} IS NULL) THEN TRUE
+          ELSE ${filter_start_raw} >= date_trunc({% parameter summary_granularity %}, ${summary_start} )
           AND ${filter_start_raw} < date_trunc({% parameter summary_granularity %}, ${summary_end} - interval '1 day') + interval '1 '{% parameter summary_granularity %}
-        ;;
+         END;;
   }
 
   dimension: summary_date {
