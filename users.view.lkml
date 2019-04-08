@@ -79,7 +79,8 @@ view: users {
 
       WHERE a.session_index = 1
        ;;
-    sql_trigger_value: SELECT COUNT(*) FROM derived.sessions ;;
+    #sql_trigger_value: SELECT COUNT(*) FROM derived.sessions ;;
+    sql_trigger_value: FLOOR(EXTRACT(epoch from GETDATE()) / (2*60*60)) ;;
     distribution: "domain_userid"
     sortkeys: ["first_session_start"]
   }
