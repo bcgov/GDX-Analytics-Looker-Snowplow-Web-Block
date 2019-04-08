@@ -141,8 +141,6 @@ view: sessions {
     description: "The URL of the page where a session began."
     type: string
     sql: ${TABLE}.first_page_url ;;
-    suggest_explore: site_cache
-    suggest_dimension: first_page_url
     group_label: "First Page"
   }
 
@@ -181,6 +179,8 @@ view: sessions {
     description: "The host name of the page where a session began."
     type: string
     sql: ${TABLE}.first_page_urlhost ;;
+    suggest_explore: site_cache
+    suggest_dimension: site_cache.first_page_url
     group_label: "First Page"
   }
 
