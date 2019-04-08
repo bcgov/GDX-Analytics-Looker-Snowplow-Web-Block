@@ -70,11 +70,6 @@ view: searches {
     type:  string
     sql:  replace(substring(${raw_search_terms}, 3, length(${raw_search_terms})-4),'+',' ') ;;
     group_label: "Results"
-    link: {
-      label: "View Search"
-      url: "https://www2.gov.bc.ca/gov/search?id=2E4C7D6BCAA4470AAAD2DCADF662E6A0&q={{ value }}"
-      icon_url: "https://www2.gov.bc.ca/favicon.ico"
-    }
   }
 
   # readable_terms: string
