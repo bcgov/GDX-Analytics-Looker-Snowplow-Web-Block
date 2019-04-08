@@ -251,6 +251,13 @@ explore: searches {
     field: page_section
     user_attribute: section
   }
+}
 
+explore: cmslite_metadata {
+  persist_for: "60 minutes"
 
+  access_filter: {
+    field: node_id
+    user_attribute: node_id
+  }
 }

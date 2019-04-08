@@ -70,7 +70,32 @@ view: searches {
     type:  string
     sql:  replace(substring(${raw_search_terms}, 3, length(${raw_search_terms})-4),'+',' ') ;;
     group_label: "Results"
+    link: {
+      label: "View Search"
+      url: "https://www2.gov.bc.ca/gov/search?id=2E4C7D6BCAA4470AAAD2DCADF662E6A0&q={{ value }}"
+      icon_url: "https://www2.gov.bc.ca/favicon.ico"
+    }
   }
+
+  # readable_terms: string
+  #
+  # removes wrapping [" "] from the terms dimension, array and
+  # replaces + signs with ' ', rendering a readable string in
+  # the case of the term string array containing a single element
+  # TODO: GDXDSD-1326 handle multiple-term searches past the first index, and empty searches.
+  dimension: search_terms_gov {
+    label: "Search Terms"
+    description: "The search term(s) that were queried on www2.gov.bc.ca."
+    type:  string
+    sql:  replace(substring(${raw_search_terms}, 3, length(${raw_search_terms})-4),'+',' ') ;;
+    group_label: "Results"
+    link: {
+      label: "View Search"
+      url: "https://www2.gov.bc.ca/gov/search?id=2E4C7D6BCAA4470AAAD2DCADF662E6A0&q={{ value }}"
+      icon_url: "https://www2.gov.bc.ca/favicon.ico"
+    }
+  }
+
 
   # filters: string
   # Table reference - VARCHAR(2048) ENCODE RAW
