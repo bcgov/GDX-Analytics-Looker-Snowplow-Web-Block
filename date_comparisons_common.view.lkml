@@ -159,10 +159,9 @@ view: date_comparisons_common {
   dimension: in_summary_period {
     group_label: "Summary"
     type: yesno
-    sql: CASE WHEN ({% date_start flexible_filter_date_range %} IS NULL AND {% date_end flexible_filter_date_range %} IS NULL) THEN TRUE
-          ELSE ${filter_start_raw} >= date_trunc({% parameter summary_granularity %}, ${summary_start} )
+    sql:  ${filter_start_raw} >= date_trunc({% parameter summary_granularity %}, ${summary_start} )
           AND ${filter_start_raw} < date_trunc({% parameter summary_granularity %}, ${summary_end} - interval '1 day') + interval '1 '{% parameter summary_granularity %}
-         END;;
+         ;;
   }
 
   dimension: summary_date {
