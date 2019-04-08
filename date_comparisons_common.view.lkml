@@ -34,16 +34,18 @@ view: date_comparisons_common {
   # NOTE: to handle "date before" and "any date" we need to give an earliest possible date for date_start.For now, this is 2017-01-01
   dimension: date_start {
     type: date
-    sql: CASE WHEN ({% date_start flexible_filter_date_range %}  IS NULL) THEN '2017-01-01'
-          ELSE {% date_start flexible_filter_date_range %}  END;;
+    sql: {% date_start flexible_filter_date_range %} ;;
+    #sql: CASE WHEN ({% date_start flexible_filter_date_range %}  IS NULL) THEN '2017-01-01'
+    #      ELSE {% date_start flexible_filter_date_range %}  END;;
     hidden: yes
   }
 
   # NOTE: to handle "any date" we need to give a latest possible date for date_end. This is tomorrow's date.
   dimension: date_end {
     type: date
-    sql: CASE WHEN ({% date_end flexible_filter_date_range %}  IS NULL) THEN (DATEADD(day,'1', DATE_TRUNC('day',GETDATE())))
-          ELSE {% date_end flexible_filter_date_range %}  END;;
+    sql: {% date_end flexible_filter_date_range %} ;;
+    #sql: CASE WHEN ({% date_end flexible_filter_date_range %}  IS NULL) THEN (DATEADD(day,'1', DATE_TRUNC('day',GETDATE())))
+    #      ELSE {% date_end flexible_filter_date_range %}  END;;
     hidden: yes
   }
 
