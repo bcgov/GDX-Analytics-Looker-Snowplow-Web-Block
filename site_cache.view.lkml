@@ -3,7 +3,7 @@ view: site_cache {
   derived_table: {
     sql:
       SELECT
-        LOWER(page_views.page_urlhost)  AS "page_views.page_urlhost"
+        LOWER(page_views.page_urlhost)  AS "page_urlhost"
       FROM derived.page_views  AS page_views
       LEFT JOIN cmslite.themes  AS cmslite_themes ON page_views.node_id = cmslite_themes.node_id
 
@@ -15,5 +15,7 @@ view: site_cache {
     sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*7)/(60*60*24)) ;;
     distribution_style: all
   }
-  dimension: page_urlhost {}
+  dimension: page_urlhost {
+    type: string
+  }
 }
