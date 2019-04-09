@@ -33,6 +33,7 @@ view: shared_fields_common {
     description: "The browser name. Depending on the browser, name often matches the family, but can also include major version numbers."
     type: string
     sql: ${TABLE}.br_name ;;
+    drill_fields: [os_family]
     group_label: "Browser"
   }
 
@@ -427,6 +428,7 @@ view: shared_fields_common {
   dimension: os_family {
     type: string
     sql: ${TABLE}.os_family ;;
+    drill_fields: [browser_name]
     group_label: "OS"
   }
 
