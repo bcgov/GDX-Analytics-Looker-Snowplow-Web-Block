@@ -180,7 +180,7 @@ view: sessions {
     type: string
     sql: ${TABLE}.first_page_urlhost ;;
     suggest_explore: site_cache
-    suggest_dimension: site_cache.first_page_url
+    suggest_dimension: site_cache.page_urlhost
     group_label: "First Page"
   }
 
