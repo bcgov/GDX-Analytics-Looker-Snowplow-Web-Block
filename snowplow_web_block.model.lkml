@@ -44,6 +44,11 @@ explore: city_cache {
 # hidden site_cache explore supports suggest_explore for the site filter
 explore: site_cache {
   hidden: yes
+
+  access_filter: {
+    field: page_urlhost
+    user_attribute: urlhost
+  }
 }
 
 explore: page_views {
