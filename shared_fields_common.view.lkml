@@ -506,6 +506,8 @@ view: shared_fields_common {
     description: "The web page domain or host."
     type: string
     sql: LOWER(${TABLE}.page_urlhost) ;;
+    suggest_explore: site_cache
+    suggest_dimension: site_cache.page_urlhost
     group_label: "Page"
   }
 

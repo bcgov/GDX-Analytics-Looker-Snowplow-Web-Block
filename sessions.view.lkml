@@ -179,6 +179,8 @@ view: sessions {
     description: "The host name of the page where a session began."
     type: string
     sql: ${TABLE}.first_page_urlhost ;;
+    suggest_explore: site_cache
+    suggest_dimension: site_cache.page_urlhost
     group_label: "First Page"
   }
 
