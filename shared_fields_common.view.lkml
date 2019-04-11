@@ -468,7 +468,9 @@ view: shared_fields_common {
     label: "Page Display URL"
     # when editing also see clicks.truncated_target_url_nopar_case_insensitive
     description: "Cleaned URL of the page without query string or standard file names like index.html"
-    sql:  ${page_url_scheme} || '://' || ${page_urlhost} || regexp_replace(${page_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
+    sql: CASE WHEN ${page_urlpath} = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${TABLE}.page_urlquery
+          ELSE ${page_url_scheme} || '://' || ${page_urlhost} || regexp_replace(${page_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
+         END;;
     group_label: "Page"
     link: {
       label: "Visit Page"
