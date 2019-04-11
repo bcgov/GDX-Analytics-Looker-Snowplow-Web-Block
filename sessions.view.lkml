@@ -20,6 +20,7 @@ view: sessions {
   dimension: page_height { hidden: yes }
   dimension: page_title { hidden: yes }
   dimension: page_url { hidden: yes }
+  dimension: page_display_url { hidden: yes }
   dimension: page_section { hidden: yes }
   dimension: page_urlhost { hidden: yes }
   dimension: page_urlpath { hidden: yes }
@@ -144,7 +145,34 @@ view: sessions {
     group_label: "First Page"
   }
 
+  dimension: first_page_urlscheme {
+    type: string
+    sql: ${TABLE}.first_page_urlscheme ;;
+    group_label: "First Page"
+    hidden: yes
+  }
 
+  dimension: first_page_urlpath {
+    description: "The URL path of the page where a session began."
+    type: string
+    sql: ${TABLE}.first_page_urlpath ;;
+    group_label: "First Page"
+  }
+
+  dimension: first_page_display_url {
+    label: "First Page Display URL"
+    # when editing also see clicks.truncated_target_url_nopar_case_insensitive
+    description: "Cleaned URL of the page where a session began without query string or standard file names like index.html"
+    sql: CASE WHEN ${TABLE}.first_page_urlpath = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${TABLE}.first_page_urlquery
+          ELSE ${first_page_urlscheme} || '://' || ${first_page_urlhost} || regexp_replace(${first_page_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
+         END;;
+    group_label: "Page"
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+  }
 
   dimension: first_page_engagement {
     description: "The identifier for an engagement on engage.gov.bc.ca."
@@ -167,13 +195,6 @@ view: sessions {
     sql: ${TABLE}.node_id ;;
     group_label: "First Page"
   }
-
-  # dimension: first_page_urlscheme {
-  # type: string
-  # sql: ${TABLE}.first_page_urlscheme ;;
-  # group_label: "First Page"
-  # hidden: yes
-  # }
 
   dimension: first_page_urlhost {
     description: "The host name of the page where a session began."
@@ -202,13 +223,6 @@ view: sessions {
   # group_label: "First Page"
   # hidden: yes
   # }
-
-  dimension: first_page_urlpath {
-    description: "The URL path of the page where a session began."
-    type: string
-    sql: ${TABLE}.first_page_urlpath ;;
-    group_label: "First Page"
-  }
 
   dimension: first_page_urlquery {
     description: "The URL query of the page where a session began."
