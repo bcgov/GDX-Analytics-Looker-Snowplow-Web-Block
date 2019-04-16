@@ -56,4 +56,21 @@ view: cmslite_themes {
     sql: ${TABLE}.subtheme_id ;;
   }
 
+  # topic
+  # the CMSL topic
+  dimension: topic {
+    description: "The CMS Lite topic."
+    type: string
+    sql: COALESCE(${TABLE}.topic, '(no topic)') ;;
+    suggest_explore: theme_cache
+    suggest_dimension: theme_cache.topic
+  }
+
+  # topic ID
+  # the CMSL topic ID
+  dimension: topic_id {
+    description: "The alphanumeric CMS Lite topic identifier."
+    type: string
+    sql: ${TABLE}.topic_id ;;
+  }
 }
