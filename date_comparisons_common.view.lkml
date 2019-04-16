@@ -166,6 +166,7 @@ view: date_comparisons_common {
 
   dimension: summary_date {
     label_from_parameter: summary_granularity
+    drill_fields: [page_views.page_display_url]
     sql:
        CASE
          WHEN {% parameter summary_granularity %} = 'Day' THEN

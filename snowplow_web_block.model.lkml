@@ -179,8 +179,6 @@ explore: sessions {
     field: cmslite_themes.theme_id
     user_attribute: theme
   }
-
-
 }
 
 explore: users {
