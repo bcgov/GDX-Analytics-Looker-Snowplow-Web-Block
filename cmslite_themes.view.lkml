@@ -54,7 +54,7 @@ view: cmslite_themes {
   dimension: subtheme_id {
     description: "The alphanumeric CMS Lite subtheme identifier."
     type: string
-    sql: ${TABLE}.subtheme_id ;;
+    sql: COALESCE(${TABLE}.subtheme_id,'') ;;
   }
 
   # topic
@@ -72,6 +72,6 @@ view: cmslite_themes {
   dimension: topic_id {
     description: "The alphanumeric CMS Lite topic identifier."
     type: string
-    sql: ${TABLE}.topic_id ;;
+    sql: COALESCE(${TABLE}.topic_id,'') ;;
   }
 }
