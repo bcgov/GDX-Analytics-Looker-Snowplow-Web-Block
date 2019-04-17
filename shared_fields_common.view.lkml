@@ -264,7 +264,7 @@ view: shared_fields_common {
 
   dimension: referrer_urlhost {
     type: string
-    sql: ${TABLE}.refr_urlhost ;;
+    sql: COALESCE(${TABLE}.refr_urlhost, '(direct link)') ;;
     group_label: "Referrer"
   }
 
@@ -277,7 +277,7 @@ view: shared_fields_common {
 
   dimension: referrer_urlpath {
     type: string
-    sql: ${TABLE}.refr_urlpath ;;
+    sql: COALESCE(${TABLE}.refr_urlpath, '(direct link)') ;;
     group_label: "Referrer"
   }
 
