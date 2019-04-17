@@ -231,6 +231,14 @@ explore: clicks{
     field: cmslite_themes.theme_id
     user_attribute: theme
   }
+  access_filter: {
+    field: cmslite_themes.subtheme_id
+    user_attribute: subtheme
+  }
+  access_filter: {
+    field: cmslite_themes.topic_id
+    user_attribute: topic
+  }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
   access_filter: {
