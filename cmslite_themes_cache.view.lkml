@@ -1,7 +1,7 @@
 view: theme_cache {
   derived_table: {
-    sql: SELECT DISTINCT subtheme_id, subtheme, theme_id, theme, topic_id, topic FROM cmslite.themes ORDER BY 1 ;;
-    sql_trigger_value: SELECT endtime FROM cmslite.microservice_log ORDER BY endtime DESC LIMIT 1 ;;
+    sql: SELECT subtheme_id, subtheme, theme_id, theme, topic_id, topic FROM cmslite.themes ;;
+    sql_trigger_value: SELECT MAX(endtime) FROM cmslite.microservice_log  ;;
     distribution_style: all
   }
   dimension: theme_id {}
