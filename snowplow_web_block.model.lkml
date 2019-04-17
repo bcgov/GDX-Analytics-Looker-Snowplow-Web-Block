@@ -84,6 +84,10 @@ explore: page_views {
     field: cmslite_themes.topic_id
     user_attribute: topic
   }
+  access_filter: {
+    field: cmslite_themes.esb
+    user_attribute: esb
+  }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
   access_filter: {
@@ -196,7 +200,10 @@ explore: sessions {
     field: cmslite_themes.topic_id
     user_attribute: topic
   }
-
+  access_filter: {
+    field: cmslite_themes.esb
+    user_attribute: esb
+  }
 }
 
 explore: users {
@@ -273,6 +280,10 @@ explore: searches {
   access_filter: {
     field: cmslite_themes.topic_id
     user_attribute: topic
+  }
+  access_filter: {
+    field: cmslite_themes.esb
+    user_attribute: esb
   }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
