@@ -74,4 +74,15 @@ view: cmslite_themes {
     type: string
     sql: COALESCE(${TABLE}.topic_id,'') ;;
   }
+
+
+  ### Custom dimensions for specific users
+  # Pages in the Employment Standards Branch
+  dimension: esb {
+    description: "Pages to include in Employment Standards Branch Dashboards"
+    type: string
+    sql:  CASE WHEN ${topic_id} = '1B655EB4076248C893E7E7EC20EDE50B' OR ${node_id} IN ('820A75B4A1AF426C9450E4ADF0D1D783', 'B3752C36297F2A17229B69D2A8DF5C92', 'AC26F750350F4E259D8C1FEDDC3D8520', '534F924CA519AD88CF3501C0083F18BD', '04739694EBFE48FD9CC997E21356A2B5', 'F76CF34CF9294EC7AE3372AAE1772C2A', 'CD225564F2E045F78715845A479DD83E', '69A831C7AD3D243EE4E0F740B8D4990C')  THEN 1
+            ELSE NULL END ;;
+  }
+
 }
