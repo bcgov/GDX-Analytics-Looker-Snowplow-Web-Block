@@ -193,13 +193,7 @@ view: page_views {
   }
 
   # Page performance
-  # these fields have been removed from the new web model
-
-
-  dimension: exit_page_flag {
-    type: yesno
-    sql: ${page_view_in_session_index} = ${max_page_view_rollup.max_page_view_index} ;;
-  }
+    # these fields have been removed from the new web model
 
   # MEASURES
 
@@ -249,12 +243,8 @@ view: page_views {
   }
 
   measure: exit_page_count {
-    type: count_distinct
-    sql: ${page_view_id} ;;
-    filters: {
-      field: exit_page_flag
-      value: "Yes"
-    }
+    type: sum
+    sql: ${TABLE}.exit ;;
   }
 
   measure: session_count {
