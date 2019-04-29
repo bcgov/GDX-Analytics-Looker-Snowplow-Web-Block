@@ -29,6 +29,8 @@ view: sessions {
   dimension: search_field { hidden: yes }
   dimension: page_absolute_uri { hidden: yes }
   dimension: page_engagement { hidden: yes }
+  dimension: page_campaign_urlhost { hidden: yes }
+
 
   # DIMENSIONS
 
@@ -202,6 +204,13 @@ view: sessions {
     sql: ${TABLE}.first_page_urlhost ;;
     suggest_explore: site_cache
     suggest_dimension: site_cache.page_urlhost
+    group_label: "First Page"
+  }
+
+  dimension: first_page_campaign_urlhost {
+    description: "The web page domain when a session began is on the list of campaign sites from the GCPE marketing team (1 if yes, 0 if no)"
+    type: string
+    sql:  CASE WHEN LOWER(${TABLE}.first_page_urlhost) IN ('cannabis.gov.bc.ca','cleanbc.gov.bc.ca','adopt.gov.bc.ca','fosternow.gov.bc.ca','buybc.gov.bc.ca','www.stopoverdose.gov.bc.ca','www.bcbudget.gov.bc.ca','upgrade.gov.bc.ca','budget.gov.bc.ca','bcwildfire.ca','erase.gov.bc.ca','childcare.gov.bc.ca') THEN '1' ELSE '0' END ;;
     group_label: "First Page"
   }
 
