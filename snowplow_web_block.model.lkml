@@ -49,14 +49,19 @@ explore: site_cache {
     field: page_urlhost
     user_attribute: urlhost
   }
+  access_filter: {
+    field: page_campaign_urlhost
+    user_attribute: campaignurlhost
+  }
+
 }
 
 explore: page_views {
   persist_for: "10 minutes"
   # exclude when people are viewing files on locally downloaded or hosted copies of webpages
-  sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
-      AND ${page_url} NOT LIKE '%$/%'
-      AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' AND ${page_url} NOT LIKE 'mhtml:file://%' ;;
+  #sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
+  #    AND ${page_url} NOT LIKE '%$/%'
+  #    AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' AND ${page_url} NOT LIKE 'mhtml:file://%' ;;
 
   access_filter: {
     field: browser_family
@@ -71,6 +76,10 @@ explore: page_views {
   access_filter: {
     field: page_urlhost
     user_attribute: urlhost
+  }
+  access_filter: {
+    field: page_campaign_urlhost
+    user_attribute: campaignurlhost
   }
   access_filter: {
     field: cmslite_themes.theme_id
@@ -155,9 +164,9 @@ explore: sessions {
 
   # exclude when people are viewing files on locally downloaded or hosted copies of webpages
   # Note that we are using first_page here instead of page, as there is no "page" for sessions
-  sql_always_where: (${first_page_urlhost} <> 'localhost' OR ${first_page_urlhost} IS NULL)
-      AND ${first_page_url} NOT LIKE '%$/%'
-      AND ${first_page_url} NOT LIKE 'file://%' AND ${first_page_url} NOT LIKE '-file://%' AND ${first_page_url} NOT LIKE 'mhtml:file://%';;
+  #sql_always_where: (${first_page_urlhost} <> 'localhost' OR ${first_page_urlhost} IS NULL)
+  #    AND ${first_page_url} NOT LIKE '%$/%'
+  #    AND ${first_page_url} NOT LIKE 'file://%' AND ${first_page_url} NOT LIKE '-file://%' AND ${first_page_url} NOT LIKE 'mhtml:file://%';;
 
   join: users {
     sql_on: ${sessions.domain_userid} = ${users.domain_userid} ;;
@@ -178,6 +187,11 @@ explore: sessions {
     field: first_page_urlhost
     user_attribute: urlhost
   }
+  access_filter: {
+    field: first_page_campaign_urlhost
+    user_attribute: campaignurlhost
+  }
+
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
   access_filter: {
     field: first_page_section
@@ -210,9 +224,9 @@ explore: clicks{
   persist_for: "10 minutes"
 
   # exclude when people are viewing files on locally downloaded or hosted copies of webpages
-  sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
-      AND ${page_url} NOT LIKE '%$/%'
-      AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' AND ${page_url} NOT LIKE 'mhtml:file://%' ;;
+  #sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
+  #    AND ${page_url} NOT LIKE '%$/%'
+  #    AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' AND ${page_url} NOT LIKE 'mhtml:file://%' ;;
 
   join: cmslite_themes {
     type: left_outer
@@ -226,6 +240,10 @@ explore: clicks{
   access_filter: {
     field: page_urlhost
     user_attribute: urlhost
+  }
+  access_filter: {
+    field: page_campaign_urlhost
+    user_attribute: campaignurlhost
   }
   access_filter: {
     field: cmslite_themes.theme_id
@@ -252,9 +270,9 @@ explore: clicks{
 explore: searches {
   persist_for: "10 minutes"
   # exclude when people are viewing files on locally downloaded or hosted copies of webpages
-  sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
-      AND ${page_url} NOT LIKE '%$/%'
-      AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' AND ${page_url} NOT LIKE 'mhtml:file://%';;
+  #sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
+  #    AND ${page_url} NOT LIKE '%$/%'
+  #    AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' AND ${page_url} NOT LIKE 'mhtml:file://%';;
 
   join: cmslite_themes {
     type: left_outer
@@ -268,6 +286,10 @@ explore: searches {
   access_filter: {
     field: page_urlhost
     user_attribute: urlhost
+  }
+  access_filter: {
+    field: page_campaign_urlhost
+    user_attribute: campaignurlhost
   }
   access_filter: {
     field: cmslite_themes.theme_id
