@@ -32,6 +32,11 @@ view: sessions {
   dimension: page_campaign_urlhost { hidden: yes }
 
 
+  dimension: geo_country {
+    drill_fields: [first_page_display_url]
+  }
+
+
   # DIMENSIONS
 
   # Session Time
