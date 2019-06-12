@@ -195,6 +195,13 @@ view: page_views {
   # Page performance
     # these fields have been removed from the new web model
 
+  # FILTERS
+
+  filter: is_whitelisted {
+    type: yesno
+    sql: ${gdx_analytics_whitelist.urlhost} IS NOT NULL ;;
+  }
+
   # MEASURES
 
   measure: row_count {
