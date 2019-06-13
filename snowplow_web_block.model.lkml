@@ -131,6 +131,12 @@ explore: page_views {
     relationship: one_to_one
   }
 
+  join: gdx_analytics_whitelist {
+    type: left_outer
+    sql_on: ${page_views.page_urlhost} = ${gdx_analytics_whitelist.urlhost} ;;
+    relationship: many_to_one
+  }
+
 #   join: sessions_rollup {
 #     sql_on: ${sessions_rollup.session_id} = ${sessions.session_id}
 #       AND ${page_views.page_view_index} = ${sessions_rollup.max_page_view_index} ;;
