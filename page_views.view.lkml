@@ -57,14 +57,14 @@ view: page_views {
 
   dimension_group: page_view_start {
     type: time
-    timeframes: [time, minute10, hour, date, week, month, quarter, year, time_of_day, hour_of_day, day_of_week]
+    timeframes: [time, minute, minute10, hour, date, week, month, quarter, year, time_of_day, hour_of_day, day_of_week]
     sql: ${TABLE}.page_view_start_time ;;
     #X# group_label:"Page View Time"
   }
 
   dimension_group: page_view_end {
     type: time
-    timeframes: [time, minute10, hour, date, week, month, quarter, year, time_of_day, hour_of_day, day_of_week]
+    timeframes: [time, minute, minute10, hour, date, week, month, quarter, year, time_of_day, hour_of_day, day_of_week]
     sql: ${TABLE}.page_view_end_time ;;
     #X# group_label:"Page View Time"
     hidden: yes
@@ -74,14 +74,14 @@ view: page_views {
 
   dimension_group: page_view_start_device_created {
     type: time
-    timeframes: [time, minute10, hour, date, week, month, quarter, year, time_of_day, hour_of_day, day_of_week]
+    timeframes: [time, minute, minute10, hour, date, week, month, quarter, year, time_of_day, hour_of_day, day_of_week]
     sql: ${TABLE}.page_view_min_dvce_created_tstamp ;;
     #X# group_label:"Page View Time (User Timezone)"
   }
 
   dimension_group: page_view_end_device_created {
     type: time
-    timeframes: [time, minute10, hour, date, week, month, quarter, year, time_of_day, hour_of_day, day_of_week]
+    timeframes: [time, minute, minute10, hour, date, week, month, quarter, year, time_of_day, hour_of_day, day_of_week]
     sql: ${TABLE}.page_view_max_dvce_created_tstamp ;;
     #X# group_label:"Page View Time (User Timezone)"
     hidden: yes
