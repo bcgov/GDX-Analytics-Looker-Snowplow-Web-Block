@@ -550,6 +550,12 @@ view: shared_fields_common {
     sql: SPLIT_PART(${TABLE}.page_urlpath,'/',2) ;;
     group_label: "Page"
   }
+  dimension: page_section_exclude {
+    description: "An exclusion filter for the identifier for a section of a website used to block sections of a site matching the pattern below.. The part of the URL after the domain before the next '/'."
+    type: string
+    sql: CASE WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',2) IN ('empr','agri','mirr','flnrord','env','eao','csnr') THEN '1' ELSE '0' END ;;
+    group_label: "Page"
+  }
 
   dimension: page_urlquery {
     description: "The querystring of the URL."
