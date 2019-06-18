@@ -112,20 +112,9 @@ explore: page_views {
     relationship: many_to_many
   }
 
-  join: max_page_view_rollup {
-    type: left_outer
-    sql_on: ${max_page_view_rollup.page_view_id} = ${page_views.page_view_id} ;;
-    relationship: many_to_one
-  }
-
   join: users {
     sql_on: ${page_views.domain_userid} = ${users.domain_userid} ;;
     relationship: many_to_one
-  }
-
-  join: page_views_rollup {
-    sql_on: ${page_views_rollup.session_start_raw} = ${sessions.session_start_date} ;;
-    relationship: one_to_many
   }
 
   join: cmslite_themes {
@@ -139,34 +128,7 @@ explore: page_views {
     sql_on: ${page_views.page_urlhost} = ${gdx_analytics_whitelist.urlhost} ;;
     relationship: many_to_one
   }
-
-#   join: sessions_rollup {
-#     sql_on: ${sessions_rollup.session_id} = ${sessions.session_id}
-#       AND ${page_views.page_view_index} = ${sessions_rollup.max_page_view_index} ;;
-#     type: left_outer
-#     relationship: many_to_many
-#   }
 }
-
-# explore: sessions {
-#   join: page_views_2 {
-#     fields: [page_views_2.page_title, page_views_2.session_count]
-#     from: page_views
-#     type: left_outer
-#     sql_on: ${sessions.session_id} = ${page_views_2.session_id}
-#             and ${page_views_2.page_view_in_session_index} = 2
-#             and ${page_views_2.page_title} != ${sessions.first_page_title};;
-#   }
-#   join: page_views_3 {
-#     fields: [page_views_3.page_title, page_views_3.session_count]
-#     from: page_views
-#     type: left_outer
-#     sql_on: ${sessions.session_id} = ${page_views_3.session_id}
-#             and ${page_views_3.page_view_in_session_index} = 3
-#             and ${page_views_3.page_title} != ${sessions.first_page_title}
-#             and ${page_views_3.page_title} != ${page_views_2.page_title};;
-#   }
-# }
 
 explore: sessions {
   persist_for: "10 minutes"

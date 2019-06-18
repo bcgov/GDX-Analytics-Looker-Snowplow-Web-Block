@@ -822,7 +822,7 @@
       Is Mobile: sessions.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: max_page_view_rollup.page_title
+      Title: page_views.page_title
       URL: sessions.first_page_url
     row: 33
     col: 12
