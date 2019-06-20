@@ -99,10 +99,6 @@ explore: page_views {
     field: page_section
     user_attribute: section
   }
-  access_filter: {
-    field: page_section_exclude
-    user_attribute: section_exclude
-  }
 
   fields: [ALL_FIELDS*,-page_views.last_page_title]
   # sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
@@ -168,11 +164,6 @@ explore: sessions {
     field: first_page_section
     user_attribute: section
   }
-  access_filter: {
-    field: first_page_section_exclude
-    user_attribute: section_exclude
-  }
-
 
   access_filter: {
     field: cmslite_themes.theme_id
@@ -239,10 +230,7 @@ explore: clicks{
     field: page_section
     user_attribute: section
   }
-  access_filter: {
-    field: page_section_exclude
-    user_attribute: section_exclude
-  }
+
 
 
 
@@ -290,10 +278,7 @@ explore: searches {
     field: page_section
     user_attribute: section
   }
-  access_filter: {
-    field: page_section_exclude
-    user_attribute: section_exclude
-  }
+
 
 }
 
