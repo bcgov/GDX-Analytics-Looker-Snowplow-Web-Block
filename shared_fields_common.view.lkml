@@ -596,10 +596,10 @@ view: shared_fields_common {
     group_label: "Page"
   }
 
-  dimension: page_campaign_urlhost {
-    description: "The web page domain is on the list of campaign sites from the GCPE marketing team (1 if yes, 0 if no)"
+  dimension: page_exclusion_filter {
+    description: "The URL matches the exclusion filter. For example subsites of the NRS intranet."
     type: string
-    sql:  CASE WHEN LOWER(${TABLE}.page_urlhost) IN ('cannabis.gov.bc.ca','cleanbc.gov.bc.ca','adopt.gov.bc.ca','fosternow.gov.bc.ca','buybc.gov.bc.ca','www.stopoverdose.gov.bc.ca','www.bcbudget.gov.bc.ca','upgrade.gov.bc.ca','budget.gov.bc.ca','bcwildfire.ca','erase.gov.bc.ca','childcare.gov.bc.ca') THEN '1' ELSE '0' END ;;
+    sql: ${TABLE}.page_exclusion_filter;;
     group_label: "Page"
   }
 
