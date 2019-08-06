@@ -54,7 +54,7 @@ view: sessions {
   dimension_group: session_start {
     description: "The start time of the first page view of a given session."
     type: time
-    timeframes: [raw, time, minute10, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
     sql: ${TABLE}.session_start ;;
     #X# group_label:"Session Time"
   }
@@ -62,7 +62,7 @@ view: sessions {
   dimension_group: session_start_marketing_drill {
     description: "The start time of the first page view of a given session."
     type: time
-    timeframes: [raw, time, minute10, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
     sql: ${TABLE}.session_start ;;
     drill_fields: [first_page_display_url, marketing_drills*]
     label: "Session Start"
