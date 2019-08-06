@@ -57,10 +57,21 @@ view: page_views {
 
   dimension_group: page_view_start {
     type: time
-    timeframes: [time, minute, minute10, hour, date, week, month, quarter, year, time_of_day, hour_of_day, day_of_week]
+    timeframes: [time, minute, minute10, hour, date, week, month, quarter, year, time_of_day, hour_of_day, day_of_month, day_of_week]
     sql: ${TABLE}.page_view_start_time ;;
     #X# group_label:"Page View Time"
   }
+
+  dimension_group: page_view_start_marketing_drill {
+    description: "The start time of the first page view of a given session."
+    type: time
+    timeframes: [time, minute, minute10, hour, date, week, month, quarter, year, time_of_day, hour_of_day, day_of_month, day_of_week]
+    sql: ${TABLE}.page_view_start_time ;;
+    drill_fields: [page_display_url, marketing_drills*]
+    label: "Page View Start"
+    group_label: "Page View Date (Markerting Drill)"
+  }
+
 
   dimension_group: page_view_end {
     type: time
