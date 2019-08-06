@@ -54,9 +54,19 @@ view: sessions {
   dimension_group: session_start {
     description: "The start time of the first page view of a given session."
     type: time
-    timeframes: [raw, time, minute10, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
     sql: ${TABLE}.session_start ;;
     #X# group_label:"Session Time"
+  }
+
+  dimension_group: session_start_marketing_drill {
+    description: "The start time of the first page view of a given session."
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    sql: ${TABLE}.session_start ;;
+    drill_fields: [first_page_display_url, marketing_drills*]
+    label: "Session Start"
+    group_label: "Session Start Date (Markerting Drill)"
   }
 
   # session_end: time
@@ -370,6 +380,41 @@ view: sessions {
     sql: ${time_engaged} ;;
     value_format: "0.00\"s\""
     group_label: "Engagement"
+  }
+
+
+  dimension: marketing_ministry {
+    drill_fields: [first_page_display_url, marketing_drills*]
+  }
+  dimension: marketing_team {
+    drill_fields: [first_page_display_url, marketing_drills*]
+  }
+  dimension: marketing_campaign_id {
+    drill_fields: [first_page_display_url, marketing_drills*]
+  }
+  dimension: marketing_sequence {
+    drill_fields: [first_page_display_url, marketing_drills*]
+  }
+  dimension: marketing_cta {
+    drill_fields: [first_page_display_url, marketing_drills*]
+  }
+  dimension: marketing_platform {
+    drill_fields: [first_page_display_url, marketing_drills*]
+  }
+  dimension: marketing_sender_placement {
+    drill_fields: [first_page_display_url, marketing_drills*]
+  }
+  dimension: marketing_lang {
+    drill_fields: [first_page_display_url, marketing_drills*]
+  }
+  dimension: marketing_audience {
+    drill_fields: [first_page_display_url, marketing_drills*]
+  }
+  dimension: marketing_sub_audience {
+    drill_fields: [first_page_display_url, marketing_drills*]
+  }
+  dimension: marketing_ad_type {
+    drill_fields: [first_page_display_url, marketing_drills*]
   }
 
 }

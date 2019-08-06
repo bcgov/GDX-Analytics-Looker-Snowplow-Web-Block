@@ -318,6 +318,10 @@ view: shared_fields_common {
 
   ### Marketing
 
+  set: marketing_drills {
+    fields: [marketing_source, marketing_campaign, marketing_ministry,marketing_team,marketing_campaign_id,marketing_sequence,marketing_cta,marketing_platform,marketing_sender_placement,marketing_lang,marketing_audience,marketing_sub_audience,marketing_ad_type]
+  }
+
   dimension: marketing_medium {
     type: string
     sql: ${TABLE}.mkt_medium ;;
@@ -346,6 +350,7 @@ view: shared_fields_common {
     type: string
     sql: ${TABLE}.mkt_campaign ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_clickid {
@@ -365,6 +370,83 @@ view: shared_fields_common {
     sql: ${TABLE}.channel ;;
     group_label: "Marketing"
   }
+
+  dimension: marketing_date {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',1) ;;
+    group_label: "Marketing"
+  }
+
+  dimension: marketing_ministry {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',2) ;;
+    group_label: "Marketing"
+  }
+
+  dimension: marketing_team {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',3) ;;
+    group_label: "Marketing"
+  }
+
+  dimension: marketing_campaign_id {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',4) ;;
+    group_label: "Marketing"
+    drill_fields: [marketing_drills*]
+
+  }
+
+  dimension: marketing_sequence {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',5) ;;
+    group_label: "Marketing"
+  }
+
+  dimension: marketing_cta {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',6) ;;
+    group_label: "Marketing"
+  }
+
+  dimension: marketing_platform {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',7) ;;
+    group_label: "Marketing"
+  }
+
+  dimension: marketing_sender_placement {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',8) ;;
+    group_label: "Marketing"
+  }
+
+  dimension: marketing_lang {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',9) ;;
+    group_label: "Marketing"
+  }
+
+  dimension: marketing_audience {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',10) ;;
+    group_label: "Marketing"
+  }
+
+  dimension: marketing_sub_audience {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',11) ;;
+    group_label: "Marketing"
+  }
+
+  dimension: marketing_ad_type {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',12) ;;
+    group_label: "Marketing"
+  }
+
+
+
 
   ### IP
 
