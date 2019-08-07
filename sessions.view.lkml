@@ -30,7 +30,7 @@ view: sessions {
   dimension: search_field { hidden: yes }
   dimension: page_absolute_uri { hidden: yes }
   dimension: page_engagement { hidden: yes }
-  dimension: page_campaign_urlhost { hidden: yes }
+  dimension: page_exclusion_filter { hidden: yes }
 
 
   dimension: geo_country {
@@ -228,11 +228,11 @@ view: sessions {
     group_label: "First Page"
   }
 
-  dimension: first_page_campaign_urlhost {
-    description: "The web page domain when a session began is on the list of campaign sites from the GCPE marketing team (1 if yes, 0 if no)"
+  dimension: first_page_exclusion_filter {
+    description: "The URL when a session began matches the exclusion filter. For example subsites of the NRS intranet."
     type: string
-    sql:  CASE WHEN LOWER(${TABLE}.first_page_urlhost) IN ('cannabis.gov.bc.ca','cleanbc.gov.bc.ca','adopt.gov.bc.ca','fosternow.gov.bc.ca','buybc.gov.bc.ca','www.stopoverdose.gov.bc.ca','www.bcbudget.gov.bc.ca','upgrade.gov.bc.ca','budget.gov.bc.ca','bcwildfire.ca','erase.gov.bc.ca','childcare.gov.bc.ca') THEN '1' ELSE '0' END ;;
-    group_label: "First Page"
+    sql: ${TABLE}.first_page_exclusion_filter ;;
+    group_label: "Page"
   }
 
   dimension: first_page_urlhost_filter {

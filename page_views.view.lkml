@@ -18,7 +18,6 @@ view: page_views {
     sql: ${user_id} || ${domain_userid} || ${session_id} || ${page_view_id} ;;
   }
 
-
   # Addititonal Drills
   dimension: browser_language {
     drill_fields: [page_display_url]

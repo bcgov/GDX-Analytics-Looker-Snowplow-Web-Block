@@ -49,11 +49,6 @@ explore: site_cache {
     field: page_urlhost
     user_attribute: urlhost
   }
-  access_filter: {
-    field: page_campaign_urlhost
-    user_attribute: campaignurlhost
-  }
-
 }
 
 explore: page_views {
@@ -78,8 +73,8 @@ explore: page_views {
     user_attribute: urlhost
   }
   access_filter: {
-    field: page_campaign_urlhost
-    user_attribute: campaignurlhost
+    field: page_exclusion_filter
+    user_attribute: exclusion_filter
   }
   access_filter: {
     field: cmslite_themes.theme_id
@@ -155,8 +150,8 @@ explore: sessions {
     user_attribute: urlhost
   }
   access_filter: {
-    field: first_page_campaign_urlhost
-    user_attribute: campaignurlhost
+    field: first_page_exclusion_filter
+    user_attribute: exclusion_filter
   }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
@@ -209,8 +204,8 @@ explore: clicks{
     user_attribute: urlhost
   }
   access_filter: {
-    field: page_campaign_urlhost
-    user_attribute: campaignurlhost
+    field: page_exclusion_filter
+    user_attribute: exclusion_filter
   }
   access_filter: {
     field: cmslite_themes.theme_id
@@ -257,8 +252,8 @@ explore: searches {
     user_attribute: urlhost
   }
   access_filter: {
-    field: page_campaign_urlhost
-    user_attribute: campaignurlhost
+    field: page_exclusion_filter
+    user_attribute: exclusion_filter
   }
   access_filter: {
     field: cmslite_themes.theme_id
