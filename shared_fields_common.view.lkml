@@ -326,24 +326,28 @@ view: shared_fields_common {
     type: string
     sql: ${TABLE}.mkt_medium ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_source {
     type: string
     sql: ${TABLE}.mkt_source ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_term {
     type: string
     sql: ${TABLE}.mkt_term ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_content {
     type: string
     sql: ${TABLE}.mkt_content ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_campaign {
@@ -357,36 +361,42 @@ view: shared_fields_common {
     type: string
     sql: ${TABLE}.mkt_clickid ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_network {
     type: string
     sql: ${TABLE}.mkt_network ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_channel {
     type: string
     sql: ${TABLE}.channel ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_date {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',1) ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_ministry {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',2) ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_team {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',3) ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_campaign_id {
@@ -401,48 +411,56 @@ view: shared_fields_common {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',5) ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_cta {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',6) ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_platform {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',7) ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_sender_placement {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',8) ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_lang {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',9) ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_audience {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',10) ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_sub_audience {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',11) ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
   dimension: marketing_ad_type {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',12) ;;
     group_label: "Marketing"
+    drill_fields: [marketing_drills*]
   }
 
 
