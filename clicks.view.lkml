@@ -182,6 +182,22 @@ view: clicks {
     group_label: "Target"
   }
 
+  dimension: element_classes {
+    type:  string
+    sql: ${TABLE}.element_classes ;;
+    group_label: "Element"
+  }
+  dimension: element_id {
+    type:  string
+    sql: ${TABLE}.element_id ;;
+    group_label: "Element"
+  }
+  dimension: element_target {
+    type:  string
+    sql: ${TABLE}.element_target ;;
+    group_label: "Element"
+  }
+
 
 
   # MEASURES
