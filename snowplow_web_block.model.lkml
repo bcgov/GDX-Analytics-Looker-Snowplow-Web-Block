@@ -119,6 +119,12 @@ explore: page_views {
     sql_on: ${page_views.page_urlhost} = ${gdx_analytics_whitelist.urlhost} ;;
     relationship: many_to_one
   }
+
+  join: cmslite_metadata {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_metadata.node_id};;
+    relationship: one_to_one
+  }
 }
 
 explore: sessions {
