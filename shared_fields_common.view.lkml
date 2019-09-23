@@ -166,6 +166,13 @@ view: shared_fields_common {
     group_label: "Location"
   }
 
+  dimension: geo_bc {
+    type: string
+    sql: CASE WHEN ${TABLE}.geo_region = 'BC' THEN 'BC' ELSE 'Outside BC' END;;
+    group_label: "Location"
+  }
+
+
   ### Session
 
   # session_id: string
