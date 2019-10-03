@@ -76,18 +76,6 @@ explore: page_views {
     field: page_exclusion_filter
     user_attribute: exclusion_filter
   }
-  access_filter: {
-    field: cmslite_themes.theme_id
-    user_attribute: theme
-  }
-  access_filter: {
-    field: cmslite_themes.subtheme_id
-    user_attribute: subtheme
-  }
-  access_filter: {
-    field: cmslite_themes.topic_id
-    user_attribute: topic
-  }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
   access_filter: {
@@ -165,19 +153,6 @@ explore: sessions {
     field: first_page_section
     user_attribute: section
   }
-
-  access_filter: {
-    field: cmslite_themes.theme_id
-    user_attribute: theme
-  }
-  access_filter: {
-    field: cmslite_themes.subtheme_id
-    user_attribute: subtheme
-  }
-  access_filter: {
-    field: cmslite_themes.topic_id
-    user_attribute: topic
-  }
 }
 
 explore: users {
@@ -212,18 +187,6 @@ explore: clicks{
   access_filter: {
     field: page_exclusion_filter
     user_attribute: exclusion_filter
-  }
-  access_filter: {
-    field: cmslite_themes.theme_id
-    user_attribute: theme
-  }
-  access_filter: {
-    field: cmslite_themes.subtheme_id
-    user_attribute: subtheme
-  }
-  access_filter: {
-    field: cmslite_themes.topic_id
-    user_attribute: topic
   }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
@@ -260,18 +223,6 @@ explore: searches {
   access_filter: {
     field: page_exclusion_filter
     user_attribute: exclusion_filter
-  }
-  access_filter: {
-    field: cmslite_themes.theme_id
-    user_attribute: theme
-  }
-  access_filter: {
-    field: cmslite_themes.subtheme_id
-    user_attribute: subtheme
-  }
-  access_filter: {
-    field: cmslite_themes.topic_id
-    user_attribute: topic
   }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
