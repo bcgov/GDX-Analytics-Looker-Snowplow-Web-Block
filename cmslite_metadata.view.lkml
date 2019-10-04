@@ -12,4 +12,9 @@ view: cmslite_metadata {
   dimension: title {}
   dimension: hr_url {}
   dimension: language {}
+  dimension: page_language {
+    type: string
+    sql: ${TABLE}.language_name ;;
+    description: "The language specified in the page settings"
+  }
 }
