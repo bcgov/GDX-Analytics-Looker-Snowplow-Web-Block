@@ -29,11 +29,6 @@ include: "*.dashboard"
 # hidden theme_cache explore supports suggest_explore for theme and subtheme filters
 explore: theme_cache {
   hidden: yes
-
-  access_filter: {
-    field: theme_id
-    user_attribute: theme
-  }
 }
 
 # hidden cicy_cache explore supports suggest_explore for the city filter
