@@ -19,7 +19,7 @@ view: cmslite_metadata {
   }
   dimension: language_code {
     type: string
-    sql: ${TABLE}.language_name ;;
+    sql: ${TABLE}.language_code ;;
     description: "The language code specified in the CMS Lite page settings tab"
   }
 }
