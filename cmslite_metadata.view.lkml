@@ -12,4 +12,14 @@ view: cmslite_metadata {
   dimension: title {}
   dimension: hr_url {}
   dimension: language {}
+  dimension: page_language {
+    type: string
+    sql: ${TABLE}.language_name ;;
+    description: "The language specified in the CMS Lite page settings tab"
+  }
+  dimension: language_code {
+    type: string
+    sql: ${TABLE}.language_name ;;
+    description: "The language code specified in the CMS Lite page settings tab"
+  }
 }
