@@ -58,10 +58,6 @@ explore: page_views {
   #    AND ${page_url} NOT LIKE '%$/%'
   #    AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' AND ${page_url} NOT LIKE 'mhtml:file://%' ;;
 
-  access_filter: {
-    field: browser_family
-    user_attribute: browser
-  }
   # adding this access filter to be used by the CMS Lite embed code generator
   #    to allow for page-level dashboards
   access_filter: {
