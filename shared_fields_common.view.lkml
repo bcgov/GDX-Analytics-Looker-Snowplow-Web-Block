@@ -576,9 +576,7 @@ view: shared_fields_common {
     label: "Page Display URL"
     # when editing also see clicks.truncated_target_url_nopar_case_insensitive
     description: "Cleaned URL of the page without query string or standard file names like index.html"
-    sql: CASE WHEN ${page_urlpath} = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${TABLE}.page_urlquery
-          ELSE ${page_url_scheme} || '://' || ${page_urlhost} || regexp_replace(${page_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
-         END;;
+    sql: ${TABLE}.page_display_url ;;
     group_label: "Page"
     link: {
       label: "Visit Page"
@@ -615,7 +613,7 @@ view: shared_fields_common {
   dimension: page_urlhost {
     description: "The web page domain or host."
     type: string
-    sql: LOWER(${TABLE}.page_urlhost) ;;
+    sql: ${TABLE}.page_urlhost ;;
     suggest_explore: site_cache
     suggest_dimension: site_cache.page_urlhost
     group_label: "Page"
@@ -654,7 +652,7 @@ view: shared_fields_common {
   dimension: page_section {
     description: "The identifier for a section of a website. The part of the URL after the domain before the next '/'"
     type: string
-    sql: SPLIT_PART(${TABLE}.page_urlpath,'/',2) ;;
+    sql: ${TABLE}.page_section ;;
     group_label: "Page"
   }
   dimension: page_section_exclude {

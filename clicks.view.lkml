@@ -276,4 +276,5 @@ view: clicks {
     sql: ${domain_userid} ;;
     group_label: "Counts"
   }
+
 }
