@@ -13,17 +13,17 @@ view: cmslite_metadata {
   dimension: title {}
   dimension: hr_url {}
   dimension: cdl_language {
-    label: "DC Terms Language Value"
-    description: "The value in the dcterms_languages table."
+    label: "Metadata Language Tags"
+    description: "The language tags from the CMS Lite Metadata tab."
   }
   dimension: language {
     type: string
     sql: ${TABLE}.language_name ;;
-    description: "The language specified in the CMS Lite page settings tab"
+    description: "The language specified in the CMS Lite page settings tab."
   }
   dimension: language_code {
     type: string
     sql: ${TABLE}.language_code ;;
-    description: "The language code specified in the CMS Lite page settings tab"
+    description: "The language code specified in the CMS Lite page settings tab."
   }
 }
