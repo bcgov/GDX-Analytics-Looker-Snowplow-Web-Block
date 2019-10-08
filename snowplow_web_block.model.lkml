@@ -29,11 +29,6 @@ include: "*.dashboard"
 # hidden theme_cache explore supports suggest_explore for theme and subtheme filters
 explore: theme_cache {
   hidden: yes
-
-  access_filter: {
-    field: theme_id
-    user_attribute: theme
-  }
 }
 
 # hidden cicy_cache explore supports suggest_explore for the city filter
@@ -71,18 +66,6 @@ explore: page_views {
   access_filter: {
     field: page_exclusion_filter
     user_attribute: exclusion_filter
-  }
-  access_filter: {
-    field: cmslite_themes.theme_id
-    user_attribute: theme
-  }
-  access_filter: {
-    field: cmslite_themes.subtheme_id
-    user_attribute: subtheme
-  }
-  access_filter: {
-    field: cmslite_themes.topic_id
-    user_attribute: topic
   }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
@@ -161,19 +144,6 @@ explore: sessions {
     field: first_page_section
     user_attribute: section
   }
-
-  access_filter: {
-    field: cmslite_themes.theme_id
-    user_attribute: theme
-  }
-  access_filter: {
-    field: cmslite_themes.subtheme_id
-    user_attribute: subtheme
-  }
-  access_filter: {
-    field: cmslite_themes.topic_id
-    user_attribute: topic
-  }
 }
 
 explore: users {
@@ -208,18 +178,6 @@ explore: clicks{
   access_filter: {
     field: page_exclusion_filter
     user_attribute: exclusion_filter
-  }
-  access_filter: {
-    field: cmslite_themes.theme_id
-    user_attribute: theme
-  }
-  access_filter: {
-    field: cmslite_themes.subtheme_id
-    user_attribute: subtheme
-  }
-  access_filter: {
-    field: cmslite_themes.topic_id
-    user_attribute: topic
   }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
@@ -256,18 +214,6 @@ explore: searches {
   access_filter: {
     field: page_exclusion_filter
     user_attribute: exclusion_filter
-  }
-  access_filter: {
-    field: cmslite_themes.theme_id
-    user_attribute: theme
-  }
-  access_filter: {
-    field: cmslite_themes.subtheme_id
-    user_attribute: subtheme
-  }
-  access_filter: {
-    field: cmslite_themes.topic_id
-    user_attribute: topic
   }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
