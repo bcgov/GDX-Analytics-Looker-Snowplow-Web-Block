@@ -1,5 +1,5 @@
-include: "shared_fields_common.view"
-include: "date_comparisons_common.view"
+include: "/Includes/shared_fields_common.view"
+include: "/Includes/date_comparisons_common.view"
 
 view: sessions {
   sql_table_name: derived.sessions ;;

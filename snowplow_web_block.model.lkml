@@ -21,10 +21,10 @@ connection: "redshift_pacific_time"
 week_start_day: sunday
 
 # include all views in this project
-include: "*.view"
+include: "/Views/*.view"
 
 # include all dashboards in this project
-include: "*.dashboard"
+include: "/Dashboards/*.dashboard"
 
 # hidden theme_cache explore supports suggest_explore for theme and subtheme filters
 explore: theme_cache {

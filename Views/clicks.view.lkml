@@ -1,7 +1,7 @@
 # Details on the derived.clicks table is in the Snowplow Web Model documentation:
 # https://github.com/snowplow-proservices/ca.bc.gov-snowplow-pipeline/blob/master/jobs/webmodel/README.md#4-clicks
 
-include: "shared_fields_common.view.lkml"
+include: "/Includes/shared_fields_common.view.lkml"
 
 view: clicks {
   sql_table_name: derived.clicks ;;
