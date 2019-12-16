@@ -1,10 +1,11 @@
 include: "/Includes/shared_fields_common.view"
+include: "/Includes/shared_fields_no_session.view"
 include: "/Includes/date_comparisons_common.view"
 
 view: page_views {
   sql_table_name: derived.page_views ;;
 
-  extends: [shared_fields_common,date_comparisons_common]
+  extends: [shared_fields_common,shared_fields_no_session,date_comparisons_common]
 
   dimension_group: filter_start {
     sql: ${TABLE}.page_view_start_time ;;
@@ -20,11 +21,11 @@ view: page_views {
 
   # Addititonal Drills
   dimension: browser_language {
-    drill_fields: [page_display_url]
+    drill_fields: [shared_fields_no_session.page_display_url]
   }
 
   dimension: referrer_medium {
-    drill_fields: [referrer_medium, referrer_source, referrer_urlhost, page_display_url]
+    drill_fields: [referrer_medium, referrer_source, referrer_urlhost, shared_fields_no_session.page_display_url]
   }
 
 
@@ -66,7 +67,7 @@ view: page_views {
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
     sql: ${TABLE}.page_view_start_time ;;
-    drill_fields: [page_display_url, marketing_drills*]
+    drill_fields: [shared_fields_no_session.page_display_url, marketing_drills*]
     label: "Page View Start"
     group_label: "Page View Date (Markerting Drill)"
   }
@@ -318,7 +319,6 @@ view: max_page_view_rollup {
       }
     }
   }
-  dimension: p_key {primary_key:yes}
   dimension: page_view_id {}
   dimension: page_title {}
   dimension: max_page_view_index {

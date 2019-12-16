@@ -4,35 +4,17 @@ include: "/Includes/date_comparisons_common.view"
 view: sessions {
   sql_table_name: derived.sessions ;;
 
-  extends: [date_comparisons_common,shared_fields_common]
+  extends: [shared_fields_common,date_comparisons_common]
 
   # NECESSARY for date_comparisons_common
   dimension_group: filter_start {
     sql: ${TABLE}.session_start ;;
   }
 
-  # Modifying extended fields
-  dimension: browser_view_height { hidden: yes }
-  dimension: browser_view_width { hidden: yes }
-  dimension: os_version { hidden: yes }
+  # NECESSARY for access filters
   dimension: node_id { hidden: yes }
-  dimension: p_key { hidden: yes }
-  dimension: page_height { hidden: yes }
-  dimension: page_title { hidden: yes }
-  dimension: page_url { hidden: yes }
-  dimension: page_display_url { hidden: yes }
-  dimension: page_section { hidden: yes }
-  dimension: page_section_exclude { hidden: yes }
-  dimension: page_urlhost { hidden: yes }
-  dimension: page_urlpath { hidden: yes }
-  dimension: page_urlquery { hidden: yes }
-  dimension: page_width { hidden: yes }
-  dimension: search_field { hidden: yes }
-  dimension: page_absolute_uri { hidden: yes }
-  dimension: page_engagement { hidden: yes }
-  dimension: page_exclusion_filter { hidden: yes }
 
-
+  # Modifying extended fields
   dimension: geo_country {
     drill_fields: [first_page_display_url]
   }
@@ -416,5 +398,4 @@ view: sessions {
   dimension: marketing_ad_type {
     drill_fields: [first_page_display_url, marketing_drills*]
   }
-
 }

@@ -23,6 +23,9 @@ week_start_day: sunday
 # include all views in this project
 include: "/Views/*.view"
 
+# include all include files
+include: "/Includes/*.view"
+
 # include all dashboards in this project
 include: "/Dashboards/*.dashboard"
 
