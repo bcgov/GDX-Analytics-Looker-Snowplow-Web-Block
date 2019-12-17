@@ -163,10 +163,8 @@ view: sessions {
     label: "First Page Display URL"
     # when editing also see clicks.truncated_target_url_nopar_case_insensitive
     description: "Cleaned URL of the page where a session began without query string or standard file names like index.html"
-    sql: CASE WHEN ${TABLE}.first_page_urlpath = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${TABLE}.first_page_urlquery
-          ELSE ${first_page_urlscheme} || '://' || ${first_page_urlhost} || regexp_replace(${first_page_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
-         END;;
-    group_label: "Page"
+    sql: ${TABLE}.first_page_display_url ;;
+    group_label: "First Page"
     link: {
       label: "Visit Page"
       url: "{{ value }}"
@@ -184,7 +182,7 @@ view: sessions {
   dimension: first_page_section {
     description: "The identifier for a section of a website. The part of the URL after the domain before the next '/'"
     type: string
-    sql: SPLIT_PART(${TABLE}.first_page_urlpath,'/',2) ;;
+    sql: ${TABLE}.first_page_section ;;
     group_label: "First Page"
   }
   dimension: first_page_section_exclude {
