@@ -6,6 +6,9 @@ view: searches {
 
   extends: [shared_fields_common,shared_fields_no_session]
 
+  # Modifying extended fields
+  dimension: geo_country { drill_fields: [page_display_url] }
+
   dimension: p_key {
     primary_key: yes
     sql: ${user_id} || ${domain_userid} || ${session_id} || ${search_id} ;;

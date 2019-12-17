@@ -13,6 +13,7 @@ view: page_views {
 
   # Modifying extended fields
   dimension: os_version { hidden: yes }
+  dimension: geo_country { drill_fields: [page_display_url] }
 
   dimension: p_key {
     primary_key: yes

@@ -15,6 +15,9 @@ view: clicks {
     sql: ${user_id} || ${domain_userid} || ${session_id} || ${click_id} ;;
   }
 
+  # Modifying extended fields
+  dimension: geo_country { drill_fields: [page_display_url] }
+
   # DIMENSIONS
 
   # Click

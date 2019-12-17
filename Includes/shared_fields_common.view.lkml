@@ -81,7 +81,6 @@ view: shared_fields_common {
     type: string
     sql: ${TABLE}.geo_country ;;
     group_label: "Location"
-    drill_fields: [shared_fields_no_session.page_display_url]
   }
 
   dimension: geo_region {
