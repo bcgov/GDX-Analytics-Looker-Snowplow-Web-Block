@@ -215,18 +215,6 @@ view: sessions {
     group_label: "Page"
   }
 
-  dimension: first_page_urlhost_filter {
-    description: "Temporary fix for bug in CLD-2823"
-    type: string
-    sql: CASE
-       WHEN LOWER(${TABLE}.first_page_urlhost) = 'www2.gov.bc.ca' THEN 'https://www2.gov.bc.ca'
-       WHEN LOWER(${TABLE}.first_page_urlhost) = 'intranet.gov.bc.ca' THEN 'https://intranet.gov.bc.ca'
-       ELSE LOWER(${TABLE}.first_page_urlhost) END
-    ;;
-    group_label: "Page"
-    hidden: yes
-  }
-
   # dimension: first_page_urlport {
   # type: number
   # sql: ${TABLE}.first_page_urlport ;;
