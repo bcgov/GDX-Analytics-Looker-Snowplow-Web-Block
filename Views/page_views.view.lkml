@@ -21,11 +21,11 @@ view: page_views {
 
   # Addititonal Drills
   dimension: browser_language {
-    drill_fields: [shared_fields_no_session.page_display_url]
+    drill_fields: [page_display_url]
   }
 
   dimension: referrer_medium {
-    drill_fields: [referrer_medium, referrer_source, referrer_urlhost, shared_fields_no_session.page_display_url]
+    drill_fields: [referrer_medium, referrer_source, referrer_urlhost, page_display_url]
   }
 
 
@@ -67,7 +67,7 @@ view: page_views {
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
     sql: ${TABLE}.page_view_start_time ;;
-    drill_fields: [shared_fields_no_session.page_display_url, marketing_drills*]
+    drill_fields: [page_display_url, marketing_drills*]
     label: "Page View Start"
     group_label: "Page View Date (Markerting Drill)"
   }
