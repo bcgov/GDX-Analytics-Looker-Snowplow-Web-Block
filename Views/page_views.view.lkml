@@ -1,10 +1,11 @@
-include: "shared_fields_common.view"
-include: "date_comparisons_common.view"
+include: "/Includes/shared_fields_common.view"
+include: "/Includes/shared_fields_no_session.view"
+include: "/Includes/date_comparisons_common.view"
 
 view: page_views {
   sql_table_name: derived.page_views ;;
 
-  extends: [shared_fields_common,date_comparisons_common]
+  extends: [shared_fields_common,shared_fields_no_session,date_comparisons_common]
 
   dimension_group: filter_start {
     sql: ${TABLE}.page_view_start_time ;;
@@ -12,6 +13,7 @@ view: page_views {
 
   # Modifying extended fields
   dimension: os_version { hidden: yes }
+  dimension: geo_country { drill_fields: [page_display_url] }
 
   dimension: p_key {
     primary_key: yes
@@ -318,7 +320,6 @@ view: max_page_view_rollup {
       }
     }
   }
-  dimension: p_key {primary_key:yes}
   dimension: page_view_id {}
   dimension: page_title {}
   dimension: max_page_view_index {

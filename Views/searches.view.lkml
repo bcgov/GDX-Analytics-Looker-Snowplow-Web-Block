@@ -1,9 +1,13 @@
-include: "shared_fields_common.view.lkml"
+include: "/Includes/shared_fields_common.view"
+include: "/Includes/shared_fields_no_session.view"
 
 view: searches {
   sql_table_name: derived.searches ;;
 
-  extends: [shared_fields_common]
+  extends: [shared_fields_common,shared_fields_no_session]
+
+  # Modifying extended fields
+  dimension: geo_country { drill_fields: [page_display_url] }
 
   dimension: p_key {
     primary_key: yes
@@ -90,7 +94,6 @@ view: searches {
       icon_url: "https://www2.gov.bc.ca/favicon.ico"
     }
   }
-
 
   # filters: string
   # Table reference - VARCHAR(2048) ENCODE RAW

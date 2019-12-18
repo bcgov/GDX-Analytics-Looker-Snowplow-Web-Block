@@ -1,18 +1,22 @@
 # Details on the derived.clicks table is in the Snowplow Web Model documentation:
 # https://github.com/snowplow-proservices/ca.bc.gov-snowplow-pipeline/blob/master/jobs/webmodel/README.md#4-clicks
 
-include: "shared_fields_common.view.lkml"
+include: "/Includes/shared_fields_common.view"
+include: "/Includes/shared_fields_no_session.view"
 
 view: clicks {
   sql_table_name: derived.clicks ;;
 
-  extends: [shared_fields_common]
+  extends: [shared_fields_common,shared_fields_no_session]
 
   dimension: p_key {
     description: "The primary key, which is one of: User ID, Domain User ID, Session ID, or Click ID."
     primary_key: yes
     sql: ${user_id} || ${domain_userid} || ${session_id} || ${click_id} ;;
   }
+
+  # Modifying extended fields
+  dimension: geo_country { drill_fields: [page_display_url] }
 
   # DIMENSIONS
 
@@ -198,8 +202,6 @@ view: clicks {
     group_label: "Element"
   }
 
-
-
   # MEASURES
 
   # duplicate
@@ -276,5 +278,4 @@ view: clicks {
     sql: ${domain_userid} ;;
     group_label: "Counts"
   }
-
 }
