@@ -71,8 +71,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: sessions.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     row: 0
@@ -147,8 +147,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: sessions.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     row: 0
@@ -210,8 +210,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: sessions.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     row: 2
@@ -286,8 +286,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: sessions.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     row: 0
@@ -371,8 +371,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: sessions.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     row: 0
@@ -431,8 +431,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: sessions.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     note_state: collapsed
@@ -521,8 +521,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: sessions.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     row: 9
@@ -599,8 +599,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: sessions.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     row: 10
@@ -666,8 +666,8 @@
       Region: page_views.geo_region_name
       Internal Gov Traffic: page_views.is_government
       Is Mobile: page_views.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: page_views.page_title
       URL: page_views.page_url
     row: 19
@@ -768,8 +768,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: sessions.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     row: 20
@@ -820,8 +820,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: page_views.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: page_views.page_title
       URL: sessions.first_page_url
     row: 33
@@ -909,8 +909,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: sessions.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     row: 35
@@ -970,8 +970,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: sessions.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     row: 42
@@ -1035,8 +1035,8 @@
       Region: clicks.geo_region_name
       Internal Gov Traffic: clicks.is_government
       Is Mobile: clicks.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: clicks.page_title
       URL: clicks.page_url
     row: 44
@@ -1109,8 +1109,8 @@
       Region: searches.geo_region_name
       Internal Gov Traffic: searches.is_government
       Is Mobile: searches.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: searches.page_title
       URL: searches.page_url
     row: 52
@@ -1184,8 +1184,8 @@
       Region: clicks.geo_region_name
       Internal Gov Traffic: clicks.is_government
       Is Mobile: clicks.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: clicks.page_title
       URL: clicks.page_url
     row: 54
@@ -1246,8 +1246,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: sessions.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     row: 62
@@ -1326,8 +1326,8 @@
       Region: sessions.geo_region_name
       Internal Gov Traffic: page_views.is_government
       Is Mobile: sessions.device_is_mobile
-      Theme: cmslite_themes.theme
-      Sub Theme: cmslite_themes.subtheme
+      Theme: themes.theme
+      Sub Theme: themes.subtheme
       Title: sessions.first_page_title
       URL: sessions.first_page_url
     row: 61
@@ -1410,7 +1410,7 @@
     model: snowplow_web_block
     explore: page_views
     listens_to_filters: []
-    field: cmslite_themes.theme
+    field: themes.theme
   - name: Sub Theme
     title: Sub Theme
     type: field_filter
@@ -1420,7 +1420,7 @@
     model: snowplow_web_block
     explore: page_views
     listens_to_filters: []
-    field: cmslite_themes.subtheme
+    field: themes.subtheme
   - name: Title
     title: Title
     type: field_filter

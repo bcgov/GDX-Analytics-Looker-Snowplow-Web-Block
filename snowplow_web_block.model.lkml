@@ -31,6 +31,7 @@ include: "/Dashboards/*.dashboard"
 
 # include cmslite_metadata project
 include: "//cmslite_metadata/models/cmslite_metadata.model.lkml"
+include: "//cmslite_metadata/views/themes.view"
 
 # hidden theme_cache explore supports suggest_explore for theme and subtheme filters
 explore: theme_cache {
@@ -54,6 +55,7 @@ explore: site_cache {
 
 explore: page_views {
   persist_for: "10 minutes"
+  fields: [ALL_FIELDS*,-page_views.last_page_title]
   # exclude when people are viewing files on locally downloaded or hosted copies of webpages
   #sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
   #    AND ${page_url} NOT LIKE '%$/%'
@@ -80,7 +82,6 @@ explore: page_views {
     user_attribute: section
   }
 
-  fields: [ALL_FIELDS*,-page_views.last_page_title]
   # sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
   join: sessions {
     type: left_outer
@@ -93,9 +94,10 @@ explore: page_views {
     relationship: many_to_one
   }
 
-  join: cmslite_themes {
+  join: themes {
+    view_label: "Cmslite Themes"
     type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    sql_on: ${page_views.node_id} = ${themes.node_id} ;;
     relationship: one_to_one
   }
 
@@ -126,9 +128,9 @@ explore: sessions {
     relationship: many_to_one
   }
 
-  join: cmslite_themes {
+  join: themes {
     type: left_outer
-    sql_on: ${sessions.first_page_node_id} = ${cmslite_themes.node_id} ;;
+    sql_on: ${sessions.first_page_node_id} = ${themes.node_id} ;;
     relationship: one_to_one
   }
 
@@ -154,9 +156,6 @@ explore: sessions {
 
 explore: users {
   persist_for: "10 minutes"
-
-
-
   # sql_always_where: ${first_page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
 }
 
@@ -168,9 +167,9 @@ explore: clicks{
   #    AND ${page_url} NOT LIKE '%$/%'
   #    AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' AND ${page_url} NOT LIKE 'mhtml:file://%' ;;
 
-  join: cmslite_themes {
+  join: themes {
     type: left_outer
-    sql_on: ${clicks.node_id} = ${cmslite_themes.node_id} ;;
+    sql_on: ${clicks.node_id} = ${themes.node_id} ;;
     relationship: one_to_one
   }
   access_filter: {
@@ -192,9 +191,6 @@ explore: clicks{
     user_attribute: section
   }
 
-
-
-
 }
 
 explore: searches {
@@ -204,9 +200,9 @@ explore: searches {
   #    AND ${page_url} NOT LIKE '%$/%'
   #    AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' AND ${page_url} NOT LIKE 'mhtml:file://%';;
 
-  join: cmslite_themes {
+  join: themes {
     type: left_outer
-    sql_on: ${searches.node_id} = ${cmslite_themes.node_id} ;;
+    sql_on: ${searches.node_id} = ${themes.node_id} ;;
     relationship: one_to_one
   }
   access_filter: {
