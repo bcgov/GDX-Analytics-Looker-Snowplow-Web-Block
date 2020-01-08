@@ -81,6 +81,10 @@ explore: page_views {
     field: page_section
     user_attribute: section
   }
+  access_filter: {
+    field: themes.theme_id
+    user_attribute: theme
+  }
 
   # sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
   join: sessions {
@@ -152,6 +156,10 @@ explore: sessions {
     field: first_page_section
     user_attribute: section
   }
+  access_filter: {
+    field: themes.theme_id
+    user_attribute: theme
+  }
 }
 
 explore: users {
@@ -184,13 +192,16 @@ explore: clicks{
     field: page_exclusion_filter
     user_attribute: exclusion_filter
   }
-
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
   access_filter: {
     field: page_section
     user_attribute: section
   }
 
+  access_filter: {
+    field: themes.theme_id
+    user_attribute: theme
+  }
 }
 
 explore: searches {
@@ -222,6 +233,10 @@ explore: searches {
   access_filter: {
     field: page_section
     user_attribute: section
+  }
+  access_filter: {
+    field: themes.theme_id
+    user_attribute: theme
   }
 
 
