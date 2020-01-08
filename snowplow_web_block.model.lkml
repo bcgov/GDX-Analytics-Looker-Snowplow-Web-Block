@@ -29,6 +29,9 @@ include: "/Includes/*.view"
 # include all dashboards in this project
 include: "/Dashboards/*.dashboard"
 
+# include cmslite_metadata project
+include: "//cmslite_metadata/models/cmslite_metadata.model.lkml"
+
 # hidden theme_cache explore supports suggest_explore for theme and subtheme filters
 explore: theme_cache {
   hidden: yes
