@@ -1,4 +1,4 @@
-#include: "//cmslite_metadata/views/themes.view"
+include: "//cmslite_metadata/views/metadata.view"
 
 view: theme_cache {
   derived_table: {

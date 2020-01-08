@@ -5,7 +5,6 @@
 include: "//cmslite_metadata/views/themes.view"
 
 view: cmslite_themes {
-  #sql_table_name: cmslite.themes ;;
   extends: [themes]
 
   # theme
