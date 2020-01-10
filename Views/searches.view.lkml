@@ -79,6 +79,18 @@ view: searches {
   # readable_terms: string
   #
   # removes wrapping [" "] from the terms dimension, array and
+  # replaces + signs with ' ', and '%2B' with ' '
+  dimension: search_terms_v2 {
+    description: "The search term(s) that were queried."
+    type:  string
+    sql:  REPLACE(REPLACE(REPLACE(SUBSTRING(${raw_search_terms},3,LENGTH(${raw_search_terms})-4),'+', ' '), '%2B', '+'), '", "', ' ') ;;
+    group_label: "Results"
+  }
+
+
+  # readable_terms: string
+  #
+  # removes wrapping [" "] from the terms dimension, array and
   # replaces + signs with ' ', rendering a readable string in
   # the case of the term string array containing a single element
   # TODO: GDXDSD-1326 handle multiple-term searches past the first index, and empty searches.
