@@ -34,6 +34,12 @@ view: page_views {
 
   # Page View
 
+  # esb_display_url
+  dimension: esb_display_url {
+    type: string
+    sql: CASE WHEN strpos(${TABLE}.page_urlquery, 'id=') > 0 THEN substring(${TABLE}.page_urlquery, 4, 18) ELSE NULL END;;
+  }
+
   dimension: page_view_id {
     type: string
     sql: ${TABLE}.page_view_id ;;
