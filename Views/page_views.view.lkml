@@ -34,11 +34,24 @@ view: page_views {
 
   # Page View
 
-  # esb_display_url
-  dimension: esb_display_url {
+  # esb_page_id
+  dimension: esb_page_id {
     type: string
     sql: CASE WHEN strpos(${TABLE}.page_urlquery, 'id=') > 0 THEN substring(${TABLE}.page_urlquery, 4, 18) ELSE NULL END;;
-    label: "ESB Page Display URL"
+    label: "ESB Page Display ID"
+    group_label: "Page"
+  }
+
+  # Page Display URL
+  dimension: esb_display_url {
+    description: "New display url dimension"
+    type:  string
+    sql: CASE
+      WHEN ${TABLE}.page_urlpath = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${TABLE}.page_urlquery
+      WHEN ${TABLE}.page_urlpath IN ('/solutionexplorer/ES_Access','/solutionexplorer/ES_Question','/solutionexplorer/ES_Result')  THEN ${TABLE}.refr_urlscheme || '://' || ${TABLE}.PAGE_URLHOST || ${TABLE}.page_urlpath ||'?id=' || ${esb_page_id}
+      ELSE ${TABLE}.page_urlscheme || '://' || ${TABLE}.page_urlhost || regexp_replace(${TABLE}.page_urlpath, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
+      END;;
+    label: "ESB Display URL"
     group_label: "Page"
   }
 
