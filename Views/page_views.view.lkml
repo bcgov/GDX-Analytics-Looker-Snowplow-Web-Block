@@ -48,7 +48,7 @@ view: page_views {
     type:  string
     sql: CASE
       WHEN ${TABLE}.page_urlpath = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${TABLE}.page_urlquery
-      WHEN ${TABLE}.page_urlpath IN ('/solutionexplorer/ES_Access','/solutionexplorer/ES_Question','/solutionexplorer/ES_Result')  THEN ${TABLE}.refr_urlscheme || '://' || ${TABLE}.PAGE_URLHOST || ${TABLE}.page_urlpath ||'?id=' || ${esb_page_id}
+      WHEN ${TABLE}.page_urlpath IN ('/solutionexplorer/ES_Access','/solutionexplorer/ES_Question','/solutionexplorer/ES_Result','/solutionexplorer/ES_Action')  THEN ${TABLE}.refr_urlscheme || '://' || ${TABLE}.PAGE_URLHOST || ${TABLE}.page_urlpath ||'?id=' || ${esb_page_id}
       ELSE ${TABLE}.page_urlscheme || '://' || ${TABLE}.page_urlhost || regexp_replace(${TABLE}.page_urlpath, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
       END;;
     label: "ESB Display URL"
