@@ -1,6 +1,6 @@
-include: "//cmslite_metadata/views/metadata.view"
-include: "//cmslite_metadata/views/metadata_languages.view"
-include: "//cmslite_metadata/views/dcterms_languages.view"
+include: "//cmslite_metadata/Views/metadata.view"
+include: "//cmslite_metadata/Views/metadata_languages.view"
+include: "//cmslite_metadata/Views/dcterms_languages.view"
 
 view: cmslite_metadata {
   derived_table: {

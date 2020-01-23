@@ -2,7 +2,7 @@
 # NOTE: Changes here should be replicated in https://analytics.gov.bc.ca/projects/google_api/files/cmslite_themes.view.lkml
 # ================================================================================
 
-include: "//cmslite_metadata/views/themes.view"
+include: "//cmslite_metadata/Views/themes.view"
 
 view: cmslite_themes {
   extends: [themes]

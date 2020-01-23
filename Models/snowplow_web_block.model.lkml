@@ -30,8 +30,8 @@ include: "/Includes/*.view"
 include: "/Dashboards/*.dashboard"
 
 # include cmslite_metadata project
-include: "//cmslite_metadata/models/cmslite_metadata.model.lkml"
-include: "//cmslite_metadata/views/themes.view"
+include: "//cmslite_metadata/Views/themes.view"
+include: "//cmslite_metadata/Views/microservice_log.view"
 
 # hidden theme_cache explore supports suggest_explore for theme and subtheme filters
 explore: theme_cache {
