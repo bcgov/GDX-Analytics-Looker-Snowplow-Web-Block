@@ -1,9 +1,7 @@
-include: "//cmslite_metadata/Views/metadata.view"
-
 view: theme_cache {
   derived_table: {
-    sql: SELECT subtheme_id, subtheme, theme_id, theme, topic_id, topic FROM ${themes.SQL_TABLE_NAME} ;;
-    sql_trigger_value: SELECT MAX(endtime) FROM ${microservice_log.SQL_TABLE_NAME}  ;;
+    sql: SELECT subtheme_id, subtheme, theme_id, theme, topic_id, topic FROM cmslite.themes ;;
+    sql_trigger_value: SELECT MAX(endtime) FROM cmslite.microservice_log  ;;
     distribution_style: all
   }
   dimension: theme_id {}
