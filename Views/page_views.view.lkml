@@ -54,6 +54,21 @@ view: page_views {
     group_label: "Page View"
   }
 
+  # Temporary dimension for work on ESB project
+
+  dimension: esb_display_url {
+    description: "New display url dimension"
+    type:  string
+    sql: CASE
+      WHEN ${TABLE}.page_urlpath = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${TABLE}.page_urlquery
+      WHEN ${TABLE}.page_urlpath IN ('/solutionexplorer/ES_Access','/solutionexplorer/ES_Question','/solutionexplorer/ES_Result','/solutionexplorer/ES_Action') AND LEFT(${TABLE}.page_urlquery,3) = 'id='
+        THEN ${TABLE}.page_urlscheme || '://' || ${TABLE}.PAGE_URLHOST || ${TABLE}.page_urlpath ||'?' || SPLIT_PART(${TABLE}.page_urlquery,'&',1)
+      ELSE ${TABLE}.page_urlscheme || '://' || ${TABLE}.page_urlhost || regexp_replace(${TABLE}.page_urlpath, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
+      END;;
+    label: "ESB Display URL"
+    group_label: "Page"
+  }
+
   # Page View Time
 
   dimension_group: page_view_start {
