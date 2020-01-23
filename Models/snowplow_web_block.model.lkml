@@ -29,6 +29,10 @@ include: "/Includes/*.view"
 # include all dashboards in this project
 include: "/Dashboards/*.dashboard"
 
+# include cmslite_metadata project
+include: "//cmslite_metadata/Views/themes.view"
+include: "//cmslite_metadata/Views/microservice_log.view"
+
 # hidden theme_cache explore supports suggest_explore for theme and subtheme filters
 explore: theme_cache {
   hidden: yes
@@ -51,6 +55,7 @@ explore: site_cache {
 
 explore: page_views {
   persist_for: "10 minutes"
+  fields: [ALL_FIELDS*,-page_views.last_page_title]
   # exclude when people are viewing files on locally downloaded or hosted copies of webpages
   #sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
   #    AND ${page_url} NOT LIKE '%$/%'
@@ -77,11 +82,10 @@ explore: page_views {
     user_attribute: section
   }
   access_filter: {
-    field: cmslite_themes.theme_id
+    field: themes.theme_id
     user_attribute: theme
   }
 
-  fields: [ALL_FIELDS*,-page_views.last_page_title]
   # sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
   join: sessions {
     type: left_outer
@@ -94,9 +98,10 @@ explore: page_views {
     relationship: many_to_one
   }
 
-  join: cmslite_themes {
+  join: themes {
+    view_label: "Cmslite Themes"
     type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    sql_on: ${page_views.node_id} = ${themes.node_id} ;;
     relationship: one_to_one
   }
 
@@ -127,9 +132,9 @@ explore: sessions {
     relationship: many_to_one
   }
 
-  join: cmslite_themes {
+  join: themes {
     type: left_outer
-    sql_on: ${sessions.first_page_node_id} = ${cmslite_themes.node_id} ;;
+    sql_on: ${sessions.first_page_node_id} = ${themes.node_id} ;;
     relationship: one_to_one
   }
 
@@ -152,16 +157,13 @@ explore: sessions {
     user_attribute: section
   }
   access_filter: {
-    field: cmslite_themes.theme_id
+    field: themes.theme_id
     user_attribute: theme
   }
 }
 
 explore: users {
   persist_for: "10 minutes"
-
-
-
   # sql_always_where: ${first_page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
 }
 
@@ -173,9 +175,9 @@ explore: clicks{
   #    AND ${page_url} NOT LIKE '%$/%'
   #    AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' AND ${page_url} NOT LIKE 'mhtml:file://%' ;;
 
-  join: cmslite_themes {
+  join: themes {
     type: left_outer
-    sql_on: ${clicks.node_id} = ${cmslite_themes.node_id} ;;
+    sql_on: ${clicks.node_id} = ${themes.node_id} ;;
     relationship: one_to_one
   }
   access_filter: {
@@ -195,8 +197,9 @@ explore: clicks{
     field: page_section
     user_attribute: section
   }
+
   access_filter: {
-    field: cmslite_themes.theme_id
+    field: themes.theme_id
     user_attribute: theme
   }
 }
@@ -208,9 +211,9 @@ explore: searches {
   #    AND ${page_url} NOT LIKE '%$/%'
   #    AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' AND ${page_url} NOT LIKE 'mhtml:file://%';;
 
-  join: cmslite_themes {
+  join: themes {
     type: left_outer
-    sql_on: ${searches.node_id} = ${cmslite_themes.node_id} ;;
+    sql_on: ${searches.node_id} = ${themes.node_id} ;;
     relationship: one_to_one
   }
   access_filter: {
@@ -232,7 +235,7 @@ explore: searches {
     user_attribute: section
   }
   access_filter: {
-    field: cmslite_themes.theme_id
+    field: themes.theme_id
     user_attribute: theme
   }
 

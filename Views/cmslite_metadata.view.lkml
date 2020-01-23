@@ -1,14 +1,19 @@
+include: "//cmslite_metadata/Views/metadata.view"
+include: "//cmslite_metadata/Views/metadata_languages.view"
+include: "//cmslite_metadata/Views/dcterms_languages.view"
+
 view: cmslite_metadata {
   derived_table: {
     sql:  SELECT cm.*,
-            cdl.value AS cdl_language
-          FROM cmslite.metadata AS cm
-          LEFT JOIN cmslite.metadata_languages AS cml ON cm.node_id = cml.node_id
-          LEFT JOIN cmslite.dcterms_languages AS cdl ON cdl.id = cml.id;;
+      cdl.value AS cdl_language
+    FROM ${metadata.SQL_TABLE_NAME} AS cm
+    LEFT JOIN ${metadata_languages.SQL_TABLE_NAME} AS cml ON cm.node_id = cml.node_id
+    LEFT JOIN ${dcterms_languages.SQL_TABLE_NAME} AS cdl ON cdl.id = cml.id;;
 
     distribution_style: all
     persist_for: "24 hours"
-    }
+  }
+
   dimension: node_id {}
   dimension: title {}
   dimension: hr_url {}
