@@ -17,6 +17,22 @@ view: shared_fields_no_session {
     group_label: "Browser"
   }
 
+  # dvce_screenheight is not in sessions
+  dimension: devices_screen_height {
+    description: "The device screen height in pixels."
+    type: number
+    sql: ${TABLE}.dvce_screenheight ;;
+    group_label: "Device"
+  }
+
+  # dvce_screenwidth is not in sessions
+  dimension: devices_screen_width {
+    description: "The device screen width in pixels."
+    type: number
+    sql: ${TABLE}.dvce_screenwidth ;;
+    group_label: "Device"
+  }
+
   dimension: os_version {
     type: string
     sql: ${TABLE}.os_version ;;
@@ -104,9 +120,7 @@ view: shared_fields_no_session {
     label: "Page Display URL"
     # when editing also see clicks.truncated_target_url_nopar_case_insensitive
     description: "Cleaned URL of the page without query string or standard file names like index.html"
-    sql: CASE WHEN ${page_urlpath} = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${TABLE}.page_urlquery
-          ELSE ${page_url_scheme} || '://' || ${page_urlhost} || regexp_replace(${page_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
-         END;;
+    sql: ${TABLE}.page_display_url ;;
     group_label: "Page"
     link: {
       label: "Visit Page"
