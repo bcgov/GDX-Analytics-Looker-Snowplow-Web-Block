@@ -72,7 +72,7 @@ view: searches {
   dimension: search_terms {
     description: "The search term(s) that were queried."
     type:  string
-    sql:  replace(substring(${raw_search_terms}, 3, length(${raw_search_terms})-4),'+',' ') ;;
+    sql:  ${TABLE}.terms ;;
     group_label: "Results"
   }
 
@@ -98,7 +98,7 @@ view: searches {
     label: "Search Terms"
     description: "The search term(s) that were queried on www2.gov.bc.ca."
     type:  string
-    sql:  replace(substring(${raw_search_terms}, 3, length(${raw_search_terms})-4),'+',' ') ;;
+    sql:  ${TABLE}.terms ;;
     group_label: "Results"
     link: {
       label: "View Search"
