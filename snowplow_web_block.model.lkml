@@ -247,3 +247,7 @@ explore: cmslite_metadata {
     user_attribute: node_id
   }
 }
+
+explore: esb_se_pathways {
+  persist_for: "60 minutes"
+}
