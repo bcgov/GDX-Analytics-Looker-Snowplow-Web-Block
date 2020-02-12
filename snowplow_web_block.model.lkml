@@ -249,5 +249,12 @@ explore: cmslite_metadata {
 }
 
 explore: esb_se_pathways {
+  fields: [-page_views.last_page_title]
   persist_for: "60 minutes"
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_urlquery} LIKE 'id=' + ${esb_se_pathways.id} + '%';;
+    relationship: many_to_one
+  }
 }
