@@ -111,9 +111,9 @@ explore: page_views {
     relationship: one_to_one
   }
 
-join: component_name {
+join: myfs_component_name {
   type:  left_outer
-  sql_on: ${page_views.page_view_id} = ${component_name.id} ;;
+  sql_on: ${page_views.page_view_id} = ${myfs_component_name.id} ;;
   relationship: one_to_one
 }
 

@@ -1,4 +1,4 @@
-view: component_name {
+view: myfs_component_name {
   derived_table: {
     sql: SELECT wp.id, cn.*
           FROM atomic.ca_bc_gov_myfs_component_name_1  AS cn
