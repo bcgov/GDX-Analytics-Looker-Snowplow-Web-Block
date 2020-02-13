@@ -2,6 +2,7 @@ include: "/Includes/shared_fields_common.view"
 include: "/Includes/shared_fields_no_session.view"
 include: "/Includes/date_comparisons_common.view"
 
+
 view: page_views {
   sql_table_name: derived.page_views ;;
 
@@ -198,11 +199,12 @@ view: page_views {
     sql: CASE WHEN ${page_view_in_session_index} = 1 THEN ${page_title} ELSE NULL END ;;
   }
 
-  dimension: last_page_title {
-    description: "The title of the last page visited in the session."
-    type: string
-    sql: CASE WHEN ${page_view_in_session_index} = ${sessions_rollup.max_page_view_index} THEN ${page_title} ELSE NULL END ;;
-  }
+  # hidden to avoid requiring sessions_rollup (for optimization reasons)
+  #dimension: last_page_title {
+  #  description: "The title of the last page visited in the session."
+  #  type: string
+  #  sql: CASE WHEN ${page_view_in_session_index} = ${sessions_rollup.max_page_view_index} THEN ${page_title} ELSE NULL END ;;
+  #}
 
   # Page performance
     # these fields have been removed from the new web model

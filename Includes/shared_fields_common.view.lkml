@@ -590,6 +590,22 @@ view: shared_fields_common {
     }
   }
 
+  dimension: page_referrer_display_url {
+    type: string
+    sql: CASE
+      WHEN ${referrer_urlhost} = 'www2.gov.bc.ca' AND ${referrer_urlpath} = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${referrer_urlquery}
+      WHEN ${referrer_urlhost} = 'www2.gov.bc.ca' AND ${referrer_urlpath} = '/enSearch/sbcdetail' THEN 'https://www2.gov.bc.ca/enSearch/sbcdetail?' || REGEXP_REPLACE(${referrer_urlquery}, '([^&]*&[^&]*)&.*', '$1')
+      WHEN ${referrer_urlpath} IN ('/solutionexplorer/ES_Access','/solutionexplorer/ES_Question','/solutionexplorer/ES_Result','/solutionexplorer/ES_Action') AND LEFT(${referrer_urlquery},3) = 'id='
+        THEN ${referrer_urlscheme} || '://' || ${referrer_urlhost}  || ${referrer_urlpath} ||'?' || SPLIT_PART(${referrer_urlquery},'&',1)
+      ELSE ${referrer_urlscheme} || '://' || ${referrer_urlhost}  || regexp_replace(${referrer_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
+    END ;;
+    group_label: "Referrer"
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+  }
   ### Device
 
   dimension: device_type {

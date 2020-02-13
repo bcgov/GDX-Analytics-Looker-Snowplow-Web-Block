@@ -81,7 +81,6 @@ explore: page_views {
     user_attribute: theme
   }
 
-  fields: [ALL_FIELDS*,-page_views.last_page_title]
   # sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
   join: sessions {
     type: left_outer
@@ -109,6 +108,30 @@ explore: page_views {
   join: cmslite_metadata {
     type: left_outer
     sql_on: ${page_views.node_id} = ${cmslite_metadata.node_id};;
+    relationship: one_to_one
+  }
+
+join: component_name {
+  type:  left_outer
+  sql_on: ${page_views.page_view_id} = ${component_name.id} ;;
+  relationship: one_to_one
+}
+
+join: myfs_estimates {
+  type:  left_outer
+  sql_on: ${page_views.page_view_id} = ${myfs_estimates.id} ;;
+  relationship: one_to_one
+}
+
+}
+explore: myfs_estimates {
+  persist_for: "10 minutes"
+
+  label: "MyFS Estimates"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${myfs_estimates.id} ;;
     relationship: one_to_one
   }
 }
