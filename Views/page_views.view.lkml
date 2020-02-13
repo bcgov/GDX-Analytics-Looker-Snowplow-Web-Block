@@ -198,11 +198,12 @@ view: page_views {
     sql: CASE WHEN ${page_view_in_session_index} = 1 THEN ${page_title} ELSE NULL END ;;
   }
 
-  dimension: last_page_title {
-    description: "The title of the last page visited in the session."
-    type: string
-    sql: CASE WHEN ${page_view_in_session_index} = ${sessions_rollup.max_page_view_index} THEN ${page_title} ELSE NULL END ;;
-  }
+  # hidden to avoid requiring sessions_rollup (for optimization reasons)
+  #dimension: last_page_title {
+  #  description: "The title of the last page visited in the session."
+  #  type: string
+  #  sql: CASE WHEN ${page_view_in_session_index} = ${sessions_rollup.max_page_view_index} THEN ${page_title} ELSE NULL END ;;
+  #}
 
   # Page performance
     # these fields have been removed from the new web model

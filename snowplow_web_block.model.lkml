@@ -81,8 +81,7 @@ explore: page_views {
     user_attribute: theme
   }
 
-  fields: [ALL_FIELDS*,-page_views.last_page_title]
-  # sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with Dan's video analytics
+  # sql_always_where: ${page_url} NOT LIKE '%video.web.%' ;; -- Causing problems with video.gov analytics
   join: sessions {
     type: left_outer
     sql_on: ${sessions.session_id} = ${page_views.session_id};;
@@ -249,8 +248,8 @@ explore: cmslite_metadata {
 }
 
 explore: esb_se_pathways {
-  fields: [-page_views.last_page_title]
   persist_for: "60 minutes"
+  label: "ESB SE Pathways"
 
   join: page_views {
     type: left_outer
