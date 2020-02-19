@@ -33,7 +33,7 @@ view: shared_fields_common {
     description: "The browser name. Depending on the browser, name often matches the family, but can also include major version numbers."
     type: string
     sql: ${TABLE}.br_name ;;
-    drill_fields: [os_family]
+    drill_fields: [os_family,browser_name,browser_version]
     group_label: "Browser"
   }
 
@@ -41,7 +41,7 @@ view: shared_fields_common {
     description: "The major family of browser, regardless of name or version. e.g., Chrome, Safari, Internet Explorer, etc."
     type: string
     sql: ${TABLE}.br_family ;;
-    drill_fields: [os_family, browser_name]
+    drill_fields: [os_family,browser_name,browser_version]
     group_label: "Browser"
   }
 
@@ -518,7 +518,7 @@ view: shared_fields_common {
   dimension: os_family {
     type: string
     sql: ${TABLE}.os_family ;;
-    drill_fields: [browser_family, browser_name]
+    drill_fields: [browser_family,browser_name,browser_version]
     group_label: "OS"
   }
 
