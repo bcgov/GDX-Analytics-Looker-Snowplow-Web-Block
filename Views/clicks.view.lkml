@@ -97,7 +97,7 @@ view: clicks {
     # when editing also see clicks.truncated_target_url_nopar_case_insensitive
     description: "Cleaned URL of the page without query string or standard file names like index.html"
     sql: regexp_replace(regexp_replace(${target_url}, '\\?.*',''), 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
-    group_label: "Page"
+    group_label: "Target"
     link: {
       label: "Visit Page"
       url: "{{ value }}"

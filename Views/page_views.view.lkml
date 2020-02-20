@@ -2,6 +2,7 @@ include: "/Includes/shared_fields_common.view"
 include: "/Includes/shared_fields_no_session.view"
 include: "/Includes/date_comparisons_common.view"
 
+
 view: page_views {
   sql_table_name: derived.page_views ;;
 

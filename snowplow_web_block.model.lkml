@@ -110,6 +110,30 @@ explore: page_views {
     sql_on: ${page_views.node_id} = ${cmslite_metadata.node_id};;
     relationship: one_to_one
   }
+
+join: myfs_component_name {
+  type:  left_outer
+  sql_on: ${page_views.page_view_id} = ${myfs_component_name.id} ;;
+  relationship: one_to_one
+}
+
+join: myfs_estimates {
+  type:  left_outer
+  sql_on: ${page_views.page_view_id} = ${myfs_estimates.id} ;;
+  relationship: one_to_one
+}
+
+}
+explore: myfs_estimates {
+  persist_for: "10 minutes"
+
+  label: "MyFS Estimates"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${myfs_estimates.id} ;;
+    relationship: one_to_one
+  }
 }
 
 explore: sessions {
