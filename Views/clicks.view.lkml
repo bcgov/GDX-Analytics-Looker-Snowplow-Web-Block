@@ -167,7 +167,7 @@ view: clicks {
 
   dimension: target_urlpath {
     type: string
-    sql: REGEXP_SUBSTR(REGEXP_REPLACE(${TABLE}.target_url,'.*:\/\/'), '/.*') ;;
+    sql: SPLIT_PART(REGEXP_SUBSTR(REGEXP_REPLACE(${TABLE}.target_url,'.*:\/\/'), '/.*'), '?', 1) ;;
     group_label: "Target"
   }
 
