@@ -92,19 +92,6 @@ view: clicks {
     }
   }
 
-  dimension: target_display_url {
-    label: "Target Display URL"
-    # when editing also see clicks.truncated_target_url_nopar_case_insensitive
-    description: "Cleaned URL of the page without query string or standard file names like index.html"
-    sql: regexp_replace(regexp_replace(${target_url}, '\\?.*',''), 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
-    group_label: "Target"
-    link: {
-      label: "Visit Page"
-      url: "{{ value }}"
-      icon_url: "https://looker.com/favicon.ico"
-    }
-  }
-
   dimension: target_url_case_insensitive {
     type: string
     sql: LOWER(${TABLE}.target_url) ;;
@@ -152,7 +139,7 @@ view: clicks {
   }
 
   #substring select the host only
-  dimension: target_host {
+  dimension: target_urlhost {
     type: string
     # A range of non / chars, followed by a '.' (subdomain.domain.tdl), followed by range of non / or : characters (strips port)
     # https://stackoverflow.com/questions/17310972/how-to-parse-host-out-of-a-string-in-redshift
@@ -163,6 +150,31 @@ view: clicks {
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
+  }
+
+  dimension: target_display_url {
+    label: "Target Display URL"
+    # when editing also see clicks.truncated_target_url_nopar_case_insensitive
+    description: "Cleaned URL of the page without query string or standard file names like index.html"
+    sql: regexp_replace(regexp_replace(${target_url}, '\\?.*',''), 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
+    group_label: "Target"
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+  }
+
+  dimension: target_urlpath {
+    type: string
+    sql: REGEXP_SUBSTR(REGEXP_REPLACE(${TABLE}.target_url,'.*:\/\/'), '/.*') ;;
+    group_label: "Target"
+  }
+
+  dimension: target_urlquery {
+    type: string
+    sql: SPLIT_PART(${TABLE}.target_url, '?', 2) ;;
+    group_label: "Target"
   }
 
   #substring select the filename with extension
