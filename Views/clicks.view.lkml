@@ -50,6 +50,7 @@ view: clicks {
     description: "A label that is either \"link_click\" or \"download\"."
     type: string
     sql: ${TABLE}.click_type ;;
+    suggestions: ["download","link_click"]
     group_label: "Click"
   }
 
