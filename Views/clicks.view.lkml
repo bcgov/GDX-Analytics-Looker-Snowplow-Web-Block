@@ -182,13 +182,13 @@ view: clicks {
 
   dimension: target_urlpath {
     type: string
-    sql: SPLIT_PART(REGEXP_SUBSTR(REGEXP_REPLACE(${TABLE}.target_url,'.*:\/\/'), '/.*'), '?', 1) ;;
+    sql: SPLIT_PART(SPLIT_PART(REGEXP_SUBSTR(REGEXP_REPLACE(${TABLE}.target_url,'.*:\/\/'), '/.*'), '?', 1), '#', 1) ;;
     group_label: "Target"
   }
 
   dimension: target_urlquery {
     type: string
-    sql: SPLIT_PART(${TABLE}.target_url, '?', 2) ;;
+    sql: SPLIT_PART(SPLIT_PART(${TABLE}.target_url, '?', 2), '#', 1) ;;
     group_label: "Target"
   }
 
@@ -205,6 +205,107 @@ view: clicks {
     sql:REGEXP_SUBSTR(${TABLE}.target_url, '[^\.]+$') ;;
     group_label: "Target"
   }
+
+  ### Click Target Marketing
+
+  set: marketing_drills {
+    fields: [marketing_source, marketing_campaign, marketing_ministry,marketing_team,marketing_campaign_id,marketing_sequence,marketing_cta,marketing_platform,marketing_sender_placement,marketing_lang,marketing_audience,marketing_sub_audience,marketing_ad_type]
+  }
+
+  dimension: click_mkt_campaign {
+    type: string
+    sql:
+      CASE
+        WHEN POSITION('utm_campaign' in ${target_urlquery}) > 0 THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(${target_urlquery}, 'utm_campaign=', 2), '&', 1), '#', 1)
+        ELSE NULL END ;;
+    group_label: "Target Marketing"
+  }
+
+  dimension: marketing_date {
+    type: string
+    sql: SPLIT_PART(${click_mkt_campaign},'_',1) ;;
+    group_label: "Target Marketing"
+    drill_fields: [marketing_drills*]
+  }
+
+  dimension: marketing_ministry {
+    type: string
+    sql: SPLIT_PART(${click_mkt_campaign},'_',2) ;;
+    group_label: "Target Marketing"
+    drill_fields: [marketing_drills*]
+  }
+
+  dimension: marketing_team {
+    type: string
+    sql: SPLIT_PART(${click_mkt_campaign},'_',3) ;;
+    group_label: "Target Marketing"
+    drill_fields: [marketing_drills*]
+  }
+
+  dimension: marketing_campaign_id {
+    type: string
+    sql: SPLIT_PART(${click_mkt_campaign},'_',4) ;;
+    group_label: "Target Marketing"
+    drill_fields: [marketing_drills*]
+
+  }
+
+  dimension: marketing_sequence {
+    type: string
+    sql: SPLIT_PART(${click_mkt_campaign},'_',5) ;;
+    group_label: "Target Marketing"
+    drill_fields: [marketing_drills*]
+  }
+
+  dimension: marketing_cta {
+    type: string
+    sql: SPLIT_PART(${click_mkt_campaign},'_',6) ;;
+    group_label: "Target Marketing"
+    drill_fields: [marketing_drills*]
+  }
+
+  dimension: marketing_platform {
+    type: string
+    sql: SPLIT_PART(${click_mkt_campaign},'_',7) ;;
+    group_label: "Target Marketing"
+    drill_fields: [marketing_drills*]
+  }
+
+  dimension: marketing_sender_placement {
+    type: string
+    sql: SPLIT_PART(${click_mkt_campaign},'_',8) ;;
+    group_label: "Target Marketing"
+    drill_fields: [marketing_drills*]
+  }
+
+  dimension: marketing_lang {
+    type: string
+    sql: SPLIT_PART(${click_mkt_campaign},'_',9) ;;
+    group_label: "Target Marketing"
+    drill_fields: [marketing_drills*]
+  }
+
+  dimension: marketing_audience {
+    type: string
+    sql: SPLIT_PART(${click_mkt_campaign},'_',10) ;;
+    group_label: "Target Marketing"
+    drill_fields: [marketing_drills*]
+  }
+
+  dimension: marketing_sub_audience {
+    type: string
+    sql: SPLIT_PART(${click_mkt_campaign},'_',11) ;;
+    group_label: "Target Marketing"
+    drill_fields: [marketing_drills*]
+  }
+
+  dimension: marketing_ad_type {
+    type: string
+    sql: SPLIT_PART(${click_mkt_campaign},'_',12) ;;
+    group_label: "Target Marketing"
+    drill_fields: [marketing_drills*]
+  }
+
 
   #was the click to a different domain name (url host)
   dimension: offsite_click {
