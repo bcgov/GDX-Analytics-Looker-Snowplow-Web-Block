@@ -188,7 +188,7 @@ view: clicks {
 
   dimension: target_urlquery {
     type: string
-    sql: SPLIT_PART(${TABLE}.target_url, '?', 2) ;;
+    sql: SPLIT_PART(SPLIT_PART(${TABLE}.target_url, '?', 2), '#', 1) ;;
     group_label: "Target"
   }
 
