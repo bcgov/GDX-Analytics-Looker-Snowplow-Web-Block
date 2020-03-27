@@ -113,8 +113,9 @@ view: date_comparisons_common {
   # the last_period date range. Exploring comparison_date with any measure and a pivot
   # on date_window results in a pointwise comparison of current and last periods
   #
-  dimension: comparison_date {
+  dimension: comparison_date_sort {
     group_label: "Flexible Filter"
+    hidden: yes
     required_fields: [date_window]
     description: "Comparison Date offsets measures from the last period to appear in the range of the current period,
     allowing a pairwise comparison between these periods when used with Date Window."
@@ -130,6 +131,24 @@ view: date_comparisons_common {
          ELSE
            NULL
        END ;;
+  }
+
+
+  dimension: comparison_date {
+    group_label: "Flexible Filter"
+    type: string
+    sql:
+       CASE
+         WHEN ${filter_start_raw} >= ${date_start}
+             AND ${filter_start_raw} < ${date_end}
+            THEN TO_CHAR(${filter_start_date},'Mon DD') || '/' || TO_CHAR(DATEADD(DAY,-${period_difference},(${filter_start_date})),'Mon DD')
+         WHEN ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
+             AND ${filter_start_raw} < ${date_start}
+            THEN TO_CHAR(DATEADD(DAY,${period_difference},(${filter_start_date})),'Mon DD') || '/' || TO_CHAR(${filter_start_date},'Mon DD')
+         ELSE
+           NULL
+       END ;;
+    order_by_field: comparison_date_sort
   }
 
   parameter: summary_granularity {
