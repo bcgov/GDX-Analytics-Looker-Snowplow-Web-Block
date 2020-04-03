@@ -581,7 +581,7 @@ view: shared_fields_common {
 
   dimension: page_referrer {
     type: string
-    sql: COALESCE(${TABLE}.page_referrer, '(direct link)')  ;;
+    sql: ${TABLE}.page_referrer ;;
     group_label: "Referrer"
     link: {
       label: "Visit Page"
