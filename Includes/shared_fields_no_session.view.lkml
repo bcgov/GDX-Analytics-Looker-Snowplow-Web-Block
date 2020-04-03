@@ -72,6 +72,13 @@ view: shared_fields_no_session {
     group_label: "Page"
   }
 
+  dimension: page_sub_section {
+    description: "The identifier for a subsection of a website. The part of the URL between the second and third '/' in the path"
+    type: string
+    sql: SPLIT_PART(${TABLE}.page_urlpath,'/',3) ;;
+    group_label: "Page"
+  }
+
   dimension: page_section_exclude {
     description: "An exclusion filter for the identifier for a section of a website used to block sections of a site matching the pattern below.. The part of the URL after the domain before the next '/'."
     type: string
@@ -139,7 +146,7 @@ view: shared_fields_no_session {
   dimension: page_urlhost {
     description: "The web page domain or host."
     type: string
-    sql: LOWER(${TABLE}.page_urlhost) ;;
+    sql: ${TABLE}.page_urlhost ;;
     suggest_explore: site_cache
     suggest_dimension: site_cache.page_urlhost
     group_label: "Page"
