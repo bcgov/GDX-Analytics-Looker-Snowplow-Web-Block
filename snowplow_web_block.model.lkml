@@ -123,6 +123,11 @@ join: myfs_estimates {
   relationship: one_to_one
 }
 
+  join: countries {
+    type:  left_outer
+    sql_on: ${page_views.geo_country} = ${countries.country_code} ;;
+    relationship: one_to_one
+  }
 }
 explore: myfs_estimates {
   persist_for: "10 minutes"

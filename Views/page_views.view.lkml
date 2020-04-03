@@ -206,6 +206,100 @@ view: page_views {
   #  sql: CASE WHEN ${page_view_in_session_index} = ${sessions_rollup.max_page_view_index} THEN ${page_title} ELSE NULL END ;;
   #}
 
+  # Custom dimensions for WorkBC
+  dimension: workbc_blueprint_page {
+    label: "WorkBC Blueprint Page"
+    type: string
+    sql:  CASE WHEN ${TABLE}.page_display_url IN ('https://www.workbc.ca/BlueprintBuilder/','https://www.workbc.ca/BlueprintBuilder') THEN
+            CASE
+              WHEN ${TABLE}.page_urlquery LIKE '%page=2%' THEN 'Build'
+              WHEN ${TABLE}.page_urlquery LIKE '%page=3%' THEN 'View'
+              ELSE 'Register'
+            END
+          ELSE NULL
+          END;;
+    group_label: "WorkBC Dimensions"
+    order_by_field: workbc_blueprint_page_sort
+  }
+
+  dimension: workbc_blueprint_page_sort {
+    label: "WorkBC Blueprint Page Sort"
+    type: string
+    hidden: yes
+    sql:  CASE WHEN ${TABLE}.page_display_url IN ('https://www.workbc.ca/BlueprintBuilder/','https://www.workbc.ca/BlueprintBuilder') THEN
+            CASE
+              WHEN ${TABLE}.page_urlquery LIKE '%page=2%' THEN '2Build'
+              WHEN ${TABLE}.page_urlquery LIKE '%page=3%' THEN '3View'
+              ELSE '1Register'
+            END
+          ELSE NULL
+          END;;
+    group_label: "WorkBC Dimensions"
+  }
+
+
+  dimension: workbc_quiz_name {
+    label: "WorkBC Quiz Name"
+    type: string
+    sql:  CASE WHEN ${TABLE}.page_urlquery LIKE '%quiz=%' THEN SPLIT_PART(REGEXP_SUBSTR(${TABLE}.page_urlquery, 'quiz=([a-zA-Z]+)'),'=',2)
+            ELSE 'Quiz Home'
+            END ;;
+    group_label: "WorkBC Dimensions"
+    order_by_field: workbc_quiz_name_sort
+  }
+
+  dimension: workbc_quiz_name_sort {
+    label: "WorkBC Quiz Name Sort"
+    hidden: yes
+    type: string
+    sql:  CASE WHEN ${TABLE}.page_urlquery LIKE '%quiz=%' THEN SPLIT_PART(REGEXP_SUBSTR(${TABLE}.page_urlquery, 'quiz=([a-zA-Z]+)'),'=',2)
+            ELSE '1Quiz Home'
+            END ;;
+    group_label: "WorkBC Dimensions"
+  }
+  dimension: workbc_quiz_result {
+    label: "WorkBC Quiz Result"
+    type: string
+    sql:  CASE WHEN ${TABLE}.page_urlquery LIKE 'id%quiz=%' THEN SPLIT_PART(REGEXP_SUBSTR(${TABLE}.page_urlquery, 'id=([0-9]+)'),'=',2)
+            ELSE NULL
+            END ;;
+    group_label: "WorkBC Dimensions"
+  }
+
+  dimension: workbc_page_section {
+    label: "WorkBC Page Section"
+    description: "The identifier for a section of the WorkBC site."
+    type: string
+    sql: SPLIT_PART(SPLIT_PART(${TABLE}.page_urlpath,'/',2),'.',1) ;;
+    group_label: "WorkBC Dimensions"
+  }
+
+  dimension: workbc_page_sub_section {
+    label: "WorkBC Page Sub Section"
+    description: "The identifier for a subsection of the WorkBC site. The part of the URL between the second and third '/' in the path"
+    type: string
+    sql: CASE WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',3) <> ''
+            THEN SPLIT_PART(SPLIT_PART(${TABLE}.page_urlpath,'/',3),'.',1)
+            ELSE 'Main Page'
+          END ;;
+    group_label: "WorkBC Dimensions"
+    drill_fields: [page_display_url]
+    order_by_field: workbc_page_sub_section_sort
+  }
+
+  dimension: workbc_page_sub_section_sort {
+    label: "WorkBC Page Sub Section Sort"
+    hidden: yes
+    description: "The identifier for a subsection of the WorkBC site. The part of the URL between the second and third '/' in the path"
+    type: string
+    sql: CASE WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',3) <> ''
+            THEN SPLIT_PART(SPLIT_PART(${TABLE}.page_urlpath,'/',3),'.',1)
+            ELSE '111Main Page'
+          END ;;
+    group_label: "WorkBC Dimensions"
+  }
+
+
   # Page performance
     # these fields have been removed from the new web model
 
