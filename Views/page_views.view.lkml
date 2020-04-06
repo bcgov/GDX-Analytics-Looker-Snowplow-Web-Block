@@ -264,6 +264,12 @@ view: page_views {
             ELSE NULL
             END ;;
     group_label: "WorkBC Dimensions"
+
+    link: {
+      label: "View Quiz Result"
+      url: "https://www.workbc.ca/CareerCompass/Result?id={{ value }}&quiz={{workbc_quiz_name}}"
+      icon_url: "view-source:https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
+    }
   }
 
   dimension: workbc_page_section {
