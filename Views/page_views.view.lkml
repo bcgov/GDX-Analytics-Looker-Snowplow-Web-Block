@@ -268,7 +268,7 @@ view: page_views {
     link: {
       label: "View Quiz Result"
       url: "https://www.workbc.ca/CareerCompass/Result?id={{ value }}&quiz={{workbc_quiz_name}}"
-      icon_url: "view-source:https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
+      icon_url: "https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
     }
   }
 

@@ -108,17 +108,16 @@ view: searches {
   }
 
   dimension: search_terms_workbc {
-    description: "The search term(s) that were queried on WorkBC."
     label: "WorkBC Search Terms"
+    description: "The search term(s) that were queried on WorkBC."
     type:  string
     sql:  REPLACE(${TABLE}.terms,'%20',' ') ;;
+    group_label: "Results"
     link: {
       label: "View Search"
       url: "https://www.workbc.ca/Search-Results.aspx?q={{ value }}"
-      icon_url: "view-source:https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
+      icon_url: "https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
     }
-
-    group_label: "Results"
   }
 
   # filters: string
