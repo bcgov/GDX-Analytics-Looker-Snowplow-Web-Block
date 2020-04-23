@@ -197,14 +197,18 @@ view: clicks {
   #substring select the filename with extension
   dimension: target_file {
     type: string
-    sql: REGEXP_SUBSTR(${TABLE}.target_url, '[^/]+$') ;;
+    sql: REGEXP_SUBSTR(REGEXP_REPLACE(SPLIT_PART(SPLIT_PART(SPLIT_PART(${target_url}, ${target_urlhost} , 2),'?', 1),'#', 1),'(.aspx)$'),'([^\/]+\.[A-Za-z0-9]+)$') ;;
     group_label: "Target"
   }
 
   #substring select the extension only
   dimension: target_extension {
     type: string
-    sql:REGEXP_SUBSTR(${TABLE}.target_url, '[^\.]+$') ;;
+    sql:CASE
+        WHEN SPLIT_PART(REGEXP_REPLACE(SPLIT_PART(SPLIT_PART(${TABLE}.target_url, '?', 1), '#', 1), '(.aspx)$'), ${target_urlhost}, 2) LIKE '%.%'
+        THEN REGEXP_SUBSTR(SPLIT_PART(REGEXP_REPLACE(SPLIT_PART(SPLIT_PART(${TABLE}.target_url, '?', 1), '#', 1), '(.aspx)$'), ${target_urlhost}, 2), '([^\.]+$)')
+        ELSE NULL
+      END ;;
     group_label: "Target"
   }
 
