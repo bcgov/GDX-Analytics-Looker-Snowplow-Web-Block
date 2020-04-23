@@ -27,7 +27,7 @@ view: page_views {
   }
 
   dimension: referrer_medium {
-    drill_fields: [referrer_medium, referrer_source, referrer_urlhost, page_display_url]
+    drill_fields: [referrer_medium, referrer_source, referrer_urlhost, page_referrer_display_url]
   }
 
 
