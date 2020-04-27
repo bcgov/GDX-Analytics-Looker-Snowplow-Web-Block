@@ -70,6 +70,10 @@ explore: page_views {
     field: page_exclusion_filter
     user_attribute: exclusion_filter
   }
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
   access_filter: {
@@ -173,6 +177,10 @@ explore: sessions {
     field: first_page_exclusion_filter
     user_attribute: exclusion_filter
   }
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
   access_filter: {
@@ -218,6 +226,10 @@ explore: clicks{
     field: page_exclusion_filter
     user_attribute: exclusion_filter
   }
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
   access_filter: {
     field: page_section
@@ -252,6 +264,10 @@ explore: searches {
   access_filter: {
     field: page_exclusion_filter
     user_attribute: exclusion_filter
+  }
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
   }
 
   #access filter based on the first part of the URL (eg https://site.com/section/page.html)
