@@ -68,7 +68,7 @@ view: shared_fields_no_session {
   dimension: page_section {
     description: "The identifier for a section of a website. The part of the URL after the domain before the next '/'"
     type: string
-    sql: SPLIT_PART(${TABLE}.page_urlpath,'/',2) ;;
+    sql: ${TABLE}.page_section;;
     group_label: "Page"
   }
 
