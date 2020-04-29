@@ -212,7 +212,7 @@ view: sessions {
     description: "The URL when a session began matches the exclusion filter. For example subsites of the NRS intranet."
     type: string
     sql: ${TABLE}.first_page_exclusion_filter ;;
-    group_label: "Page"
+    group_label: "First Page"
   }
 
   # dimension: first_page_urlport {
