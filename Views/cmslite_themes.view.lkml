@@ -2,16 +2,16 @@
 # NOTE: Changes here should be replicated in https://analytics.gov.bc.ca/projects/google_api/files/cmslite_themes.view.lkml
 # ================================================================================
 
-view: cmslite_themes {
-  sql_table_name: cmslite.themes ;;
+include: "//cmslite_metadata/Views/themes.view"
 
-  # node_id
-  # the CMSL node ID
-  dimension: node_id {
-    description: "The alphanumeric CMS Lite node identifier."
-    type: string
-    sql: ${TABLE}.node_id ;;
-  }
+view: cmslite_themes {
+  extends: [themes]
+
+  # Hide unneeded dimensions from base view
+  dimension: parent_node_id {hidden: yes}
+  dimension: parent_title {hidden:yes}
+  dimension: title {hidden: yes}
+  dimension: hr_url {hidden: yes}
 
   # theme
   # the CMSL theme
