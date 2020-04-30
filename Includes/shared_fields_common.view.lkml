@@ -572,13 +572,6 @@ view: shared_fields_common {
   # group_label: "Page"
   # }
 
-  #dimension: page_title {
-  #  description: "The web page title."
-  #  type: string
-  #  sql: ${TABLE}.page_title ;;
-  #  group_label: "Page"
-  #}
-
   dimension: page_referrer {
     type: string
     sql: ${TABLE}.page_referrer ;;
