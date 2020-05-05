@@ -1,6 +1,11 @@
 view: cmslite_metadata {
   derived_table: {
-    sql:  SELECT cm.*,
+    sql:  SELECT
+            cm.node_id,
+            cm.title,
+            cm.hr_url,
+            cm.language_code,
+            cm.language_name,
             cdl.value AS cdl_language
           FROM cmslite.metadata AS cm
           LEFT JOIN cmslite.metadata_languages AS cml ON cm.node_id = cml.node_id
