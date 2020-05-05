@@ -306,6 +306,55 @@ view: page_views {
   }
 
 
+
+  # Custom dimensions for LGIS
+  dimension: lgis_section {
+    label: "LGIS Section"
+    description: "The identifier for a section of the LGIS site. The part of the URL between the third and fourth '/' in the path"
+    type: string
+    sql: CASE
+            WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',2) = 'EXT' AND SPLIT_PART(${TABLE}.page_urlpath,'/',3) = 'Default.aspx' THEN 'Main Page'
+            WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',2) = 'EXT' THEN SPLIT_PART(${TABLE}.page_urlpath,'/',3)
+            WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',4) = '' OR SPLIT_PART(${TABLE}.page_urlpath,'/',4) IN ('default.aspx','Default.aspx','welcome') THEN 'Main Page'
+            WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',4) <> '' THEN SPLIT_PART(${TABLE}.page_urlpath,'/',4)
+            ELSE NULL
+          END ;;
+    group_label: "LGIS Dimensions"
+    drill_fields: [page_display_url]
+    order_by_field: lgis_section_sort
+  }
+
+  dimension: lgis_section_sort {
+    label: "LGIS Section"
+    hidden: yes
+    description: "The identifier for a section of the LGIS site. The part of the URL between the third and fourth '/' in the path"
+    type: string
+    sql: CASE
+            WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',2) = 'EXT' AND SPLIT_PART(${TABLE}.page_urlpath,'/',3) = 'Default.aspx' THEN '00-Main Page'
+            WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',2) = 'EXT' THEN SPLIT_PART(${TABLE}.page_urlpath,'/',3)
+            WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',4) = '' OR SPLIT_PART(${TABLE}.page_urlpath,'/',4) IN ('default.aspx','Default.aspx','welcome') THEN '00-Main Page'
+            WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',4) <> '' THEN SPLIT_PART(${TABLE}.page_urlpath,'/',4)
+            ELSE NULL
+          END ;;
+    group_label: "LGIS Dimensions"
+  }
+
+  # Custom dimensions for LGIS
+  dimension: lgis_user_type {
+    label: "LGIS User Type"
+    description: "The use type of a page on the LGIS site. The part of the URL between the second and third '/' in the path"
+    type: string
+    sql: CASE
+            WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',2) = 'EXT' THEN 'External'
+            WHEN SPLIT_PART(${TABLE}.page_urlpath,'/',3) <> '' THEN SPLIT_PART(${TABLE}.page_urlpath,'/',2) || '/' || SPLIT_PART(${TABLE}.page_urlpath,'/',3)
+            ELSE NULL
+          END ;;
+    group_label: "LGIS Dimensions"
+    drill_fields: [page_display_url]
+  }
+
+
+
   # Page performance
     # these fields have been removed from the new web model
 
@@ -366,6 +415,26 @@ view: page_views {
     sql: ${session_id} ;;
     group_label: "Counts"
   }
+
+
+  measure: LGIS_page_view_count {
+    label: "LGIS Page View Count"
+    type: count_distinct
+    sql: ${page_view_id} ;;
+    group_label: "Counts"
+    drill_fields: [page_display_url,lgis_section,lgis_user_type,session_count,page_view_count]
+  }
+
+
+  measure: LGIS_session_count {
+    label: "LGIS Session Count"
+    type: count_distinct
+    sql: ${session_id} ;;
+    group_label: "Counts"
+    drill_fields: [page_display_url,lgis_section,lgis_user_type,page_view_count,session_count]
+  }
+
+
 
   measure: user_count {
     type: count_distinct
