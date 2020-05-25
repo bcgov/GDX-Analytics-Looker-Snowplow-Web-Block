@@ -93,6 +93,12 @@ view: clicks {
     }
   }
 
+  dimension: target_url_fragment {
+    type: string
+    sql: SPLIT_PART(${TABLE}.target_url,'#',2) ;;
+    group_label: "Target"
+  }
+
   dimension: target_url_case_insensitive {
     type: string
     sql: LOWER(${TABLE}.target_url) ;;
