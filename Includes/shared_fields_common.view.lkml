@@ -23,7 +23,6 @@ view: shared_fields_common {
 
   dimension: useragent {
     description: "The useragent string for this session."
-    hidden: yes
     type: string
     sql: ${TABLE}.useragent ;;
     group_label: "Browser"
