@@ -22,6 +22,7 @@ view: shared_fields_common {
   ### Browser
 
   dimension: useragent {
+    label: "User Agent"
     description: "The useragent string for this session."
     type: string
     sql: ${TABLE}.useragent ;;
