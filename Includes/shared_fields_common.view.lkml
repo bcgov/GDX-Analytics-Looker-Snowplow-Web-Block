@@ -470,6 +470,18 @@ view: shared_fields_common {
     sql: ${ip_address} LIKE '142.22.%' OR ${ip_address} LIKE '142.23.%' OR ${ip_address} LIKE '142.24.%' OR ${ip_address} LIKE '142.25.%' OR ${ip_address} LIKE '142.26.%' OR ${ip_address} LIKE '142.27.%' OR ${ip_address} LIKE '142.28.%' OR ${ip_address} LIKE '142.29.%' OR ${ip_address} LIKE '142.30.%' OR ${ip_address} LIKE '142.31.%' OR  ${ip_address} LIKE '142.32.%' OR ${ip_address} LIKE '142.33.%' OR ${ip_address} LIKE '142.34.%' OR ${ip_address} LIKE '142.35.%' OR ${ip_address} LIKE '142.36.%' ;;
   }
 
+  dimension: ldb_ip_range {
+    description: "The IP address maps to groups of IPs provided by the LDB."
+    label: "LDB IP Range"
+    type: string
+    # the filter is checking to see if the IP is in the gov network
+    sql: CASE
+            WHEN ${ip_address} LIKE '142.22.%' OR ${ip_address} LIKE '142.23.%' OR ${ip_address} LIKE '142.24.%' OR ${ip_address} LIKE '142.25.%' OR ${ip_address} LIKE '142.26.%' OR ${ip_address} LIKE '142.27.%' OR ${ip_address} LIKE '142.28.%' OR ${ip_address} LIKE '142.29.%' OR ${ip_address} LIKE '142.30.%' OR ${ip_address} LIKE '142.31.%' OR  ${ip_address} LIKE '142.32.%' OR ${ip_address} LIKE '142.33.%' OR ${ip_address} LIKE '142.34.%' OR ${ip_address} LIKE '142.35.%' OR ${ip_address} LIKE '142.36.%' THEN 'Government'
+            WHEN ${ip_address} LIKE '64.114.89.%' OR ${ip_address} LIKE '207.194.196.%' THEN 'BC Liquor (Retail & Head Office)'
+            WHEN ${ip_address} LIKE '205.250.135.%' OR ${ip_address} LIKE '207.81.212.%' OR ${ip_address} LIKE '35.203.104.%' THEN 'Web Vendor (D7)'
+          ELSE 'Other' END ;;
+  }
+
   dimension: is_efficiencybc_dev {
     description: "Yes if the IP address maps to EfficiencyBC's development IPs."
     type: yesno
