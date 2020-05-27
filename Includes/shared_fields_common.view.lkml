@@ -480,6 +480,7 @@ view: shared_fields_common {
             WHEN ${ip_address} LIKE '64.114.89.%' OR ${ip_address} LIKE '207.194.196.%' THEN 'BC Liquor (Retail & Head Office)'
             WHEN ${ip_address} LIKE '205.250.135.%' OR ${ip_address} LIKE '207.81.212.%' OR ${ip_address} LIKE '35.203.104.%' THEN 'Web Vendor (D7)'
           ELSE 'Other' END ;;
+    suggestions: ["Government", "BC Liquor (Retail & Head Office)", "Web Vendor (D7)", "Other"]
   }
 
   dimension: is_efficiencybc_dev {
