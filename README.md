@@ -4,7 +4,7 @@ This Block represents an instance of the Government of British Columbia’s [Loo
 
 ## Features
 
-Looker is a data vision tool that is used with Snowplow Analytics. It presents the data in various formats such as visuals, tables and maps and allows the user to customize the results with an interactive model.
+This GDX Analytics project provides views into the web analytics data. 
 
 ## Requirements
  
