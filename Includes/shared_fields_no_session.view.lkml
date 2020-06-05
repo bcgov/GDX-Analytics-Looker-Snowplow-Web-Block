@@ -75,7 +75,7 @@ view: shared_fields_no_session {
   dimension: page_sub_section {
     description: "The identifier for a subsection of a website. The part of the URL between the second and third '/' in the path"
     type: string
-    sql: SPLIT_PART(${TABLE}.page_urlpath,'/',3) ;;
+    sql: ${TABLE}.page_subsection ;;
     group_label: "Page"
   }
 

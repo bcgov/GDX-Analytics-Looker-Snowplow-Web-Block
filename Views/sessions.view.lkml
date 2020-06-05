@@ -185,6 +185,12 @@ view: sessions {
     sql: ${TABLE}.first_page_section ;;
     group_label: "First Page"
   }
+  dimension: first_page_sub_section {
+    description: "The identifier for a subsection of a website. The part of the URL between the second and third '/' in the path"
+    type: string
+    sql: ${TABLE}.first_page_subsection ;;
+    group_label: "First Page"
+  }
   dimension: first_page_section_exclude {
     description: "An exclusion filter for the identifier for a section of a website used to block sections of a site matching the pattern below. The part of the URL after the domain before the next '/'."
     type: string
