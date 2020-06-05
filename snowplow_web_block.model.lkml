@@ -81,6 +81,10 @@ explore: page_views {
     user_attribute: section
   }
   access_filter: {
+    field: page_sub_section
+    user_attribute: sub_section
+  }
+  access_filter: {
     field: cmslite_themes.theme_id
     user_attribute: theme
   }
@@ -188,6 +192,10 @@ explore: sessions {
     user_attribute: section
   }
   access_filter: {
+    field: first_page_sub_section
+    user_attribute: sub_section
+  }
+  access_filter: {
     field: cmslite_themes.theme_id
     user_attribute: theme
   }
@@ -236,6 +244,10 @@ explore: clicks{
     user_attribute: section
   }
   access_filter: {
+    field: page_sub_section
+    user_attribute: sub_section
+  }
+  access_filter: {
     field: cmslite_themes.theme_id
     user_attribute: theme
   }
@@ -274,6 +286,10 @@ explore: searches {
   access_filter: {
     field: page_section
     user_attribute: section
+  }
+  access_filter: {
+    field: page_sub_section
+    user_attribute: sub_section
   }
   access_filter: {
     field: cmslite_themes.theme_id
