@@ -318,3 +318,19 @@ explore: esb_se_pathways {
     relationship: many_to_one
   }
 }
+
+explore: youtube_embed_video {
+  persist_for: "60 minutes"
+
+  join: events {
+    type: left_outer
+    sql_on: ${events.event_id} = ${youtube_embed_video.root_id};;
+    relationship: many_to_one
+  }
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_url} = ${events.page_url};;
+    relationship: many_to_one
+  }
+}
