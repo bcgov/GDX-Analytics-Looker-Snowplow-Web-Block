@@ -38,14 +38,19 @@ view: chatbot {
     dimension: link_click_url {
       type: string
       sql: ${TABLE}.link_click_url ;;
+      drill_fields: [page_views.chatbot_page_display_url]
       link: {
         label: "Visit Page"
         url: "{{ value }}"
         icon_url: "https://looker.com/favicon.ico"
       }
     }
-    dimension: intent {}
-    dimension: intent_category {}
+    dimension: intent {
+      drill_fields: [page_views.chatbot_page_display_url]
+    }
+    dimension: intent_category {
+      drill_fields: [intent, page_views.chatbot_page_display_url]
+    }
     dimension: text {
       type: string
       sql: ${TABLE}.text ;;
