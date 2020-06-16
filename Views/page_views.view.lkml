@@ -354,6 +354,22 @@ view: page_views {
   }
 
 
+  dimension_group: collector_tstamp {
+    group_label: "Date/Time Fields"
+
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.collector_tstamp ;;
+    description: "The timestamp for the event that was recorded by the collector."
+  }
 
   # Page performance
     # these fields have been removed from the new web model
