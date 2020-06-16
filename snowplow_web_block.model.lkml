@@ -149,6 +149,24 @@ explore: myfs_estimates {
   }
 }
 
+explore: chatbot {
+  persist_for: "10 minutes"
+
+  label: "Chatbot"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${chatbot.id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+
+}
+
 explore: sessions {
   persist_for: "10 minutes"
 
