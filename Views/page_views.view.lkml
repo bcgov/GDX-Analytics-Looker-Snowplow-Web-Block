@@ -305,7 +305,21 @@ view: page_views {
     group_label: "WorkBC Dimensions"
   }
 
-
+# Custom Dimensions for Chatbot
+dimension: chatbot_page_display_url {
+  type: string
+    label: "Chatbot Page Display URL"
+    # when editing also see clicks.truncated_target_url_nopar_case_insensitive
+    description: "Cleaned URL of the page without query string or standard file names like index.html for Chatbot"
+    sql: ${TABLE}.page_display_url ;;
+    group_label: "Chatbot"
+    drill_fields: [page_views.page_referrer, chatbot.intent, chatbot.intent_category]
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+}
 
   # Custom dimensions for LGIS
   dimension: lgis_section {
