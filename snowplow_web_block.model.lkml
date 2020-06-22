@@ -340,7 +340,6 @@ explore: esb_se_pathways {
 explore: youtube_embed_video {
   persist_for: "60 minutes"
 
-
   join: page_views {
     type: left_outer
     #sql_on: ${page_views.page_url} = ${events.page_url} AND ${page_views.collector_tstamp_time} = ${events.collector_tstamp_time};;

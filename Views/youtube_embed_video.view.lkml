@@ -7,7 +7,6 @@ view: youtube_embed_video {
     distribution_style: all
     persist_for: "2 hours"
   }
-  #sql_table_name: atomic.ca_bc_gov_youtube_youtube_playerstate_2 ;;
 
 
   dimension: page_view_id {
