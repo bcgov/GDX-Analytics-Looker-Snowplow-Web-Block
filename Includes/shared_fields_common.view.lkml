@@ -88,6 +88,12 @@ view: shared_fields_common {
     sql: ${TABLE}.geo_region ;;
     group_label: "Location"
   }
+  dimension: geo_region_or_country {
+    type: string
+    description: "The Geo Region or Country when the Region is blank."
+    sql: COALESCE(${TABLE}.geo_region_name,${TABLE}.geo_country)  ;;
+    group_label: "Location"
+  }
 
   dimension: geo_region_name {
     type: string

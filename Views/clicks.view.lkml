@@ -181,6 +181,30 @@ view: clicks {
     }
   }
 
+
+  dimension: tibc_target_display_url {
+    label: "TIBC Target Display URL"
+    # when editing also see clicks.truncated_target_url_nopar_case_insensitive
+    description: "Cleaned URL of the page without query string or standard file names like index.html"
+    sql:
+      CASE
+        WHEN ${target_urlscheme} IN ('sms','tel') THEN ${target_url_nopar_case_insensitive}
+        WHEN ${target_urlhost} = 'www2.gov.bc.ca' AND ${target_urlpath} = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${target_urlquery}
+        WHEN ${target_urlhost} = 'www2.gov.bc.ca' AND ${target_urlpath} = '/enSearch/sbcdetail' THEN 'https://www2.gov.bc.ca/enSearch/sbcdetail?' || REGEXP_REPLACE(${target_urlquery}, '([^&]*&[^&]*)&.*', '$1')
+        WHEN ${target_urlpath} IN ('/solutionexplorer/ES_Access','/solutionexplorer/ES_Question','/solutionexplorer/ES_Result','/solutionexplorer/ES_Action') AND LEFT(${target_urlquery},3) = 'id='
+          THEN ${target_urlscheme} || '://' || ${target_urlhost}  || ${target_urlpath} ||'?' || SPLIT_PART(${target_urlquery},'&',1)
+        WHEN ${target_urlhost} = 'news.gov.bc.ca' AND ${target_urlpath} = '/Search' THEN 'https://news.gov.bc.ca/Search?' || SPLIT_PART(${target_urlquery}, '&',1)
+        ELSE ${target_urlscheme} || '://' || ${target_urlhost}  || regexp_replace(${target_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
+      END ;;
+    group_label: "TIBC"
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+  }
+
+
   dimension: target_urlscheme {
     type:  string
     sql: SPLIT_PART(${TABLE}.target_url, ':', 1) ;;
