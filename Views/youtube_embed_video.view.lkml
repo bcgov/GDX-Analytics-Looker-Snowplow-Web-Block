@@ -104,7 +104,7 @@ view: youtube_embed_video {
 
   measure: status_count {
     description: "Count of video Status"
-    type: count_distinct
-    sql: ${status} ;;
+    type: count
   }
+
 }
