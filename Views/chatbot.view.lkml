@@ -7,8 +7,12 @@ view: chatbot {
           CASE WHEN action = 'hello' THEN 1 ELSE 0 END AS hello_count,
           CASE WHEN action = 'close' THEN 1 ELSE 0 END AS close_count,
           CASE WHEN action = 'link_click' THEN 1 ELSE 0 END AS link_click_count,
-          CASE WHEN action = 'get_answer' THEN text ELSE NULL END AS intent,
-          CASE WHEN action = 'get_answer' THEN SPLIT_PART(text, '-',1)
+          CASE WHEN action = 'get_answer' THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
+          CASE
+                WHEN action = 'get_answer' AND SPLIT_PART(text,'^',2) <> '' THEN SPLIT_PART(text,'^',2)
+                WHEN action = 'get_answer' THEN '1'
+                ELSE NULL END AS intent_version, -- if there is something after "^" in an intent, it is the version. Otherwise, it is assumed to be version 1
+          CASE WHEN action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '-',1),'^',1)
             ELSE NULL END AS intent_category,
           CASE WHEN action <> 'link_click' THEN NULL
             WHEN hr_url IS NOT NULL AND SPLIT_PART(text, '#',2) = '' THEN hr_url
@@ -46,10 +50,16 @@ view: chatbot {
       }
     }
     dimension: intent {
+      drill_fields: [page_views.chatbot_page_display_url,intent_version]
+      group_label: "Intents"
+    }
+    dimension: intent_version {
       drill_fields: [page_views.chatbot_page_display_url]
+      group_label: "Intents"
     }
     dimension: intent_category {
       drill_fields: [intent, page_views.chatbot_page_display_url]
+      group_label: "Intents"
     }
     dimension: text {
       type: string
