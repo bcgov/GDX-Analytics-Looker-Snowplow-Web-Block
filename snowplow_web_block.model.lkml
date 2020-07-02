@@ -336,3 +336,13 @@ explore: esb_se_pathways {
     relationship: many_to_one
   }
 }
+
+explore: youtube_embed_video {
+  persist_for: "60 minutes"
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${youtube_embed_video.page_view_id} ;;
+    relationship: many_to_one
+  }
+}
