@@ -8,7 +8,6 @@ view: youtube_embed_video {
     persist_for: "2 hours"
   }
 
-
   dimension: page_view_id {
     description: "Unique page view ID"
     type: string

@@ -135,6 +135,7 @@ view: date_comparisons_common {
 
 
   dimension: comparison_date {
+    drill_fields: [youtube_embed_video.title]
     group_label: "Flexible Filter"
     type: string
     sql:
