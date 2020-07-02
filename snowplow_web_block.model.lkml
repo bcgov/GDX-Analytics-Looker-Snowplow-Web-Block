@@ -342,7 +342,6 @@ explore: youtube_embed_video {
 
   join: page_views {
     type: left_outer
-    #sql_on: ${page_views.page_url} = ${events.page_url} AND ${page_views.collector_tstamp_time} = ${events.collector_tstamp_time};;
     sql_on: ${page_views.page_view_id} = ${youtube_embed_video.page_view_id} ;;
     relationship: many_to_one
   }
