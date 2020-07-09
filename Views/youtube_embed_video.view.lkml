@@ -23,6 +23,10 @@ view: youtube_embed_video {
   dimension: video_id {
     description: "Unique ID of the video"
     type: string
+    link: {
+      label: "YouTube Video Link"
+      url: "{{ video_source }}"
+    }
     sql: ${TABLE}.video_id ;;
   }
 
@@ -32,7 +36,7 @@ view: youtube_embed_video {
     sql: ${TABLE}.author ;;
   }
 
-  dimension: video_src {
+  dimension: video_source {
     description: "The URI of the video."
     type: string
     sql: ${TABLE}.video_src ;;
@@ -41,6 +45,11 @@ view: youtube_embed_video {
   dimension: title {
     description: "The video title."
     type: string
+    drill_fields: [youtube_embed_video.video_source]
+    link: {
+      label: "YouTube Video Link"
+      url: "{{ video_source }}"
+    }
     sql: ${TABLE}.title ;;
   }
 
@@ -104,6 +113,24 @@ view: youtube_embed_video {
   measure: status_count {
     description: "Count of video Status"
     type: count
+  }
+
+  measure: count_plays {
+    description: "Count of Video Plays"
+    type: count
+    filters: {
+      field: status
+      value: "Playing"
+    }
+  }
+
+  measure: count_ended {
+    description: "Count of Finished Plays"
+    type: count
+    filters: {
+      field: status
+      value: "Ended"
+    }
   }
 
 }
