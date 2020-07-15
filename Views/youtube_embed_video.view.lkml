@@ -25,7 +25,7 @@ view: youtube_embed_video {
     type: string
     link: {
       label: "YouTube Video Link"
-      url: "{{ video_source }}"
+      url: "https://www.youtube.com/watch?v={{ video_id }}"
     }
     sql: ${TABLE}.video_id ;;
   }
