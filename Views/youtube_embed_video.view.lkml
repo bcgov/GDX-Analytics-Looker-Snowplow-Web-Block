@@ -45,10 +45,10 @@ view: youtube_embed_video {
   dimension: title {
     description: "The video title."
     type: string
-    drill_fields: [youtube_embed_video.video_source]
+    drill_fields: [youtube_embed_video.video_display_source]
     link: {
       label: "YouTube Video Link"
-      url: "{{ video_source }}"
+      url: "{{ video_display_source }}"
     }
     sql: ${TABLE}.title ;;
   }
@@ -105,10 +105,11 @@ view: youtube_embed_video {
     sql: ${TABLE}.ref_parents ;;
   }
 
-  #dimension: page_url {
-  #  description: "The URL of the page hosting the video embed."
-  #  sql: ${TABLE}.page_url ;;
-  #}
+  dimension: video_display_source {
+    description: "The video source URL without timestamp"
+    type: string
+    sql: 'https://www.youtube.com/watch?v=' || ${video_id};;
+  }
 
   measure: status_count {
     description: "Count of all playback events; ready, playing, paused, and finished."
