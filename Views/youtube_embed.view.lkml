@@ -23,6 +23,7 @@ view: youtube_embed_video {
   dimension: video_id {
     description: "Unique ID of the video"
     type: string
+    label: "ID"
     link: {
       label: "YouTube Video Link"
       url: "https://www.youtube.com/watch?v={{ video_id }}"
@@ -32,12 +33,14 @@ view: youtube_embed_video {
 
   dimension: author {
     description: "The author of the video."
+    label: "Author"
     type: string
     sql: ${TABLE}.author ;;
   }
 
   dimension: video_source {
     description: "The URI of the video."
+    label: "Source"
     type: string
     sql: ${TABLE}.video_src ;;
   }
@@ -45,6 +48,7 @@ view: youtube_embed_video {
   dimension: title {
     description: "The video title."
     type: string
+    label: "Title"
     drill_fields: [youtube_embed_video.video_display_source]
     link: {
       label: "YouTube Video Link"
@@ -56,6 +60,7 @@ view: youtube_embed_video {
   dimension: status {
     description: "The playback status of the video."
     type: string
+    label: "Status"
     sql: ${TABLE}.status ;;
   }
 
@@ -107,6 +112,7 @@ view: youtube_embed_video {
 
   dimension: video_display_source {
     description: "The video source URL without timestamp"
+    label: "Source"
     type: string
     sql: 'https://www.youtube.com/watch?v=' || ${video_id};;
   }
