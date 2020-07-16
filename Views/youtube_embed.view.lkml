@@ -2,8 +2,8 @@ view: youtube_embed_video {
   derived_table: {
     sql:SELECT yt.*, wp.id as page_view_id
       FROM atomic.ca_bc_gov_youtube_youtube_playerstate_2  AS yt
-      JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON yt.root_id = wp.root_id AND yt.root_tstamp = wp.root_tstamp
-      LEFT JOIN derived.page_views as pv on pv.page_view_id = wp.id ;;
+      JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON yt.root_id = wp.root_id
+      AND yt.root_tstamp = wp.root_tstamp ;;
     distribution_style: all
     persist_for: "2 hours"
   }
@@ -23,17 +23,24 @@ view: youtube_embed_video {
   dimension: video_id {
     description: "Unique ID of the video"
     type: string
+    label: "ID"
+    link: {
+      label: "YouTube Video Link"
+      url: "https://www.youtube.com/watch?v={{ video_id }}"
+    }
     sql: ${TABLE}.video_id ;;
   }
 
   dimension: author {
     description: "The author of the video."
+    label: "Author"
     type: string
     sql: ${TABLE}.author ;;
   }
 
-  dimension: video_src {
+  dimension: video_source {
     description: "The URI of the video."
+    label: "Source"
     type: string
     sql: ${TABLE}.video_src ;;
   }
@@ -41,12 +48,19 @@ view: youtube_embed_video {
   dimension: title {
     description: "The video title."
     type: string
+    label: "Title"
+    drill_fields: [youtube_embed_video.video_display_source]
+    link: {
+      label: "YouTube Video Link"
+      url: "{{ video_display_source }}"
+    }
     sql: ${TABLE}.title ;;
   }
 
   dimension: status {
     description: "The playback status of the video."
     type: string
+    label: "Status"
     sql: ${TABLE}.status ;;
   }
 
@@ -96,14 +110,34 @@ view: youtube_embed_video {
     sql: ${TABLE}.ref_parents ;;
   }
 
-  #dimension: page_url {
-  #  description: "The URL of the page hosting the video embed."
-  #  sql: ${TABLE}.page_url ;;
-  #}
+  dimension: video_display_source {
+    description: "The video source URL without timestamp"
+    label: "Source"
+    type: string
+    sql: 'https://www.youtube.com/watch?v=' || ${video_id};;
+  }
 
   measure: status_count {
-    description: "Count of video Status"
+    description: "Count of all playback events; ready, playing, paused, and finished."
     type: count
+  }
+
+  measure: count_plays {
+    description: "Count of Video Plays"
+    type: count
+    filters: {
+      field: status
+      value: "Playing"
+    }
+  }
+
+  measure: count_ended {
+    description: "Count of Finished Plays"
+    type: count
+    filters: {
+      field: status
+      value: "Ended"
+    }
   }
 
 }
