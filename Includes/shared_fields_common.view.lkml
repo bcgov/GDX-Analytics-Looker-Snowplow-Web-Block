@@ -483,7 +483,7 @@ view: shared_fields_common {
     # the filter is checking to see if the IP is in the gov network
     sql: CASE
             WHEN ${ip_address} LIKE '142.22.%' OR ${ip_address} LIKE '142.23.%' OR ${ip_address} LIKE '142.24.%' OR ${ip_address} LIKE '142.25.%' OR ${ip_address} LIKE '142.26.%' OR ${ip_address} LIKE '142.27.%' OR ${ip_address} LIKE '142.28.%' OR ${ip_address} LIKE '142.29.%' OR ${ip_address} LIKE '142.30.%' OR ${ip_address} LIKE '142.31.%' OR  ${ip_address} LIKE '142.32.%' OR ${ip_address} LIKE '142.33.%' OR ${ip_address} LIKE '142.34.%' OR ${ip_address} LIKE '142.35.%' OR ${ip_address} LIKE '142.36.%' THEN 'Government'
-            WHEN ${ip_address} LIKE '64.114.89.%' OR ${ip_address} LIKE '207.194.196.%' THEN 'BC Liquor (Retail & Head Office)'
+            WHEN ${ip_address} LIKE '172.27.36.%' OR ${ip_address} LIKE '64.114.89.%' OR ${ip_address} LIKE '207.194.196.%' THEN 'BC Liquor (Retail & Head Office)'
             WHEN ${ip_address} LIKE '205.250.135.%' OR ${ip_address} LIKE '207.81.212.%' OR ${ip_address} LIKE '35.203.104.%' THEN 'Web Vendor (D7)'
           ELSE 'Other' END ;;
     suggestions: ["Government", "BC Liquor (Retail & Head Office)", "Web Vendor (D7)", "Other"]
