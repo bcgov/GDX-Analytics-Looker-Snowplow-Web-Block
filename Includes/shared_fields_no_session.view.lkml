@@ -129,7 +129,7 @@ view: shared_fields_no_session {
     description: "Cleaned URL of the page without query string or standard file names like index.html"
     sql: ${TABLE}.page_display_url ;;
     group_label: "Page"
-    drill_fields: [page_views.page_referrer]
+    drill_fields: [page_views.page_referrer,page_vies.page_url]
     link: {
       label: "Visit Page"
       url: "{{ value }}"
