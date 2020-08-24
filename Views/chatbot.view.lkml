@@ -1,6 +1,7 @@
 view: chatbot {
   derived_table: {
     sql: SELECT wp.id, cb.*,
+          CONVERT_TIMEZONE('UTC', 'America/Vancouver', cb.root_tstamp) AS timestamp,
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
           CASE WHEN action = 'get_answer' THEN 1 ELSE 0 END AS answer_count,
           CASE WHEN action = 'open' THEN 1 ELSE 0 END AS open_count,
@@ -29,7 +30,7 @@ view: chatbot {
 
     dimension_group: event {
       type: time
-      sql: ${TABLE}.root_tstamp ;;
+      sql: ${TABLE}.timestamp ;;
     }
     dimension: id {
       type: string

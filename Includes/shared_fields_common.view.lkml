@@ -612,6 +612,7 @@ view: shared_fields_common {
       ELSE ${referrer_urlscheme} || '://' || ${referrer_urlhost}  || regexp_replace(${referrer_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
     END ;;
     group_label: "Referrer"
+    drill_fields: [page_referrer]
     link: {
       label: "Visit Page"
       url: "{{ value }}"
