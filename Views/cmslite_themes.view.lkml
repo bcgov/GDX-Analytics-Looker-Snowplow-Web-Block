@@ -75,4 +75,40 @@ view: cmslite_themes {
     sql: COALESCE(${TABLE}.topic_id,'') ;;
   }
 
+  # subtopic
+  # the CMSL subtopic
+  dimension: subtopic {
+    description: "The CMS Lite subtopic."
+    type: string
+    sql: COALESCE(${TABLE}.subtopic, '(no subtopic)') ;;
+    suggest_explore: theme_cache
+    suggest_dimension: theme_cache.subtopic
+  }
+
+  # subtopic ID
+  # the CMSL subtopic ID
+  dimension: subtopic_id {
+    description: "The alphanumeric CMS Lite subtopic identifier."
+    type: string
+    sql: COALESCE(${TABLE}.subtopic_id,'') ;;
+  }
+
+  # subsubtopic
+  # the CMSL subsubtopic
+  dimension: subsubtopic {
+    description: "The CMS Lite subsubtopic."
+    type: string
+    sql: COALESCE(${TABLE}.subsubtopic, '(no subsubtopic)') ;;
+    suggest_explore: theme_cache
+    suggest_dimension: theme_cache.subsubtopic
+  }
+
+  # subsubtopic ID
+  # the CMSL subsubtopic ID
+  dimension: subsubtopic_id {
+    description: "The alphanumeric CMS Lite subsubtopic identifier."
+    type: string
+    sql: COALESCE(${TABLE}.subsubtopic_id,'') ;;
+  }
+
 }

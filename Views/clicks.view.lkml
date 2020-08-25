@@ -3,11 +3,18 @@
 
 include: "/Includes/shared_fields_common.view"
 include: "/Includes/shared_fields_no_session.view"
+include: "/Includes/date_comparisons_common.view"
 
 view: clicks {
   sql_table_name: derived.clicks ;;
 
-  extends: [shared_fields_common,shared_fields_no_session]
+  extends: [shared_fields_common,shared_fields_no_session,date_comparisons_common]
+
+  dimension_group: filter_start {
+    sql: ${TABLE}.collector_tstamp ;;
+  }
+
+
 
   dimension: p_key {
     description: "The primary key, which is one of: User ID, Domain User ID, Session ID, or Click ID."
