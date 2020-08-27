@@ -12,7 +12,7 @@ view: myfs_estimates {
            ROW_NUMBER() OVER (PARTITION BY wp.id) AS list_ranked
           FROM base AS est
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON est.root_id = wp.root_id AND est.root_tstamp = wp.root_tstamp
-          ORDER BY est.root_tstamp DESC, wp.id ASC
+          ORDER BY est.root_tstamp ASC, wp.id ASC -- put all estimates in this page view in ascending order
         ),
         list_rev AS (
           SELECT date, id,
@@ -30,8 +30,8 @@ view: myfs_estimates {
           GREATEST(two.count, REGEXP_COUNT(two.estimates, ',') +1)::integer AS number_of_children,
           two.estimates AS estimate_list
         FROM list AS one
-        JOIN list AS two on two.list_ranked = 1 AND one.id = two.id
-        JOIN list_rev AS three on three.list_rev_ranked = 1 AND one.id = three.id
+        JOIN list AS two on two.list_ranked = 1 AND one.id = two.id -- take the first estimate in this page view
+        JOIN list_rev AS three on three.list_rev_ranked = 1 AND one.id = three.id -- take the last estimate in this page view
         GROUP BY 1,2,3,6,7,8
         ORDER BY 1 ASC
         ;;
