@@ -44,8 +44,16 @@ view: myfs_estimates {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: start_date {}
-  dimension: end_date {}
+  dimension_group: start_date {
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    sql:  ${TABLE}.start_date ;;
+  }
+  dimension_group: end_date {
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    sql:  ${TABLE}.end_date ;;
+  }
 
   dimension: estimate_count {}
   dimension: register_count {}
