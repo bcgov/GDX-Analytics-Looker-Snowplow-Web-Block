@@ -346,3 +346,12 @@ explore: youtube_embed_video {
     relationship: many_to_one
   }
 }
+explore: forms {
+  persist_for: "60 minutes"
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${forms.page_view_id} ;;
+    relationship: many_to_one
+  }
+}
