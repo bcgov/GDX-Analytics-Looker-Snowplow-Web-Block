@@ -345,6 +345,10 @@ explore: youtube_embed_video {
     sql_on: ${page_views.page_view_id} = ${youtube_embed_video.page_view_id} ;;
     relationship: many_to_one
   }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
 }
 explore: forms {
   persist_for: "60 minutes"

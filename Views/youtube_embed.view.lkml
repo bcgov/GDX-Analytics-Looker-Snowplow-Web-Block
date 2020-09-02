@@ -118,7 +118,7 @@ view: youtube_embed_video {
   }
 
   measure: status_count {
-    description: "Count of all playback events; ready, playing, paused, and finished."
+    description: "Count of all playback events: ready, playing, paused, and finished."
     type: count
   }
 
