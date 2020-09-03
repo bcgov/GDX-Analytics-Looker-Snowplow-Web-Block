@@ -359,3 +359,11 @@ explore: forms {
     relationship: many_to_one
   }
 }
+
+### Datagroups
+
+datagroup: aa_datagroup_midnight {
+  label: "New Date in PST"
+  description: "datagroup trigger for Aggregate Aware table: aa__page_views__7_complete_days__row_count"
+  sql_trigger: SELECT date(timezone('PST', now())) ;;
+}
