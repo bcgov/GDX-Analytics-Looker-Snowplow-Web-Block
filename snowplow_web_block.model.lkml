@@ -345,6 +345,10 @@ explore: youtube_embed_video {
     sql_on: ${page_views.page_view_id} = ${youtube_embed_video.page_view_id} ;;
     relationship: many_to_one
   }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
 }
 explore: forms {
   persist_for: "60 minutes"
@@ -354,4 +358,12 @@ explore: forms {
     sql_on: ${page_views.page_view_id} = ${forms.page_view_id} ;;
     relationship: many_to_one
   }
+}
+
+### Datagroups
+
+datagroup: aa_datagroup_midnight {
+  label: "New Date in PST"
+  description: "datagroup trigger for Aggregate Aware table: aa__page_views__7_complete_days__row_count"
+  sql_trigger: SELECT date(timezone('PST', now())) ;;
 }
