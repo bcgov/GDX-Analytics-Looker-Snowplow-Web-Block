@@ -367,3 +367,65 @@ datagroup: aa_datagroup_midnight {
   description: "datagroup trigger for Aggregate Aware table: aa__page_views__7_complete_days__row_count"
   sql_trigger: SELECT date(timezone('PST', now())) ;;
 }
+
+### Aggregate Awareness Tables
+
+explore: +page_views {
+  aggregate_table: aa__top_pages__7_complete_days__row_count{
+    query: {
+      dimensions: [
+        page_views.page_urlhost,
+        page_views.page_referrer,
+        page_views.node_id,
+        page_views.page_exclusion_filter,
+        page_views.app_id,
+        page_views.page_section,
+        page_views.page_sub_section,
+        cmslite_themes.theme_id,
+        cmslite_themes.theme,
+        page_views.page_title,
+        page_views.page_display_url,
+        page_views.device_is_mobile,
+        page_views.is_government,
+        page_views.page_view_start_date
+      ]
+      measures: [page_views.row_count]
+      filters: [
+        page_views.page_view_start_date: "7 days ago for 7 days"
+      ]
+    }
+
+    materialization: {
+      datagroup_trigger: aa_datagroup_midnight
+    }
+  }
+  aggregate_table: aa__top_landing_pages__7_complete_days__row_count{
+    query: {
+      dimensions: [
+        page_views.page_urlhost,
+        page_views.page_referrer,
+        page_views.node_id,
+        page_views.page_exclusion_filter,
+        page_views.app_id,
+        page_views.page_section,
+        page_views.page_sub_section,
+        cmslite_themes.theme_id,
+        cmslite_themes.theme,
+        page_views.page_title,
+        page_views.page_display_url,
+        page_views.device_is_mobile,
+        page_views.is_government,
+        page_views.page_view_start_date
+      ]
+      measures: [page_views.row_count]
+      filters: [
+        page_views.page_view_start_date: "7 days ago for 7 days",
+        page_views.page_view_in_session_index: "1"
+      ]
+    }
+
+    materialization: {
+      datagroup_trigger: aa_datagroup_midnight
+    }
+  }
+}
