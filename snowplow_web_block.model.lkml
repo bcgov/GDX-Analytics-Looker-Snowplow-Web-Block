@@ -363,8 +363,8 @@ explore: forms {
 ### Datagroups
 
 datagroup: aa_datagroup_cmsl_loaded {
-  label: "New Date in PST"
-  description: "datagroup trigger for Aggregate Aware table: aa__page_views__7_complete_days__row_count"
+  label: "Updates with todays date at 4:55AM"
+  description: "Triggers CMS Lite Metadata dependent Aggregate Aware tables to rebuild after each new day and after nightly cmslitemetadata microservice has run."
   sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '295 minutes')) ;;
 }
 
