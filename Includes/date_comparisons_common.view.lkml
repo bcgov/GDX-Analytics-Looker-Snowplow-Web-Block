@@ -179,9 +179,14 @@ view: date_comparisons_common {
   dimension: in_summary_period {
     group_label: "Summary"
     type: yesno
-    sql:  ${filter_start_raw} >= DATE_TRUNC({% parameter summary_granularity %}, ${summary_start} )
-          AND ${filter_start_raw} < DATE_TRUNC({% parameter summary_granularity %}, ${summary_end} - interval '1 day') + interval '1 '{% parameter summary_granularity %}
-         ;;
+    sql:  CASE WHEN {% parameter summary_granularity %} = 'Week' THEN
+                ${filter_start_raw} >= DATE_TRUNC({% parameter summary_granularity %}, ${summary_start} + interval '1 day') - interval '1 day'
+            AND ${filter_start_raw} < DATE_TRUNC({% parameter summary_granularity %}, ${summary_end} ) + interval '1 '{% parameter summary_granularity %} - interval '1 day'
+          ELSE
+            ${filter_start_raw} >= DATE_TRUNC({% parameter summary_granularity %}, ${summary_start} )
+            AND ${filter_start_raw} < DATE_TRUNC({% parameter summary_granularity %}, ${summary_end} - interval '1 day') + interval '1 '{% parameter summary_granularity %}
+          END
+          ;;
   }
 
   dimension: summary_date {
