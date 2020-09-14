@@ -362,10 +362,10 @@ explore: forms {
 
 ### Datagroups
 
-datagroup: aa_datagroup_midnight {
+datagroup: aa_datagroup_cmsl_loaded {
   label: "New Date in PST"
   description: "datagroup trigger for Aggregate Aware table: aa__page_views__7_complete_days__row_count"
-  sql_trigger: SELECT date(timezone('PST', now())) ;;
+  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '295 minutes')) ;;
 }
 
 ### Aggregate Awareness Tables
@@ -396,7 +396,7 @@ explore: +page_views {
     }
 
     materialization: {
-      datagroup_trigger: aa_datagroup_midnight
+      datagroup_trigger: aa_datagroup_cmsl_loaded
     }
   }
   aggregate_table: aa__top_landing_pages__7_complete_days__row_count{
@@ -425,7 +425,7 @@ explore: +page_views {
     }
 
     materialization: {
-      datagroup_trigger: aa_datagroup_midnight
+      datagroup_trigger: aa_datagroup_cmsl_loaded
     }
   }
 }
