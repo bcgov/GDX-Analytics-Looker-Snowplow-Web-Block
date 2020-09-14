@@ -9,6 +9,13 @@ view: shared_fields_common {
     group_label: "Application"
   }
 
+  dimension: tracker_version {
+    description: "The tracker version."
+    type: string
+    sql: ${TABLE}.v_tracker ;;
+    group_label: "Application"
+  }
+
   # dcs_id
   # The DCS identifieir is the webtrends profile identifier
   # this is only available for WebTrends data
@@ -473,7 +480,7 @@ view: shared_fields_common {
     description: "Yes if the IP address maps to a known BC Government network."
     type: yesno
     # the filter is checking to see if the IP is in the gov network
-    sql: ${ip_address} LIKE '142.22.%' OR ${ip_address} LIKE '142.23.%' OR ${ip_address} LIKE '142.24.%' OR ${ip_address} LIKE '142.25.%' OR ${ip_address} LIKE '142.26.%' OR ${ip_address} LIKE '142.27.%' OR ${ip_address} LIKE '142.28.%' OR ${ip_address} LIKE '142.29.%' OR ${ip_address} LIKE '142.30.%' OR ${ip_address} LIKE '142.31.%' OR  ${ip_address} LIKE '142.32.%' OR ${ip_address} LIKE '142.33.%' OR ${ip_address} LIKE '142.34.%' OR ${ip_address} LIKE '142.35.%' OR ${ip_address} LIKE '142.36.%' ;;
+    sql: ${TABLE}.is_government;;
   }
 
   dimension: ldb_ip_range {
@@ -604,13 +611,7 @@ view: shared_fields_common {
 
   dimension: page_referrer_display_url {
     type: string
-    sql: CASE
-      WHEN ${referrer_urlhost} = 'www2.gov.bc.ca' AND ${referrer_urlpath} = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${referrer_urlquery}
-      WHEN ${referrer_urlhost} = 'www2.gov.bc.ca' AND ${referrer_urlpath} = '/enSearch/sbcdetail' THEN 'https://www2.gov.bc.ca/enSearch/sbcdetail?' || REGEXP_REPLACE(${referrer_urlquery}, '([^&]*&[^&]*)&.*', '$1')
-      WHEN ${referrer_urlpath} IN ('/solutionexplorer/ES_Access','/solutionexplorer/ES_Question','/solutionexplorer/ES_Result','/solutionexplorer/ES_Action') AND LEFT(${referrer_urlquery},3) = 'id='
-        THEN ${referrer_urlscheme} || '://' || ${referrer_urlhost}  || ${referrer_urlpath} ||'?' || SPLIT_PART(${referrer_urlquery},'&',1)
-      ELSE ${referrer_urlscheme} || '://' || ${referrer_urlhost}  || regexp_replace(${referrer_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
-    END ;;
+    sql: ${TABLE}.page_referrer_display_url;;
     group_label: "Referrer"
     drill_fields: [page_referrer]
     link: {

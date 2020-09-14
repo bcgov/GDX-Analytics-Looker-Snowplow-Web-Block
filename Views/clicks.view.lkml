@@ -6,7 +6,7 @@ include: "/Includes/shared_fields_no_session.view"
 include: "/Includes/date_comparisons_common.view"
 
 view: clicks {
-  sql_table_name: derived.clicks ;;
+  sql_table_name: test.clicks ;;
 
   extends: [shared_fields_common,shared_fields_no_session,date_comparisons_common]
 
@@ -157,7 +157,7 @@ view: clicks {
     type: string
     # A range of non / chars, followed by a '.' (subdomain.domain.tdl), followed by range of non / or : characters (strips port)
     # https://stackoverflow.com/questions/17310972/how-to-parse-host-out-of-a-string-in-redshift
-    sql:  REGEXP_SUBSTR(${TABLE}.target_url, '[^/]+\\.[^/:]+') ;;
+    sql:  ${TABLE}.target_urlhost ;;
     group_label: "Target"
     link: {
       label: "Visit Link"
@@ -170,16 +170,7 @@ view: clicks {
     label: "Target Display URL"
     # when editing also see clicks.truncated_target_url_nopar_case_insensitive
     description: "Cleaned URL of the page without query string or standard file names like index.html"
-    sql:
-      CASE
-        WHEN ${target_urlscheme} IN ('sms','tel') THEN ${target_url_nopar_case_insensitive}
-        WHEN ${target_urlhost} = 'www2.gov.bc.ca' AND ${target_urlpath} = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${target_urlquery}
-        WHEN ${target_urlhost} = 'www2.gov.bc.ca' AND ${target_urlpath} = '/enSearch/sbcdetail' THEN 'https://www2.gov.bc.ca/enSearch/sbcdetail?' || REGEXP_REPLACE(${target_urlquery}, '([^&]*&[^&]*)&.*', '$1')
-        WHEN ${target_urlpath} IN ('/solutionexplorer/ES_Access','/solutionexplorer/ES_Question','/solutionexplorer/ES_Result','/solutionexplorer/ES_Action') AND LEFT(${target_urlquery},3) = 'id='
-          THEN ${target_urlscheme} || '://' || ${target_urlhost}  || ${target_urlpath} ||'?' || SPLIT_PART(${target_urlquery},'&',1)
-        WHEN ${target_urlhost} = 'news.gov.bc.ca' AND ${target_urlpath} = '/Search' THEN 'https://news.gov.bc.ca/Search?' || SPLIT_PART(${target_urlquery}, '&',1)
-        ELSE ${target_urlscheme} || '://' || ${target_urlhost}  || regexp_replace(${target_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
-      END ;;
+    sql: ${TABLE}.target_display_url;;
     group_label: "Target"
     link: {
       label: "Visit Page"
@@ -193,16 +184,7 @@ view: clicks {
     label: "TIBC Target Display URL"
     # when editing also see clicks.truncated_target_url_nopar_case_insensitive
     description: "Cleaned URL of the page without query string or standard file names like index.html"
-    sql:
-      CASE
-        WHEN ${target_urlscheme} IN ('sms','tel') THEN ${target_url_nopar_case_insensitive}
-        WHEN ${target_urlhost} = 'www2.gov.bc.ca' AND ${target_urlpath} = '/gov/search' THEN 'https://www2.gov.bc.ca/gov/search?' || ${target_urlquery}
-        WHEN ${target_urlhost} = 'www2.gov.bc.ca' AND ${target_urlpath} = '/enSearch/sbcdetail' THEN 'https://www2.gov.bc.ca/enSearch/sbcdetail?' || REGEXP_REPLACE(${target_urlquery}, '([^&]*&[^&]*)&.*', '$1')
-        WHEN ${target_urlpath} IN ('/solutionexplorer/ES_Access','/solutionexplorer/ES_Question','/solutionexplorer/ES_Result','/solutionexplorer/ES_Action') AND LEFT(${target_urlquery},3) = 'id='
-          THEN ${target_urlscheme} || '://' || ${target_urlhost}  || ${target_urlpath} ||'?' || SPLIT_PART(${target_urlquery},'&',1)
-        WHEN ${target_urlhost} = 'news.gov.bc.ca' AND ${target_urlpath} = '/Search' THEN 'https://news.gov.bc.ca/Search?' || SPLIT_PART(${target_urlquery}, '&',1)
-        ELSE ${target_urlscheme} || '://' || ${target_urlhost}  || regexp_replace(${target_urlpath}, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','')
-      END ;;
+    sql: ${TABLE}.target_display_url;;
     group_label: "TIBC"
     link: {
       label: "Visit Page"
@@ -214,20 +196,20 @@ view: clicks {
 
   dimension: target_urlscheme {
     type:  string
-    sql: SPLIT_PART(${TABLE}.target_url, ':', 1) ;;
+    sql: ${TABLE}.target_urlscheme ;;
     label: "Target"
     hidden: yes
   }
 
   dimension: target_urlpath {
     type: string
-    sql: SPLIT_PART(SPLIT_PART(REGEXP_SUBSTR(REGEXP_REPLACE(${TABLE}.target_url,'.*:\/\/'), '/.*'), '?', 1), '#', 1) ;;
+    sql: ${TABLE}.target_urlpath ;;
     group_label: "Target"
   }
 
   dimension: target_urlquery {
     type: string
-    sql: SPLIT_PART(SPLIT_PART(${TABLE}.target_url, '?', 2), '#', 1) ;;
+    sql: ${TABLE}.target_urlquery ;;
     group_label: "Target"
   }
 

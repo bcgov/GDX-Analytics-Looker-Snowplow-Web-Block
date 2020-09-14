@@ -2,7 +2,7 @@ include: "/Includes/shared_fields_common.view"
 include: "/Includes/shared_fields_no_session.view"
 
 view: searches {
-  sql_table_name: derived.searches ;;
+  sql_table_name: test.searches ;;
 
   extends: [shared_fields_common,shared_fields_no_session]
 
@@ -73,6 +73,13 @@ view: searches {
     description: "The search term(s) that were queried."
     type:  string
     sql:  ${TABLE}.terms ;;
+    group_label: "Results"
+  }
+
+  dimension: search_terms_lower {
+    description: "The search term(s) that were queried converted to lowercase."
+    type:  string
+    sql:  ${TABLE}.terms_lower ;;
     group_label: "Results"
   }
 
