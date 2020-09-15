@@ -269,42 +269,6 @@ explore: clicks{
     field: cmslite_themes.theme_id
     user_attribute: theme
   }
-
-  aggregate_table: aa__offsite_clicks__7_complete_days__row_count{
-    query: {
-      dimensions: [
-        clicks.target_url,
-        clicks.click_type,
-        clicks.click_type,
-        clicks.node_id,
-        clicks.page_exclusion_filter,
-        clicks.app_id,
-        clicks.page_section,
-        clicks.page_sub_section,
-        cmslite_themes.theme_id,
-        clicks.click_time_date,
-        clicks.geo_city_and_region,
-        clicks.is_government,
-        clicks.device_is_mobile,
-        cmslite_themes.theme,
-        cmslite_themes.subtheme,
-        clicks.page_title,
-        clicks.page_display_url,
-        clicks.page_urlhost,
-        cmslite_themes.topic
-      ]
-      measures: [clicks.row_count]
-      filters: [
-
-        clicks.offsite_click: "Yes",
-        clicks.click_time_date: "7 days ago for 7 days"
-      ]
-    }
-
-    materialization: {
-      datagroup_trigger: aa_datagroup_midnight
-    }
-  }
 }
 
 explore: searches {
@@ -405,6 +369,45 @@ datagroup: aa_datagroup_cmsl_loaded {
 }
 
 ### Aggregate Awareness Tables
+
+explore: +clicks{
+  aggregate_table: aa__offsite_clicks__7_complete_days__row_count{
+    query: {
+      dimensions: [
+        clicks.target_url,
+        clicks.click_type,
+        clicks.click_type,
+        clicks.node_id,
+        clicks.page_exclusion_filter,
+        clicks.app_id,
+        clicks.page_section,
+        clicks.page_sub_section,
+        cmslite_themes.theme_id,
+        clicks.click_time_date,
+        clicks.geo_city_and_region,
+        clicks.is_government,
+        clicks.device_is_mobile,
+        cmslite_themes.theme,
+        cmslite_themes.subtheme,
+        clicks.page_title,
+        clicks.page_display_url,
+        clicks.page_urlhost,
+        cmslite_themes.topic
+      ]
+      measures: [clicks.row_count]
+      filters: [
+
+        clicks.offsite_click: "Yes",
+        clicks.click_time_date: "7 days ago for 7 days"
+      ]
+    }
+
+    materialization: {
+      datagroup_trigger: aa_datagroup_cmsl_loaded
+    }
+  }
+
+}
 
 explore: +page_views {
   aggregate_table: aa__top_pages__7_complete_days__row_count{
