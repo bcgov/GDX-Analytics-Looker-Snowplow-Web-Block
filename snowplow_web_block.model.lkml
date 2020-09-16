@@ -164,7 +164,7 @@ explore: chatbot {
     sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
-  
+
   access_filter: {
     field: page_views.page_urlhost
     user_attribute: urlhost
@@ -381,23 +381,24 @@ explore: +clicks {
       dimensions: [
         clicks.target_url,
         clicks.click_type,
-        clicks.click_type,
+        clicks.offsite_click,
         clicks.node_id,
         clicks.page_exclusion_filter,
         clicks.app_id,
         clicks.page_section,
         clicks.page_sub_section,
-        cmslite_themes.theme_id,
         clicks.click_time_date,
         clicks.geo_city_and_region,
         clicks.is_government,
         clicks.device_is_mobile,
         cmslite_themes.theme,
         cmslite_themes.subtheme,
+        cmslite_themes.theme_id,
+        cmslite_themes.node_id,
+        cmslite_themes.topic,
         clicks.page_title,
         clicks.page_display_url,
-        clicks.page_urlhost,
-        cmslite_themes.topic
+        clicks.page_urlhost
       ]
       measures: [clicks.row_count]
       filters: [
@@ -417,9 +418,11 @@ explore: +searches {
     query: {
       dimensions: [
         searches.search_terms_gov,
-        searches.search_time_date,
         cmslite_themes.node_id,
         cmslite_themes.theme_id,
+        cmslite_themes.theme,
+        cmslite_themes.topic,
+        cmslite_themes.subtheme,
         searches.search_terms,
         searches.node_id,
         searches.device_is_mobile,
@@ -430,7 +433,8 @@ explore: +searches {
         searches.page_exclusion_filter,
         searches.app_id,
         searches.page_section,
-        searches.page_sub_section
+        searches.page_sub_section,
+        searches.geo_city_and_region
       ]
       measures: [searches.row_count]
       filters: [
