@@ -370,8 +370,8 @@ datagroup: aa_datagroup_cmsl_loaded {
 
 ### Aggregate Awareness Tables
 
-explore: +clicks{
-  aggregate_table: aa__offsite_clicks__7_complete_days__row_count{
+explore: +clicks {
+  aggregate_table: aa__offsite_clicks__7_complete_days__row_count {
     query: {
       dimensions: [
         clicks.target_url,
@@ -396,7 +396,6 @@ explore: +clicks{
       ]
       measures: [clicks.row_count]
       filters: [
-
         clicks.offsite_click: "Yes",
         clicks.click_time_date: "7 days ago for 7 days"
       ]
@@ -406,7 +405,34 @@ explore: +clicks{
       datagroup_trigger: aa_datagroup_cmsl_loaded
     }
   }
+}
 
+explore: +searches {
+  aggregate_table: aa__top_gov_searches__7_complete_days__row_count {
+    query: {
+      dimensions: [
+        searches.search_terms_gov,
+        searches.search_time_date,
+        cmslite_themes.subtheme,
+        cmslite_themes.theme,
+        cmslite_themes.topic,
+        searches.device_is_mobile,
+        searches.geo_city_and_region,
+        searches.is_government,
+        searches.page_display_url,
+        searches.page_title,
+        searches.page_urlhost
+      ]
+      measures: [searches.row_count]
+      filters: [
+        searches.search_time_date: "7 days ago for 7 days"
+      ]
+    }
+
+    materialization: {
+      datagroup_trigger: aa_datagroup_cmsl_loaded
+    }
+  }
 }
 
 explore: +page_views {
