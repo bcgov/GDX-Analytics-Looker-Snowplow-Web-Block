@@ -413,15 +413,19 @@ explore: +searches {
       dimensions: [
         searches.search_terms_gov,
         searches.search_time_date,
-        cmslite_themes.subtheme,
-        cmslite_themes.theme,
-        cmslite_themes.topic,
+        cmslite_themes.node_id,
+        cmslite_themes.theme_id,
+        searches.search_terms,
+        searches.node_id,
         searches.device_is_mobile,
-        searches.geo_city_and_region,
         searches.is_government,
         searches.page_display_url,
         searches.page_title,
-        searches.page_urlhost
+        searches.page_urlhost,
+        searches.page_exclusion_filter,
+        searches.app_id,
+        searches.page_section,
+        searches.page_sub_section
       ]
       measures: [searches.row_count]
       filters: [
