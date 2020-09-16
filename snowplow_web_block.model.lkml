@@ -164,6 +164,11 @@ explore: chatbot {
     sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
+  
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
 
 }
 
