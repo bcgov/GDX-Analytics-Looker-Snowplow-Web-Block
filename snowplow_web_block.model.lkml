@@ -387,7 +387,6 @@ explore: +clicks {
         clicks.app_id,
         clicks.page_section,
         clicks.page_sub_section,
-        clicks.click_time_date,
         clicks.geo_city_and_region,
         cmslite_themes.theme,
         cmslite_themes.subtheme,
@@ -402,7 +401,6 @@ explore: +clicks {
       measures: [clicks.row_count]
       filters: [
         clicks.offsite_click: "Yes",
-
         clicks.click_time_date: "7 days ago for 7 days"
       ]
     }
