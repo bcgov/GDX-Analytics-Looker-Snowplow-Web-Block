@@ -388,10 +388,11 @@ explore: +page_views {
         page_views.page_sub_section,
         cmslite_themes.theme_id,
         cmslite_themes.theme,
+        cmslite_themes.subtheme,
+        cmslite_themes.topic,
+        page_views.geo_city_and_region,
         page_views.page_title,
         page_views.page_display_url,
-        page_views.device_is_mobile,
-        page_views.is_government,
         page_views.page_view_start_date
       ]
       measures: [page_views.row_count]
@@ -404,6 +405,7 @@ explore: +page_views {
       datagroup_trigger: aa_datagroup_cmsl_loaded
     }
   }
+
   aggregate_table: aa__top_landing_pages__7_complete_days__row_count{
     query: {
       dimensions: [
@@ -416,10 +418,11 @@ explore: +page_views {
         page_views.page_sub_section,
         cmslite_themes.theme_id,
         cmslite_themes.theme,
+        cmslite_themes.subtheme,
+        cmslite_themes.topic,
+        page_views.geo_city_and_region,
         page_views.page_title,
         page_views.page_display_url,
-        page_views.device_is_mobile,
-        page_views.is_government,
         page_views.page_view_start_date
       ]
       measures: [page_views.row_count]
