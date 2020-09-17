@@ -382,6 +382,7 @@ explore: +clicks {
         clicks.target_url,
         clicks.click_type,
         clicks.offsite_click,
+        clicks.click_time_date,
         clicks.node_id,
         clicks.page_exclusion_filter,
         clicks.app_id,
@@ -434,7 +435,8 @@ explore: +searches {
         searches.app_id,
         searches.page_section,
         searches.page_sub_section,
-        searches.geo_city_and_region
+        searches.geo_city_and_region,
+        searches.search_time_date
       ]
       measures: [searches.row_count]
       filters: [
