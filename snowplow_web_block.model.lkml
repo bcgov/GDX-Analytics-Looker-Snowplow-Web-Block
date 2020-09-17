@@ -382,7 +382,6 @@ explore: +clicks {
         clicks.target_url,
         clicks.click_type,
         clicks.offsite_click,
-        clicks.click_time_date,
         clicks.node_id,
         clicks.page_exclusion_filter,
         clicks.app_id,
@@ -390,8 +389,6 @@ explore: +clicks {
         clicks.page_sub_section,
         clicks.click_time_date,
         clicks.geo_city_and_region,
-        clicks.is_government,
-        clicks.device_is_mobile,
         cmslite_themes.theme,
         cmslite_themes.subtheme,
         cmslite_themes.theme_id,
@@ -399,11 +396,13 @@ explore: +clicks {
         cmslite_themes.topic,
         clicks.page_title,
         clicks.page_display_url,
-        clicks.page_urlhost
+        clicks.page_urlhost,
+        clicks.click_time_date
       ]
       measures: [clicks.row_count]
       filters: [
         clicks.offsite_click: "Yes",
+
         clicks.click_time_date: "7 days ago for 7 days"
       ]
     }
@@ -426,8 +425,6 @@ explore: +searches {
         cmslite_themes.subtheme,
         searches.search_terms,
         searches.node_id,
-        searches.device_is_mobile,
-        searches.is_government,
         searches.page_display_url,
         searches.page_title,
         searches.page_urlhost,
