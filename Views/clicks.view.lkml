@@ -357,6 +357,14 @@ view: clicks {
     group_label: "Target"
   }
 
+#was the click to a different domain name (url host)
+  dimension: offsite_click_binary {
+    type:  string
+    sql: ${TABLE}.offsite_click ;;
+    description: "A binary representation of offsite_click for use with Aggregate Aware Tables."
+    group_label: "Target"
+  }
+
   dimension: element_classes {
     type:  string
     sql: ${TABLE}.element_classes ;;
