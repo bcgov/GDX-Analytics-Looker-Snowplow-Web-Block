@@ -396,11 +396,11 @@ explore: +clicks {
         clicks.page_title,
         clicks.page_display_url,
         clicks.page_urlhost,
-        clicks.click_time_date
+        clicks.click_time_date,
+        clicks.offsite_click_binary
       ]
       measures: [clicks.row_count]
       filters: [
-        clicks.offsite_click: "Yes",
         clicks.click_time_date: "7 days ago for 7 days"
       ]
     }
