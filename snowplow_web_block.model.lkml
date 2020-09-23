@@ -365,6 +365,37 @@ explore: forms {
   }
 }
 
+explore: asset_downloads {
+  persist_for: "60 minutes"
+
+  access_filter: {
+    field: asset_downloads.asset_host
+    user_attribute: urlhost
+  }
+
+  join: cmslite_metadata {
+    type: left_outer
+    sql_on: ${asset_downloads.asset_url} = ${cmslite_metadata.hr_url} ;;
+    relationship: one_to_one
+  }
+}
+
+explore: performance_timing {
+  persist_for: "60 minutes"
+
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${performance_timing.page_view_id} = ${page_views.page_view_id} ;;
+    relationship: one_to_one
+  }
+}
+
+
 ### Datagroups
 
 datagroup: aa_datagroup_cmsl_loaded {
