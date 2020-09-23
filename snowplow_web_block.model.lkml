@@ -368,6 +368,11 @@ explore: forms {
 explore: asset_downloads {
   persist_for: "60 minutes"
 
+  access_filter: {
+    field: asset_downloads.asset_host
+    user_attribute: urlhost
+  }
+
   join: cmslite_metadata {
     type: left_outer
     sql_on: ${asset_downloads.asset_url} = ${cmslite_metadata.hr_url} ;;
@@ -377,6 +382,11 @@ explore: asset_downloads {
 
 explore: performance_timing {
   persist_for: "60 minutes"
+
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
 
   join: page_views {
     type:  left_outer
