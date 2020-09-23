@@ -136,6 +136,13 @@ join: myfs_estimates {
     sql_on: ${page_views.geo_country} = ${countries.country_code} ;;
     relationship: one_to_one
   }
+
+  join: performance_timing {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${performance_timing.page_view_id} ;;
+    relationship: one_to_one
+  }
+
 }
 explore: myfs_estimates {
   persist_for: "10 minutes"
