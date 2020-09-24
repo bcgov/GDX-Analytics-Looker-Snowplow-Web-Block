@@ -136,6 +136,13 @@ join: myfs_estimates {
     sql_on: ${page_views.geo_country} = ${countries.country_code} ;;
     relationship: one_to_one
   }
+
+  join: performance_timing {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${performance_timing.page_view_id} ;;
+    relationship: one_to_one
+  }
+
 }
 explore: myfs_estimates {
   persist_for: "10 minutes"
@@ -150,7 +157,7 @@ explore: myfs_estimates {
 }
 
 explore: chatbot {
-  persist_for: "10 minutes"
+  persist_for: "2 hours"
 
   label: "Chatbot"
 
@@ -164,12 +171,11 @@ explore: chatbot {
     sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
-  
+
   access_filter: {
     field: page_views.page_urlhost
     user_attribute: urlhost
   }
-
 }
 
 explore: sessions {
@@ -365,6 +371,37 @@ explore: forms {
   }
 }
 
+explore: asset_downloads {
+  persist_for: "60 minutes"
+
+  access_filter: {
+    field: asset_downloads.asset_host
+    user_attribute: urlhost
+  }
+
+  join: cmslite_metadata {
+    type: left_outer
+    sql_on: ${asset_downloads.asset_url} = ${cmslite_metadata.hr_url} ;;
+    relationship: one_to_one
+  }
+}
+
+explore: performance_timing {
+  persist_for: "60 minutes"
+
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${performance_timing.page_view_id} = ${page_views.page_view_id} ;;
+    relationship: one_to_one
+  }
+}
+
+
 ### Datagroups
 
 datagroup: aa_datagroup_cmsl_loaded {
@@ -374,6 +411,76 @@ datagroup: aa_datagroup_cmsl_loaded {
 }
 
 ### Aggregate Awareness Tables
+
+explore: +clicks {
+  aggregate_table: aa__offsite_clicks__7_complete_days__row_count {
+    query: {
+      dimensions: [
+        clicks.target_url,
+        clicks.click_type,
+        clicks.offsite_click,
+        clicks.node_id,
+        clicks.page_exclusion_filter,
+        clicks.app_id,
+        clicks.page_section,
+        clicks.page_sub_section,
+        clicks.geo_city_and_region,
+        cmslite_themes.theme,
+        cmslite_themes.subtheme,
+        cmslite_themes.theme_id,
+        cmslite_themes.node_id,
+        cmslite_themes.topic,
+        clicks.page_title,
+        clicks.page_display_url,
+        clicks.page_urlhost,
+        clicks.click_time_date,
+        clicks.offsite_click_binary
+      ]
+      measures: [clicks.row_count]
+      filters: [
+        clicks.click_time_date: "7 days ago for 7 days"
+      ]
+    }
+
+    materialization: {
+      datagroup_trigger: aa_datagroup_cmsl_loaded
+    }
+  }
+}
+
+explore: +searches {
+  aggregate_table: aa__top_gov_searches__7_complete_days__row_count {
+    query: {
+      dimensions: [
+        searches.search_terms_gov,
+        cmslite_themes.node_id,
+        cmslite_themes.theme_id,
+        cmslite_themes.theme,
+        cmslite_themes.topic,
+        cmslite_themes.subtheme,
+        searches.search_terms,
+        searches.node_id,
+        searches.page_display_url,
+        searches.page_title,
+        searches.page_urlhost,
+        searches.page_exclusion_filter,
+        searches.app_id,
+        searches.page_section,
+        searches.page_sub_section,
+        searches.geo_city_and_region,
+        searches.search_time_date
+      ]
+      measures: [searches.row_count]
+      filters: [
+        searches.search_time_date: "7 days ago for 7 days"
+      ]
+    }
+
+    materialization: {
+      datagroup_trigger: aa_datagroup_cmsl_loaded
+    }
+  }
+}
 
 explore: +page_views {
   aggregate_table: aa__top_pages__7_complete_days__row_count{
@@ -388,10 +495,11 @@ explore: +page_views {
         page_views.page_sub_section,
         cmslite_themes.theme_id,
         cmslite_themes.theme,
+        cmslite_themes.subtheme,
+        cmslite_themes.topic,
+        page_views.geo_city_and_region,
         page_views.page_title,
         page_views.page_display_url,
-        page_views.device_is_mobile,
-        page_views.is_government,
         page_views.page_view_start_date
       ]
       measures: [page_views.row_count]
@@ -404,6 +512,7 @@ explore: +page_views {
       datagroup_trigger: aa_datagroup_cmsl_loaded
     }
   }
+
   aggregate_table: aa__top_landing_pages__7_complete_days__row_count{
     query: {
       dimensions: [
@@ -416,10 +525,11 @@ explore: +page_views {
         page_views.page_sub_section,
         cmslite_themes.theme_id,
         cmslite_themes.theme,
+        cmslite_themes.subtheme,
+        cmslite_themes.topic,
+        page_views.geo_city_and_region,
         page_views.page_title,
         page_views.page_display_url,
-        page_views.device_is_mobile,
-        page_views.is_government,
         page_views.page_view_start_date
       ]
       measures: [page_views.row_count]
