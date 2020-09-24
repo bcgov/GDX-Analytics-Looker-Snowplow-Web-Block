@@ -157,7 +157,7 @@ explore: myfs_estimates {
 }
 
 explore: chatbot {
-  persist_for: "10 minutes"
+  persist_for: "2 hours"
 
   label: "Chatbot"
 
@@ -176,7 +176,6 @@ explore: chatbot {
     field: page_views.page_urlhost
     user_attribute: urlhost
   }
-
 }
 
 explore: sessions {

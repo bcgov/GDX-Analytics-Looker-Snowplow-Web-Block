@@ -15,6 +15,16 @@ view: chatbot {
                 ELSE NULL END AS intent_version, -- if there is something after "^" in an intent, it is the version. Otherwise, it is assumed to be version 1
           CASE WHEN action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '-',1),'^',1)
             ELSE NULL END AS intent_category,
+
+
+          CASE WHEN action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '_',1),'^',1)
+            ELSE NULL END AS new_agency,
+          CASE WHEN action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',1),'^',1)
+            ELSE NULL END AS new_intent_category,
+          CASE WHEN action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',2),'^',1)
+            ELSE NULL END AS new_intent_subcategory,
+          CASE WHEN action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '_',3),'^',1)
+            ELSE NULL END AS new_sample_question,
           CASE WHEN action <> 'link_click' THEN NULL
             WHEN hr_url IS NOT NULL AND SPLIT_PART(text, '#',2) = '' THEN hr_url
             WHEN hr_url IS NOT NULL AND SPLIT_PART(text, '#',2) <> '' THEN hr_url || '#' || SPLIT_PART(text, '#',2)
@@ -22,10 +32,11 @@ view: chatbot {
           FROM atomic.ca_bc_gov_chatbot_chatbot_1 AS cb
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
           LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
+          WHERE cb.root_tstamp > '2020-09-10'
           ;;
 
       distribution_style: all
-      persist_for: "2 hours"
+      persist_for: "12 hours"
     }
 
     dimension_group: event {
@@ -62,6 +73,21 @@ view: chatbot {
       drill_fields: [intent, page_views.chatbot_page_display_url]
       group_label: "Intents"
     }
+
+
+  dimension: new_intent_category {
+    drill_fields: [intent, page_views.chatbot_page_display_url]
+    group_label: "New Intents"
+  }
+  dimension: new_intent_subcategory {
+    drill_fields: [intent, page_views.chatbot_page_display_url]
+    group_label: "New Intents"
+  }
+  dimension: new_sample_question {
+    drill_fields: [intent, page_views.chatbot_page_display_url]
+    group_label: "New Intents"
+  }
+
     dimension: text {
       type: string
       sql: ${TABLE}.text ;;
