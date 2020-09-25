@@ -90,6 +90,16 @@ view: shared_fields_common {
     group_label: "Location"
   }
 
+  dimension: geo_country_name {
+    type: string
+    sql:  ${TABLE}.geo_country_name ;;
+  }
+  dimension: geo_continent_name {
+    type: string
+    sql:  ${TABLE}.geo_continent_name ;;
+  }
+
+
   dimension: geo_region {
     type: string
     sql: ${TABLE}.geo_region ;;
@@ -97,8 +107,8 @@ view: shared_fields_common {
   }
   dimension: geo_region_or_country {
     type: string
-    description: "The Geo Region or Country when the Region is blank."
-    sql: COALESCE(${TABLE}.geo_region_name,${TABLE}.geo_country)  ;;
+    description: "The Geo Region or Country Name when the Region is blank."
+    sql: COALESCE(${TABLE}.geo_region_name,${TABLE}.geo_country_name)  ;;
     group_label: "Location"
   }
 
@@ -117,8 +127,8 @@ view: shared_fields_common {
   dimension: geo_city_and_region {
     type: string
     sql: CASE
-       WHEN (${TABLE}.geo_city = '' OR ${TABLE}.geo_city IS NULL) THEN ${TABLE}.geo_country
-       WHEN (${TABLE}.geo_country = 'CA' OR ${TABLE}.geo_country = 'US') THEN ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_region_name
+       WHEN (${TABLE}.geo_city = '' OR ${TABLE}.geo_city IS NULL) THEN ${TABLE}.geo_country_name
+       WHEN (${TABLE}.geo_country_name = 'Canada' OR ${TABLE}.geo_country_name = 'United States') THEN ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_region_name
        ELSE ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_country
       END;;
     suggest_explore: city_cache
