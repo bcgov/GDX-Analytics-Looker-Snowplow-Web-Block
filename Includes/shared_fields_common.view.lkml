@@ -84,17 +84,17 @@ view: shared_fields_common {
 
 # Location
 
-  dimension: geo_country {
+  dimension: geo_country_code {
     type: string
     sql: ${TABLE}.geo_country ;;
     group_label: "Location"
   }
 
-  dimension: geo_country_name {
+  dimension: geo_country {
     type: string
     sql:  ${TABLE}.geo_country_name ;;
   }
-  dimension: geo_continent_name {
+  dimension: geo_continent {
     type: string
     sql:  ${TABLE}.geo_continent_name ;;
   }
