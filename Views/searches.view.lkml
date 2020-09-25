@@ -2,7 +2,7 @@ include: "/Includes/shared_fields_common.view"
 include: "/Includes/shared_fields_no_session.view"
 
 view: searches {
-  sql_table_name: test.searches ;;
+  sql_table_name: derived.searches ;;
 
   extends: [shared_fields_common,shared_fields_no_session]
 

@@ -4,7 +4,7 @@ include: "/Includes/date_comparisons_common.view"
 
 
 view: page_views {
-  sql_table_name: test.page_views ;;
+  sql_table_name: derived.page_views ;;
 
   extends: [shared_fields_common,shared_fields_no_session,date_comparisons_common]
 

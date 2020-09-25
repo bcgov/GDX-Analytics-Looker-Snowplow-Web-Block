@@ -6,7 +6,7 @@ include: "/Includes/shared_fields_no_session.view"
 include: "/Includes/date_comparisons_common.view"
 
 view: clicks {
-  sql_table_name: test.clicks ;;
+  sql_table_name: derived.clicks ;;
 
   extends: [shared_fields_common,shared_fields_no_session,date_comparisons_common]
 
