@@ -76,6 +76,13 @@ view: searches {
     group_label: "Results"
   }
 
+  dimension: search_terms_lower {
+    description: "The search term(s) that were queried converted to lowercase."
+    type:  string
+    sql:  ${TABLE}.terms_lower ;;
+    group_label: "Results"
+  }
+
   # readable_terms: string
   #
   # removes wrapping [" "] from the terms dimension, array and

@@ -417,6 +417,7 @@ explore: +clicks {
     query: {
       dimensions: [
         clicks.target_url,
+        clicks.target_display_url,
         clicks.click_type,
         clicks.offsite_click,
         clicks.node_id,
