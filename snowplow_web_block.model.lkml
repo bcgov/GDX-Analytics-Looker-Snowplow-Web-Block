@@ -34,8 +34,8 @@ explore: theme_cache {
   hidden: yes
 }
 
-# hidden cicy_cache explore supports suggest_explore for the city filter
-explore: city_cache {
+# hidden cicy_cache explore supports suggest_explore for the geo filters
+explore: geo_cache {
   hidden: yes
 }
 
@@ -130,12 +130,6 @@ join: myfs_estimates {
   sql_on: ${page_views.page_view_id} = ${myfs_estimates.id} ;;
   relationship: one_to_one
 }
-
-  join: countries {
-    type:  left_outer
-    sql_on: ${page_views.geo_country} = ${countries.country_code} ;;
-    relationship: one_to_one
-  }
 
   join: performance_timing {
     type: left_outer

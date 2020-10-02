@@ -88,15 +88,23 @@ view: shared_fields_common {
     type: string
     sql: ${TABLE}.geo_country ;;
     group_label: "Location"
+    suggest_explore: geo_cache
+    suggest_dimension: geo_cache.geo_country
   }
 
   dimension: geo_country_name {
     type: string
     sql:  ${TABLE}.geo_country_name ;;
+    group_label: "Location"
+    suggest_explore: geo_cache
+    suggest_dimension: geo_cache.geo_country_name
   }
   dimension: geo_continent_name {
     type: string
     sql:  ${TABLE}.geo_continent_name ;;
+    group_label: "Location"
+    suggest_explore: geo_cache
+    suggest_dimension: geo_cache.geo_continent_name
   }
 
 
@@ -116,23 +124,27 @@ view: shared_fields_common {
     type: string
     sql: ${TABLE}.geo_region_name ;;
     group_label: "Location"
+    suggest_explore: geo_cache
+    suggest_dimension: geo_cache.geo_region_name
   }
 
   dimension: geo_city {
     type: string
     sql: ${TABLE}.geo_city ;;
     group_label: "Location"
+    suggest_explore: geo_cache
+    suggest_dimension: geo_cache.geo_city
   }
 
-  dimension: geo_city_and_region {
+  dimension: geo_city_and_region { # Note: this should be synced up with the record in geo_cache.view
     type: string
     sql: CASE
-       WHEN (${TABLE}.geo_city = '' OR ${TABLE}.geo_city IS NULL) THEN ${TABLE}.geo_country
+       WHEN (${TABLE}.geo_city = '' OR ${TABLE}.geo_city IS NULL) THEN ${TABLE}.geo_country_name
        WHEN (${TABLE}.geo_country = 'CA' OR ${TABLE}.geo_country = 'US') THEN ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_region_name
-       ELSE ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_country
+       ELSE ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_country_name
       END;;
-    suggest_explore: city_cache
-    suggest_dimension: city_cache.geo_city_and_region
+    suggest_explore: geo_cache
+    suggest_dimension: geo_cache.geo_city_and_region
     group_label: "Location"
   }
 
@@ -491,6 +503,18 @@ view: shared_fields_common {
     type: yesno
     # the filter is checking to see if the IP is in the gov network
     sql: ${TABLE}.is_government;;
+  }
+
+  dimension: ip_isp {
+    type: string
+    sql: ${TABLE}.ip_isp ;;
+    group_label: "IP"
+  }
+
+  dimension: ip_organization {
+    type: string
+    sql: ${TABLE}.ip_organization ;;
+    group_label: "IP"
   }
 
   dimension: ldb_ip_range {
