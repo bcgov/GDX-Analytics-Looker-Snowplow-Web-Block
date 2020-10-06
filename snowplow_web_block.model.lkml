@@ -509,11 +509,13 @@ explore: +page_views {
 }
 explore: +page_views {  # This matches the previous AA, but adds to referrer fields.
                         # This increases the row couunt by about 1.75x, but supports more reports
-  aggregate_table: aa__page_views_with_referrers__7_complete_days__row_count{
+  aggregate_table: aa__page_views_with_referrers__7_complete_days__row_count {
     query: {
       dimensions: [
         page_views.page_urlhost,
         page_views.page_referrer,
+        page_views.referrer_urlhost,
+        page_views.page_referrer_display_url,
         page_views.node_id,
         page_views.page_exclusion_filter,
         page_views.app_id,
