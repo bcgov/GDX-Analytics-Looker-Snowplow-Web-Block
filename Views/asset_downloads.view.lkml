@@ -102,6 +102,12 @@ view: asset_downloads {
     group_label: "Asset"
   }
 
+  dimension: asset_display_url {
+    type: string
+    sql: SPLIT_PART(SPLIT_PART(${TABLE}.asset_url,'?', 1), '#', 1) ;;
+    group_label: "Asset"
+  }
+
   dimension: asset_host {
     type: string
     sql: ${TABLE}.asset_host ;;
