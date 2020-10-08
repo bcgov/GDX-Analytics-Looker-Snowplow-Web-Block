@@ -1,12 +1,9 @@
-view: chatbot {
+view: chatbot_intents_and_clicks {
   derived_table: {
     sql: SELECT wp.id, cb.*,
           CONVERT_TIMEZONE('UTC', 'America/Vancouver', cb.root_tstamp) AS timestamp,
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
           CASE WHEN action = 'get_answer' THEN 1 ELSE 0 END AS answer_count,
-          CASE WHEN action = 'open' THEN 1 ELSE 0 END AS open_count,
-          CASE WHEN action = 'hello' THEN 1 ELSE 0 END AS hello_count,
-          CASE WHEN action = 'close' THEN 1 ELSE 0 END AS close_count,
           CASE WHEN action = 'link_click' THEN 1 ELSE 0 END AS link_click_count,
           CASE WHEN action = 'get_answer' THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
           CASE
@@ -30,6 +27,7 @@ view: chatbot {
           FROM atomic.ca_bc_gov_chatbot_chatbot_1 AS cb
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
           LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
+          WHERE action IN ('get_answer', 'link_click')
           ;;
 
       distribution_style: all
@@ -82,6 +80,19 @@ view: chatbot {
     dimension: intent_agency {
       drill_fields: [intent_category, intent_subcategory, intent, page_views.chatbot_page_display_url]
       group_label: "Intents"
+    }
+
+    dimension: new_intent_category {
+      drill_fields: [intent, page_views.chatbot_page_display_url]
+      group_label: "New Intents"
+    }
+    dimension: new_intent_subcategory {
+      drill_fields: [intent, page_views.chatbot_page_display_url]
+      group_label: "New Intents"
+    }
+    dimension: new_sample_question {
+      drill_fields: [intent, page_views.chatbot_page_display_url]
+      group_label: "New Intents"
     }
 
     dimension: text {
