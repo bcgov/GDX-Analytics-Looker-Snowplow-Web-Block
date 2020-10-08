@@ -13,18 +13,16 @@ view: chatbot {
                 WHEN action = 'get_answer' AND SPLIT_PART(text,'^',2) <> '' THEN SPLIT_PART(text,'^',2)
                 WHEN action = 'get_answer' THEN '1'
                 ELSE NULL END AS intent_version, -- if there is something after "^" in an intent, it is the version. Otherwise, it is assumed to be version 1
-          CASE WHEN action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '-',1),'^',1)
-            ELSE NULL END AS intent_category,
 
-
-          CASE WHEN action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '_',1),'^',1)
-            ELSE NULL END AS new_agency,
-          CASE WHEN action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',1),'^',1)
-            ELSE NULL END AS new_intent_category,
-          CASE WHEN action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',2),'^',1)
-            ELSE NULL END AS new_intent_subcategory,
-          CASE WHEN action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '_',3),'^',1)
-            ELSE NULL END AS new_sample_question,
+          CASE WHEN timestamp < '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '-',1),'^',1)
+               WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',1),'^',1)
+          ELSE NULL END AS intent_category,
+          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '_',1),'^',1)
+            ELSE NULL END AS agency,
+          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',2),'^',1)
+            ELSE NULL END AS intent_subcategory,
+          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '_',3),'^',1)
+            ELSE NULL END AS sample_question,
           CASE WHEN action <> 'link_click' THEN NULL
             WHEN hr_url IS NOT NULL AND SPLIT_PART(text, '#',2) = '' THEN hr_url
             WHEN hr_url IS NOT NULL AND SPLIT_PART(text, '#',2) <> '' THEN hr_url || '#' || SPLIT_PART(text, '#',2)
@@ -35,7 +33,7 @@ view: chatbot {
           ;;
 
       distribution_style: all
-      persist_for: "12 hours"
+      persist_for: "8 hours"
     }
 
     dimension_group: event {
@@ -69,23 +67,35 @@ view: chatbot {
       group_label: "Intents"
     }
     dimension: intent_category {
-      drill_fields: [intent, page_views.chatbot_page_display_url]
+      drill_fields: [intent, intent_subcategory, page_views.chatbot_page_display_url]
       group_label: "Intents"
     }
 
+    dimension: intent_subcategory {
+      drill_fields: [intent, page_views.chatbot_page_display_url]
+      group_label: "Intents"
+    }
+    dimension: sample_question {
+      drill_fields: [intent, page_views.chatbot_page_display_url]
+      group_label: "Intents"
+    }
+    dimension: intent_agency {
+      drill_fields: [intent_category, intent_subcategory, intent, page_views.chatbot_page_display_url]
+      group_label: "Intents"
+    }
 
-  dimension: new_intent_category {
-    drill_fields: [intent, page_views.chatbot_page_display_url]
-    group_label: "New Intents"
-  }
-  dimension: new_intent_subcategory {
-    drill_fields: [intent, page_views.chatbot_page_display_url]
-    group_label: "New Intents"
-  }
-  dimension: new_sample_question {
-    drill_fields: [intent, page_views.chatbot_page_display_url]
-    group_label: "New Intents"
-  }
+    dimension: new_intent_category {
+      drill_fields: [intent, page_views.chatbot_page_display_url]
+      group_label: "New Intents"
+    }
+    dimension: new_intent_subcategory {
+      drill_fields: [intent, page_views.chatbot_page_display_url]
+      group_label: "New Intents"
+    }
+    dimension: new_sample_question {
+      drill_fields: [intent, page_views.chatbot_page_display_url]
+      group_label: "New Intents"
+    }
 
     dimension: text {
       type: string
