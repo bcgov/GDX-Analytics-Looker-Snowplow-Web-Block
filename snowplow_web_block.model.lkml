@@ -172,6 +172,28 @@ explore: chatbot {
   }
 }
 
+explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes of making it faster
+  persist_for: "2 hours"
+
+  label: "Chatbot Intents"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${chatbot_intents_and_clicks.id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${page_views.node_id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
 explore: sessions {
   persist_for: "10 minutes"
 
