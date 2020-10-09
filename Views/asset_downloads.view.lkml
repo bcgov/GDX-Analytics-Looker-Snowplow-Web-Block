@@ -108,6 +108,11 @@ view: asset_downloads {
     type: string
     sql: ${TABLE}.asset_url ;;
     group_label: "Asset"
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: asset_display_url {
@@ -141,6 +146,7 @@ view: asset_downloads {
   dimension: asset_file {
     type: string
     sql: ${TABLE}.asset_file ;;
+    drill_fields: [asset_display_url]
     group_label: "Asset"
   }
 
@@ -149,6 +155,7 @@ view: asset_downloads {
   dimension: asset_ext {
     type: string
     sql: ${TABLE}.asset_ext ;;
+    drill_fields: [asset_display_url]
     group_label: "Asset"
   }
 
