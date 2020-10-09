@@ -182,7 +182,7 @@ explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes
   }
   join: cmslite_themes {
     type: left_outer
-    sql_on: ${page_views.node_id} = ${page_views.node_id} ;;
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
 
