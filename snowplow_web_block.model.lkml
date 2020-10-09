@@ -173,9 +173,7 @@ explore: chatbot {
 }
 
 explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes of making it faster
-  persist_for: "2 hours"
-
-  label: "Chatbot Intents"
+  label: "Chatbot Intents and Clicks"
 
   join: page_views {
     type:  left_outer
@@ -184,7 +182,7 @@ explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes
   }
   join: cmslite_themes {
     type: left_outer
-    sql_on: ${page_views.node_id} = ${page_views.node_id} ;;
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
 

@@ -31,7 +31,7 @@ view: chatbot_intents_and_clicks {
           ;;
 
       distribution_style: all
-      persist_for: "8 hours"
+      persist_for: "1 hours"
     }
 
     dimension_group: event {
