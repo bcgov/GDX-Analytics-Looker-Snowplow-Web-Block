@@ -60,6 +60,14 @@ view: asset_downloads {
     description: "Yes if the IP address maps to a known BC Government network."
   }
 
+  dimension: is_offsite {
+    type: string
+    sql: CASE
+      WHEN position(asset_downloads.asset_host IN asset_downloads.referrer_urlhost_derived) > 0 THEN TRUE
+        ELSE FALSE END ;;
+    description: "Yes if the Asset download requests originates from off the Asset Host."
+  }
+
   dimension: referrer {
     type:  string
     sql:  ${TABLE}.referrer ;;
@@ -106,6 +114,13 @@ view: asset_downloads {
     type: string
     sql: SPLIT_PART(SPLIT_PART(${TABLE}.asset_url,'?', 1), '#', 1) ;;
     group_label: "Asset"
+    drill_fields: [page_referrer_display_url]
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+
   }
 
   dimension: asset_host {
@@ -199,6 +214,7 @@ view: asset_downloads {
     type: string
     sql: ${TABLE}.page_referrer_display_url ;;
     group_label: "Referrer"
+    drill_fields: [asset_display_url]
     link: {
       label: "Visit Page"
       url: "{{ value }}"
