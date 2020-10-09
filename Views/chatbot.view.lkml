@@ -1,6 +1,9 @@
 view: chatbot {
   derived_table: {
-    sql: SELECT wp.id, cb.*,
+    sql: SELECT wp.id,
+          action,
+          agent,
+          text,
           CONVERT_TIMEZONE('UTC', 'America/Vancouver', cb.root_tstamp) AS timestamp,
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
           CASE WHEN action = 'get_answer' THEN 1 ELSE 0 END AS answer_count,
@@ -71,14 +74,6 @@ view: chatbot {
       group_label: "Intents"
     }
 
-    #dimension: intent_subcategory {
-    #  drill_fields: [intent, page_views.chatbot_page_display_url]
-    #  group_label: "Intents"
-    #}
-    #dimension: sample_question {
-    #  drill_fields: [intent, page_views.chatbot_page_display_url]
-    #  group_label: "Intents"
-    #}
     dimension: intent_agency {
     #  drill_fields: [intent_category, intent_subcategory, intent, page_views.chatbot_page_display_url]
       group_label: "Intents"
