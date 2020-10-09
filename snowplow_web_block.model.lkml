@@ -173,9 +173,7 @@ explore: chatbot {
 }
 
 explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes of making it faster
-  persist_for: "2 hours"
-
-  label: "Chatbot Intents"
+  label: "Chatbot Intents and Clicks"
 
   join: page_views {
     type:  left_outer
