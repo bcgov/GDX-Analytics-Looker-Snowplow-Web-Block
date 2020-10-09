@@ -1,6 +1,9 @@
 view: chatbot_intents_and_clicks {
   derived_table: {
-    sql: SELECT wp.id, cb.*,
+    sql: SELECT wp.id,
+          action,
+          agent,
+          text,
           CONVERT_TIMEZONE('UTC', 'America/Vancouver', cb.root_tstamp) AS timestamp,
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
           CASE WHEN action = 'get_answer' THEN 1 ELSE 0 END AS answer_count,
@@ -31,7 +34,7 @@ view: chatbot_intents_and_clicks {
           ;;
 
       distribution_style: all
-      persist_for: "8 hours"
+      persist_for: "1 hours"
     }
 
     dimension_group: event {
@@ -82,19 +85,6 @@ view: chatbot_intents_and_clicks {
       group_label: "Intents"
     }
 
-    dimension: new_intent_category {
-      drill_fields: [intent, page_views.chatbot_page_display_url]
-      group_label: "New Intents"
-    }
-    dimension: new_intent_subcategory {
-      drill_fields: [intent, page_views.chatbot_page_display_url]
-      group_label: "New Intents"
-    }
-    dimension: new_sample_question {
-      drill_fields: [intent, page_views.chatbot_page_display_url]
-      group_label: "New Intents"
-    }
-
     dimension: text {
       type: string
       sql: ${TABLE}.text ;;
@@ -104,25 +94,14 @@ view: chatbot_intents_and_clicks {
       sql: ${TABLE}.agent ;;
     }
 
+    # Measures
     measure: question_count {
       type: sum
       sql: ${TABLE}.question_count ;;
     }
-    measure: hello_count {
-      type: sum
-      sql: ${TABLE}.hello_count ;;
-    }
     measure: answer_count {
       type: sum
       sql: ${TABLE}.answer_count ;;
-    }
-    measure:open_count {
-      type: sum
-      sql: ${TABLE}.open_count ;;
-    }
-    measure: close_count {
-      type: sum
-      sql: ${TABLE}.close_count ;;
     }
     measure: link_click_count {
       type: sum
