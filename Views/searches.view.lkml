@@ -127,6 +127,38 @@ view: searches {
     }
   }
 
+  ## POC search term links
+  # test lookup table
+  dimension: link_url_lookup {
+    hidden: yes
+    type:  string
+    sql: CASE
+          WHEN ${TABLE}.page_urlhost = 'www.bcliquorstores.com' AND ${TABLE}.page_urlpath = '/product-catalogue' THEN 'https://www.bcliquorstores.com/product-catalogue?search=<term>'
+          WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca' AND ${TABLE}.page_urlpath = '/search' THEN 'http://www.bccdc.ca/search#Default=%7B%22k%22%3A%22<term>%22%7D#82da64df-5191-4d50-92e5-27917898d8cd=%7B%22k%22%3A%22<term>%22%7D'
+          ELSE ''
+         END ;;
+  }
+
+  # replacing placeholder term with search term in URL
+  dimension: link_url {
+    hidden: yes
+    type:  string
+    sql:  REPLACE(${link_url_lookup}, '<term>', ${TABLE}.terms) ;;
+  }
+
+  dimension: search_terms_test {
+    label: "Test Search Terms"
+    description: "The search term(s) that were queried."
+    type:  string
+    sql:  REPLACE(${TABLE}.terms,'%20',' ') ;;
+    group_label: "Results"
+    link: {
+      label: "View Search"
+      url: "{{ searches.link_url._value }}"
+      icon_url: ""
+    }
+  }
+
   # filters: string
   # Table reference - VARCHAR(2048) ENCODE RAW
   # e.g.: '{'category': 'books', 'sub-category': 'non-fiction'}'
