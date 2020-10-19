@@ -384,6 +384,33 @@ dimension: chatbot_page_display_url {
     sql: ${TABLE}.collector_tstamp ;;
     description: "The timestamp for the event that was recorded by the collector."
   }
+  parameter: dimension_selectors {
+
+    type: string
+    allowed_value: { value: "url" }
+    allowed_value: { value: "Theme" }
+    allowed_value: { value: "SubTheme" }
+  }
+
+
+  dimension: HQ_report_group{
+    group_label: "Flexible Filter"
+    label_from_parameter: dimension_selectors
+    sql:
+       CASE
+         WHEN {% parameter dimension_selectors %} = 'url' THEN
+           ${page_views.page_display_url}
+         WHEN {% parameter dimension_selectors %} = 'Theme' THEN
+          ${cmslite_themes.theme}
+
+         WHEN {% parameter dimension_selectors %} = 'SubTheme' THEN
+          ${cmslite_themes.subtheme}
+
+         ELSE
+           NULL
+       END
+      ;;
+  }
 
   # Page performance
     # these fields have been removed from the new web model
