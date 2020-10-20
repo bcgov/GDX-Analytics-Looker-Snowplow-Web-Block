@@ -80,6 +80,11 @@ view: asset_downloads {
     sql:  ${TABLE}.referrer_urlhost_derived ;;
     label: "Referrer Urlhost"
     group_label: "Referrer"
+    link: {
+      label: "Visit Page"
+      url: "https://{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: referrer_medium {
@@ -133,6 +138,11 @@ view: asset_downloads {
     sql: ${TABLE}.asset_host ;;
     label: "Asset Host"
     group_label: "Asset"
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: asset_source {
