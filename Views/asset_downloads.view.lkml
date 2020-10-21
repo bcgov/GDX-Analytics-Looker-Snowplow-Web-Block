@@ -80,6 +80,7 @@ view: asset_downloads {
     sql:  ${TABLE}.referrer_urlhost_derived ;;
     label: "Referrer Urlhost"
     group_label: "Referrer"
+    drill_fields: [referrer,asset_display_url]
     link: {
       label: "Visit Page"
       url: "https://{{ value }}"
@@ -114,7 +115,7 @@ view: asset_downloads {
     sql: ${TABLE}.asset_url ;;
     group_label: "Asset"
     link: {
-      label: "Visit Page"
+      label: "Visit Link"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -126,7 +127,7 @@ view: asset_downloads {
     group_label: "Asset"
     drill_fields: [page_referrer_display_url]
     link: {
-      label: "Visit Page"
+      label: "Visit Link"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
