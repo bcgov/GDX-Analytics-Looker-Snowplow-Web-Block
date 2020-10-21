@@ -35,11 +35,11 @@ view: asset_downloads {
     group_label: "Download"
   }
 
-  dimension: total_return_size {
+  dimension: return_size {
     type:  number
     sql:   ${TABLE}.return_size ;;
     description: "The size of response in bytes, excluding HTTP headers"
-    label: "Total Return Size"
+    label: "Return Size"
     group_label: "Asset"
   }
 
@@ -82,7 +82,7 @@ view: asset_downloads {
     group_label: "Referrer"
     drill_fields: [referrer,asset_display_url]
     link: {
-      label: "Visit Page"
+      label: "Visit Referrer"
       url: "https://{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -115,7 +115,7 @@ view: asset_downloads {
     sql: ${TABLE}.asset_url ;;
     group_label: "Asset"
     link: {
-      label: "Visit Link"
+      label: "Visit Asset"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -127,7 +127,7 @@ view: asset_downloads {
     group_label: "Asset"
     drill_fields: [page_referrer_display_url]
     link: {
-      label: "Visit Link"
+      label: "Visit Asset"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -234,7 +234,7 @@ view: asset_downloads {
     group_label: "Referrer"
     drill_fields: [asset_display_url]
     link: {
-      label: "Visit Page"
+      label: "Visit Referrer"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -254,7 +254,7 @@ view: asset_downloads {
     sql: ${TABLE}.asset_url_case_insensitive ;;
     group_label: "Asset"
     link: {
-      label: "Visit Link"
+      label: "Visit Asset"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -267,7 +267,7 @@ view: asset_downloads {
     sql: ${TABLE}.asset_url_nopar ;;
     group_label: "Asset"
     link: {
-      label: "Visit Link"
+      label: "Visit Asset"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -279,7 +279,7 @@ view: asset_downloads {
     sql: ${TABLE}.asset_url_nopar_case_insensitive ;;
     group_label: "Asset"
     link: {
-      label: "Visit Link"
+      label: "Visit Asset"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -291,7 +291,7 @@ view: asset_downloads {
     sql: ${TABLE}.asset_url_nopar_case_insensitive ;;
     group_label: "Asset"
     link: {
-      label: "Visit Link"
+      label: "Visit Asset"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -302,4 +302,14 @@ view: asset_downloads {
     drill_fields: []
   }
 
+
+  measure: avg_return_size {
+    type: average
+    sql: ${return_size} ;;
+  }
+
+  measure: total_return_size {
+    type: sum
+    sql: ${return_size} ;;
+  }
 }
