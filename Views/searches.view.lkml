@@ -102,19 +102,44 @@ view: searches {
     hidden: yes
     type:  string
     sql: CASE
-          WHEN ${TABLE}.page_urlhost = 'www.bcliquorstores.com' THEN 'https://www.bcliquorstores.com/product-catalogue?search=<term>'
-          WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca' THEN 'http://www.bccdc.ca/search#Default=%7B%22k%22%3A%22<term>%22%7D#82da64df-5191-4d50-92e5-27917898d8cd=%7B%22k%22%3A%22<term>%22%7D'
+          WHEN ${TABLE}.page_urlhost = 'www.bcliquorstores.com' AND  ${TABLE}.page_urlpath = '/product-catalogue' THEN 'https://www.bcliquorstores.com/product-catalogue?search=<term>'
+          WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca' AND ${TABLE}.page_urlpath = '/search'  THEN 'http://www.bccdc.ca/search?k=<term>'
+          WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca' AND ${TABLE}.page_urlpath = '/Pages/Search.aspx'  THEN 'http://www.bccdc.ca/Pages/Search.aspx?k=<term>'
+          WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca' AND ${TABLE}.page_urlpath = '/bc-cdc-search-results'  THEN 'http://www.bccdc.ca/bc-cdc-search-results?k=<term>'
+          WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca' AND ${TABLE}.page_urlpath = '/other-phsa-sites-search-results'  THEN 'http://www.bccdc.ca/other-phsa-sites-search-results?k=<term>'
+          WHEN ${TABLE}.page_urlhost = 'news.gov.bc.ca' AND ${TABLE}.page_urlpath = '/Search' THEN 'https://news.gov.bc.ca/Search?q=<term>'
           WHEN ${TABLE}.page_urlhost = 'www.healthlinkbc.ca' THEN 'https://www.healthlinkbc.ca/search/<term>'
+          WHEN ${TABLE}.page_urlhost = 'www.welcomebc.ca' THEN 'https://www.welcomebc.ca/Search-Results.aspx?q=<term>'
+          WHEN ${TABLE}.page_urlhost = 'info.bcassessment.ca' THEN 'https://info.bcassessment.ca//search-results/Pages/Default.aspx?k=<term>'
           ELSE ''
          END ;;
   }
 
+  # test lookup site_wide search term dimension
+  dimension: site_wide {
+    hidden:  yes
+    type:  string
+    sql:  CASE
+           WHEN ${TABLE}.page_urlhost = 'www.bcliquorstores.com' THEN 'no'
+           WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca'  THEN 'no'
+           WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca'  THEN 'no'
+           WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca'  THEN 'no'
+           WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca'  THEN 'no'
+           WHEN ${TABLE}.page_urlhost = 'news.gov.bc.ca'  THEN 'no'
+           WHEN ${TABLE}.page_urlhost = 'www.healthlinkbc.ca'  THEN 'yes'
+           WHEN ${TABLE}.page_urlhost = 'www.welcomebc.ca' THEN 'yes'
+           WHEN ${TABLE}.page_urlhost = 'info.bcassessment.ca' THEN 'yes'
+        ELSE ''
+      END ;;
+  }
+
   # replacing placeholder term with search term in URL
   dimension: link_url {
-    hidden: yes
+   # hidden: yes
     type:  string
     sql:  REPLACE(${link_url_lookup}, '<term>', ${TABLE}.terms) ;;
   }
+
 
   dimension: search_terms_test {
     label: "Test Search Terms"
