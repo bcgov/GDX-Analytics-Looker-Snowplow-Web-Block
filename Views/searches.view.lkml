@@ -104,6 +104,7 @@ view: searches {
     sql: CASE
           WHEN ${TABLE}.page_urlhost = 'www.bcliquorstores.com' THEN 'https://www.bcliquorstores.com/product-catalogue?search=<term>'
           WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca' THEN 'http://www.bccdc.ca/search#Default=%7B%22k%22%3A%22<term>%22%7D#82da64df-5191-4d50-92e5-27917898d8cd=%7B%22k%22%3A%22<term>%22%7D'
+          WHEN ${TABLE}.page)${page_urlhost} = 'www.healthlinkbc.ca' THEN 'https://www.healthlinkbc.ca/search/<term>'
           ELSE ''
          END ;;
   }
