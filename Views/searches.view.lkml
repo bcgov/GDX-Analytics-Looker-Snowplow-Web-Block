@@ -94,8 +94,7 @@ view: searches {
     group_label: "Results"
   }
 
-## POC search term links
-
+## POC search term links ----
 
   # test lookup table
   dimension: link_url_lookup {
@@ -120,7 +119,7 @@ view: searches {
     hidden:  yes
     type:  string
     sql:  CASE
-           WHEN ${TABLE}.page_urlhost = 'www.bcliquorstores.com' THEN 'no'
+           WHEN ${TABLE}.page_urlhost = 'www.bcliquorstores.com' THEN 'yes'
            WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca'  THEN 'no'
            WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca'  THEN 'no'
            WHEN ${TABLE}.page_urlhost = 'www.bccdc.ca'  THEN 'no'
@@ -134,25 +133,48 @@ view: searches {
   }
 
   # replacing placeholder term with search term in URL
-  dimension: link_url {
-   # hidden: yes
+  dimension: page_link_url {
+    hidden: yes
     type:  string
     sql:  REPLACE(${link_url_lookup}, '<term>', ${TABLE}.terms) ;;
   }
 
+  # blanking out page_link_urls that don't work site wide
+  dimension: site_link_url {
+    hidden: yes
+    type:  string
+    sql:  CASE WHEN ${site_wide} = 'no' THEN ''
+      ELSE ${page_link_url}
+    END  ;;
+  }
 
-  dimension: search_terms_test {
-    label: "Test Search Terms"
+  dimension: search_terms_pages {
+    label: "Search Terms - Individual Pages"
     description: "The search term(s) that were queried."
     type:  string
     sql:  REPLACE(${TABLE}.terms,'%20',' ') ;;
     group_label: "Results"
     link: {
       label: "View Search"
-      url: "{{ searches.link_url._value }}"
+      url: "{{ searches.page_link_url._value }}"
       icon_url: ""
     }
   }
+
+  dimension: search_terms_site_wide {
+    label: "Search Terms - Site Wide"
+    description: "The search term(s) that were queried."
+    type:  string
+    sql:  REPLACE(${TABLE}.terms,'%20',' ') ;;
+    group_label: "Results"
+    link: {
+      label: "View Search"
+      url: "{{ searches.site_link_url._value }}"
+      icon_url: ""
+    }
+  }
+
+# End of POC ----
 
   # readable_terms: string
   #
