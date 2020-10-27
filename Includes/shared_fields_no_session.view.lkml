@@ -191,25 +191,4 @@ view: shared_fields_no_session {
     group_label: "TIBC"
   }
 
-  # WelcomeBC dimensions
-  dimension: pnp_page_display_url {
-    label: "PNP Page Display URL"
-    description: "Cleaned URL of the page without specific case, form and reference numbers"
-    type: string
-    sql: CASE  WHEN split_part(${TABLE}.page_display_url, '/', 5) similar to '[0-9]+' AND split_part(${TABLE}.page_display_url, '/', 7) similar to '[0-9]+'
-           THEN REPLACE(REPLACE(${TABLE}.page_display_url, split_part(${TABLE}.page_display_url, '/', 7), 'XXXXXX'), split_part(${TABLE}.page_display_url, '/', 5), 'XXXXXX')
-          WHEN split_part(${TABLE}.page_display_url, '/', 5) similar to '[0-9]+'
-           THEN REPLACE(${TABLE}.page_display_url, split_part(${TABLE}.page_display_url, '/', 5), 'XXXXXX')
-          WHEN split_part(${TABLE}.page_display_url, '/', 6) similar to '[0-9]+'
-           THEN REPLACE(${TABLE}.page_display_url, split_part(${TABLE}.page_display_url, '/', 6), 'XXXXXX')
-          WHEN split_part(${TABLE}.page_display_url, '/', 7) similar to '[0-9]+'
-           THEN REPLACE(${TABLE}.page_display_url, split_part(${TABLE}.page_display_url, '/', 7), 'XXXXXX')
-
-          ELSE ${TABLE}.page_display_url END;;
-    group_label: "WelcomeBC"
-    drill_fields: [page_views.page_referrer,page_views.page_url]
-  }
-
-
-
 }
