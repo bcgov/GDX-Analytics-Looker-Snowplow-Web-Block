@@ -367,6 +367,115 @@ dimension: chatbot_page_display_url {
     drill_fields: [page_display_url]
   }
 
+  # Custom dimensions for Welcome BC
+  dimension: welcomebc_page_section {
+    label: "WelcomeBC Page Section"
+    description: "The identifier for a section of the WelcomeBC site."
+    type: string
+    sql: CASE
+            WHEN SPLIT_PART(SPLIT_PART(${TABLE}.page_urlpath,'/',2),'.',1) IN
+             ('Choose-B-C', 'Immigrate-to-B-C', 'Start-Your-Life-in-B-C', 'Work-or-Study-in-B-C', 'Employer-Resources', '  Resources-For')
+             THEN SPLIT_PART(SPLIT_PART(${TABLE}.page_urlpath,'/',2),'.',1)
+            ELSE NULL
+          END;;
+    group_label: "WelcomeBC Dimensions"
+    drill_fields: [page_display_url]
+  }
+
+  dimension: welcomebc_page_topic {
+    label: "WelcomeBC Page Topic"
+    sql: CASE
+          WHEN ${TABLE}.page_url in
+           ('https://www.welcomebc.ca/Employer-Resources',
+            'https://www.welcomebc.ca/Employer-Resources/B-C-Provincial-Nominee-Program-(PNP)-for-Employer',
+            'https://www.welcomebc.ca/Employer-Resources/B-C-Provincial-Nominee-Program-for-Employer/B-C-Provincial-Nominee-Program-for-Employers',
+            'https://www.welcomebc.ca/Employer-Resources/Immigration-Supports-in-B-C-Global-Skills-Strategy',
+            'https://www.welcomebc.ca/Employer-Resources/Immigration-Supports-in-B-C-Global-Skills-Strategy/Immigration-Supports-in-B-C-Global-Skills-Strategy',
+            'https://www.welcomebc.ca/Employer-Resources/Federal-Immigration-Programs',
+            'https://www.welcomebc.ca/Employer-Resources/Federal-Immigration-Programs/About-Federal-Immigration-Programs',
+            'https://www.welcomebc.ca/Employer-Resources/Hire-Internationally-Trained-Workers',
+            'https://www.welcomebc.ca/Employer-Resources/Hire-Internationally-Trained-Workers/Why-Hire-Internationally-Trained-Workers',
+            'https://www.welcomebc.ca/Employer-Resources/Hire-Internationally-Trained-Workers/Recruit-Internationally-Trained-Workers',
+            'https://www.welcomebc.ca/Employer-Resources/Hire-Internationally-Trained-Workers/Retain-Your-Workers',
+            'https://www.welcomebc.ca/Employer-Resources/Hire-Temporary-Foreign-Workers',
+            'https://www.welcomebc.ca/Employer-Resources/Hire-Temporary-Foreign-Workers/Temporary-Foreign-Worker-Program',
+            'https://www.welcomebc.ca/Employer-Resources/Hire-Temporary-Foreign-Workers/International-Mobility-Program',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/B-C-Provincial-Nominee-Program/Invitations-to-Apply',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/B-C-Provincial-Nominee-Program/Documents',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/B-C-Provincial-Nominee-Program/BC-PNP-Tech-Pilot',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/B-C-Provincial-Nominee-Program/BC-PNP-Tech-Pilot') THEN 'Employer Related'
+          WHEN ${TABLE}.page_url in
+           ('https://www.welcomebc.ca/Immigrate-to-B-C/B-C-Provincial-Nominee-Program/Invitations-to-Apply',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/B-C-Provincial-Nominee-Program/Documents',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/BC-PNP-Skills-Immigration/International-Graduate',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/BC-PNP-Skills-Immigration/International-Post-Graduate',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/BC-PNP-Express-Entry-B-C/EEBC-International-Graduate',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/BC-PNP-Express-Entry-B-C/EEBC-International-Post-Graduate',
+            'https://www.welcomebc.ca/Start-Your-Life-in-B-C/Daily-Life/Education-in-British-Columbia',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Study-in-B-C',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Study-in-B-C/International-Students',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Study-in-B-C/Training-and-Education',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Extend-Your-Stay-in-B-C/Extend-Your-Study-Permit',
+            'https://www.welcomebc.ca/Resources-For/International-Students',
+            'https://www.welcomebc.ca/Resources-For/International-Students/Come-to-B-C-to-Study') THEN 'Student Related'
+          WHEN ${TABLE}.page_url in
+           ('https://www.welcomebc.ca/Immigrate-to-B-C/B-C-Provincial-Nominee-Program/Invitations-to-Apply',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/B-C-Provincial-Nominee-Program/Documents',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/BC-PNP-Skills-Immigration/Skilled-Worker',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/BC-PNP-Skills-Immigration/Health-Care-Professional',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/BC-PNP-Skills-Immigration/Entre-Level-and-Semi-Skilled',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/BC-PNP-Express-Entry-B-C/EEBC-Skilled-Worker',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/BC-PNP-Express-Entry-B-C/Express-Entry-Health-Care-Professional',
+            'https://www.welcomebc.ca/Start-Your-Life-in-B-C/Services-and-Support/For-Temporary-Residents',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Work-in-B-C',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Work-in-B-C/Find-a-Job-in-B-C',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Work-in-B-C/Foreign-Qualifications-Recognition-(FQR)',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Work-in-B-C/Temporary-Foreign-Workers',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Work-in-B-C/Know-Your-Rights-as-a-Temporary-Foreign-Worker',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Work-in-B-C/Workplace-Information',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Work-in-B-C/Employment-Language-Programs',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Your-Career-in-B-C',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Extend-Your-Stay-in-B-C',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Extend-Your-Stay-in-B-C/Extend-Your-Stay-in-B-C',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Extend-Your-Stay-in-B-C/Transition-to-Permanent-Residence',
+            'https://www.welcomebc.ca/Work-or-Study-in-B-C/Extend-Your-Stay-in-B-C/Support-for-Temporary-Foreign-Residents',
+            'https://www.welcomebc.ca/Resources-For/Temporary-Foreign-Workers-(TFWs)',
+            'https://www.welcomebc.ca/Resources-For/Temporary-Foreign-Workers-(TFWs)/Find-Out-About-Working-Temporarily-in-B-C') THEN 'Worker Related'
+          WHEN ${TABLE}.page_url in
+           ('https://www.welcomebc.ca/Immigrate-to-B-C/B-C-Provincial-Nominee-Program',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/BC-PNP-Skills-Immigration.aspx',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/BC-PNP-Express-Entry-B-C',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/BC-PNP-Entrepreneur-Immigration',
+            'https://www.welcomebc.ca/Immigrate-to-B-C/Other-Immigration-Options-and-Information') THEN 'BC PNP 3rd-Level Pages'
+          ELSE NULL
+        END;;
+    group_label: "WelcomeBC Dimensions"
+    drill_fields: [page_display_url]
+  }
+
+
+  dimension: pnp_page_display_url {
+    label: "PNP Page Display URL"
+    description: "Cleaned URL of the page without specific case, form and reference numbers"
+    type: string
+    sql: CASE  WHEN split_part(${TABLE}.page_display_url, '/', 5) similar to '[0-9]+' AND split_part(${TABLE}.page_display_url, '/', 7) similar to '[0-9]+'
+           THEN REPLACE(REPLACE(${TABLE}.page_display_url, split_part(${TABLE}.page_display_url, '/', 7), 'XXXXXX'), split_part(${TABLE}.page_display_url, '/', 5), 'XXXXXX')
+          WHEN split_part(${TABLE}.page_display_url, '/', 5) similar to '[0-9]+'
+           THEN REPLACE(${TABLE}.page_display_url, split_part(${TABLE}.page_display_url, '/', 5), 'XXXXXX')
+          WHEN split_part(${TABLE}.page_display_url, '/', 6) similar to '[0-9]+'
+           THEN REPLACE(${TABLE}.page_display_url, split_part(${TABLE}.page_display_url, '/', 6), 'XXXXXX')
+          WHEN split_part(${TABLE}.page_display_url, '/', 7) similar to '[0-9]+'
+           THEN REPLACE(${TABLE}.page_display_url, split_part(${TABLE}.page_display_url, '/', 7), 'XXXXXX')
+
+          ELSE ${TABLE}.page_display_url END;;
+    group_label: "WelcomeBC Dimensions"
+    drill_fields: [page_views.page_referrer,page_views.page_url]
+  }
+
+
+
+
+
 
   dimension_group: collector_tstamp {
     group_label: "Date/Time Fields"
