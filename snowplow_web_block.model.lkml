@@ -146,6 +146,12 @@ explore: myfs_estimates {
     sql_on: ${page_views.page_view_id} = ${myfs_estimates.id} ;;
     relationship: one_to_one
   }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+
 }
 
 explore: chatbot {
@@ -358,6 +364,11 @@ explore: esb_se_pathways {
     sql_on: ${page_views.page_urlquery} LIKE 'id=' + ${esb_se_pathways.id} + '%';;
     relationship: many_to_one
   }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
 }
 
 explore: youtube_embed_video {
@@ -372,6 +383,11 @@ explore: youtube_embed_video {
     field: page_views.page_urlhost
     user_attribute: urlhost
   }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
 }
 explore: forms {
   persist_for: "60 minutes"
@@ -380,6 +396,11 @@ explore: forms {
     type: left_outer
     sql_on: ${page_views.page_view_id} = ${forms.page_view_id} ;;
     relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
   }
 }
 
@@ -409,6 +430,12 @@ explore: performance_timing {
   join: page_views {
     type:  left_outer
     sql_on: ${performance_timing.page_view_id} = ${page_views.page_view_id} ;;
+    relationship: one_to_one
+  }
+
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
 }

@@ -172,6 +172,7 @@ view: clicks {
     description: "Cleaned URL of the page without query string or standard file names like index.html"
     sql: ${TABLE}.target_display_url;;
     group_label: "Target"
+    drill_fields: [page_display_url]
     link: {
       label: "Visit Page"
       url: "{{ value }}"
