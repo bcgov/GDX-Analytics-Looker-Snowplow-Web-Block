@@ -63,8 +63,8 @@ view: asset_downloads {
   dimension: is_offsite {
     type: string
     sql: CASE
-      WHEN asset_downloads.asset_host = asset_downloads.referrer_urlhost_derived THEN TRUE
-        ELSE FALSE END ;;
+      WHEN asset_downloads.asset_host = asset_downloads.referrer_urlhost_derived THEN FALSE
+        ELSE TRUE END ;;
     description: "Yes if the Asset download requests originates from off the Asset Host."
   }
 
