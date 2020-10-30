@@ -306,8 +306,7 @@ view: asset_downloads {
     description: "The average return size"
     type: average
     sql: ${return_size} ;;
-    #value_format: "[<1000]##0.00,\" b\";[<1000000]##0.00,\" Kb\"##0.00,,\" Mb\""
-    value_format: "[<1000000]#,##0.00,\" Kb\";#,##0.00,,\" Mb\""
+    value_format: "[<1000000]#,##0.00,\" Kb\";[<1000000000]#,##0.00,,\" Mb\";#,##0.00,,,\" Gb\""
 
   }
 
@@ -315,6 +314,6 @@ view: asset_downloads {
     description: "The total return size"
     type: sum
     sql: ${return_size} ;;
-    value_format: "[<1000000]#,##0.00,\" Kb\";#,##0.00,,\" Mb\""
+    value_format: "[<1000000]#,##0.00,\" Kb\";[<1000000000]#,##0.00,,\" Mb\";#,##0.00,,,\" Gb\""
   }
 }
