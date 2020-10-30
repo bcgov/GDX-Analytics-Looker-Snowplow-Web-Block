@@ -302,14 +302,19 @@ view: asset_downloads {
     drill_fields: []
   }
 
-
   measure: avg_return_size {
+    description: "The average return size"
     type: average
     sql: ${return_size} ;;
+    #value_format: "[<1000]##0.00,\" b\";[<1000000]##0.00,\" Kb\"##0.00,,\" Mb\""
+    value_format: "[<1000000]#,##0.00,\" Kb\";#,##0.00,,\" Mb\""
+
   }
 
   measure: total_return_size {
+    description: "The total return size"
     type: sum
     sql: ${return_size} ;;
+    value_format: "[<1000000]#,##0.00,\" Kb\";#,##0.00,,\" Mb\""
   }
 }
