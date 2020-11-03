@@ -291,7 +291,7 @@ view: shared_fields_no_session {
           ELSE ${TABLE}.page_display_url
         END;;
     group_label: "WelcomeBC Dimensions"
-    drill_fields: [page_views.page_referrer,page_views.page_url]
+    drill_fields: [page_display_url]
   }
 
   dimension: welcomebc_page_referrer_section {

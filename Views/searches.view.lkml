@@ -236,6 +236,12 @@ view: searches {
     group_label: "Results"
   }
 
+  #overrid the drills to add a drill to search terms from that page
+  dimension: page_referrer_display_url {
+    type: string
+    drill_fields: [page_referrer,search_terms]
+  }
+
   # MEASURES
   # duplicates throughout this section
 
