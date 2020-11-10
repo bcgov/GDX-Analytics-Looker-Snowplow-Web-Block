@@ -285,6 +285,12 @@ view: asset_downloads {
     }
   }
 
+  dimension: is_partial {
+    description: "Yes if HTTP response status code equal to 206."
+    type: yesno
+    sql: CASE WHEN ${status_code} = 206 THEN TRUE ELSE FALSE END ;;
+    }
+
   dimension: truncated_asset_url_nopar_case_insensitive {
     type: string
     #when editing, also see shared_fields_common.page_display_url
