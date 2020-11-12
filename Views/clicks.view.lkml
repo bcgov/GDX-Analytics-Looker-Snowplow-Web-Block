@@ -35,7 +35,7 @@ view: clicks {
   dimension_group: click_time {
     description: "The timestamp for the page view as recorded by the collector."
     type: time
-    timeframes: [hour,date,week,month,quarter,year,raw]
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
     sql:  ${TABLE}.collector_tstamp ;;
     group_label: "Click"
   }

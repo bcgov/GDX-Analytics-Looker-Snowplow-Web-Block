@@ -35,11 +35,11 @@ view: asset_downloads {
     group_label: "Download"
   }
 
-  dimension: total_return_size {
+  dimension: return_size {
     type:  number
     sql:   ${TABLE}.return_size ;;
     description: "The size of response in bytes, excluding HTTP headers"
-    label: "Total Return Size"
+    label: "Return Size"
     group_label: "Asset"
   }
 
@@ -60,6 +60,14 @@ view: asset_downloads {
     description: "Yes if the IP address maps to a known BC Government network."
   }
 
+  dimension: is_offsite {
+    type: string
+    sql: CASE
+      WHEN asset_downloads.asset_host = asset_downloads.referrer_urlhost_derived THEN FALSE
+        ELSE TRUE END ;;
+    description: "Yes if the Asset download requests originates from off the Asset Host."
+  }
+
   dimension: referrer {
     type:  string
     sql:  ${TABLE}.referrer ;;
@@ -72,6 +80,12 @@ view: asset_downloads {
     sql:  ${TABLE}.referrer_urlhost_derived ;;
     label: "Referrer Urlhost"
     group_label: "Referrer"
+    drill_fields: [referrer,asset_display_url]
+    link: {
+      label: "Visit Referrer"
+      url: "https://{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: referrer_medium {
@@ -100,12 +114,24 @@ view: asset_downloads {
     type: string
     sql: ${TABLE}.asset_url ;;
     group_label: "Asset"
+    link: {
+      label: "Visit Asset"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: asset_display_url {
     type: string
     sql: SPLIT_PART(SPLIT_PART(${TABLE}.asset_url,'?', 1), '#', 1) ;;
     group_label: "Asset"
+    drill_fields: [page_referrer_display_url]
+    link: {
+      label: "Visit Asset"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+
   }
 
   dimension: asset_host {
@@ -113,6 +139,11 @@ view: asset_downloads {
     sql: ${TABLE}.asset_host ;;
     label: "Asset Host"
     group_label: "Asset"
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
   }
 
   dimension: asset_source {
@@ -126,6 +157,7 @@ view: asset_downloads {
   dimension: asset_file {
     type: string
     sql: ${TABLE}.asset_file ;;
+    drill_fields: [asset_display_url]
     group_label: "Asset"
   }
 
@@ -134,6 +166,7 @@ view: asset_downloads {
   dimension: asset_ext {
     type: string
     sql: ${TABLE}.asset_ext ;;
+    drill_fields: [asset_display_url]
     group_label: "Asset"
   }
 
@@ -199,8 +232,9 @@ view: asset_downloads {
     type: string
     sql: ${TABLE}.page_referrer_display_url ;;
     group_label: "Referrer"
+    drill_fields: [asset_display_url]
     link: {
-      label: "Visit Page"
+      label: "Visit Referrer"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -220,7 +254,7 @@ view: asset_downloads {
     sql: ${TABLE}.asset_url_case_insensitive ;;
     group_label: "Asset"
     link: {
-      label: "Visit Link"
+      label: "Visit Asset"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -233,7 +267,7 @@ view: asset_downloads {
     sql: ${TABLE}.asset_url_nopar ;;
     group_label: "Asset"
     link: {
-      label: "Visit Link"
+      label: "Visit Asset"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -245,11 +279,17 @@ view: asset_downloads {
     sql: ${TABLE}.asset_url_nopar_case_insensitive ;;
     group_label: "Asset"
     link: {
-      label: "Visit Link"
+      label: "Visit Asset"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
   }
+
+  dimension: is_partial {
+    description: "Yes if HTTP response status code equal to 206."
+    type: yesno
+    sql: CASE WHEN ${status_code} = 206 THEN TRUE ELSE FALSE END ;;
+    }
 
   dimension: truncated_asset_url_nopar_case_insensitive {
     type: string
@@ -257,7 +297,7 @@ view: asset_downloads {
     sql: ${TABLE}.asset_url_nopar_case_insensitive ;;
     group_label: "Asset"
     link: {
-      label: "Visit Link"
+      label: "Visit Asset"
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
@@ -268,4 +308,18 @@ view: asset_downloads {
     drill_fields: []
   }
 
+  measure: avg_return_size {
+    description: "The average return size"
+    type: average
+    sql: ${return_size} ;;
+    value_format: "[<1000000]#,##0.00,\" Kb\";[<1000000000]#,##0.00,,\" Mb\";#,##0.00,,,\" Gb\""
+
+  }
+
+  measure: total_return_size {
+    description: "The total return size"
+    type: sum
+    sql: ${return_size} ;;
+    value_format: "[<1000000]#,##0.00,\" Kb\";[<1000000000]#,##0.00,,\" Mb\";#,##0.00,,,\" Gb\""
+  }
 }
