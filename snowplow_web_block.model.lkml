@@ -464,7 +464,6 @@ explore: +clicks {
         clicks.app_id,
         clicks.page_section,
         clicks.page_sub_section,
-        clicks.geo_city_and_region,
         cmslite_themes.theme,
         cmslite_themes.subtheme,
         cmslite_themes.theme_id,
@@ -507,7 +506,6 @@ explore: +searches {
         searches.app_id,
         searches.page_section,
         searches.page_sub_section,
-        searches.geo_city_and_region,
         searches.search_time_date
       ]
       measures: [searches.row_count]
@@ -536,7 +534,6 @@ explore: +page_views {
         cmslite_themes.theme,
         cmslite_themes.subtheme,
         cmslite_themes.topic,
-        page_views.geo_city_and_region,
         page_views.page_title,
         page_views.page_display_url,
         page_views.page_view_start_date
@@ -571,7 +568,6 @@ explore: +page_views {  # This matches the previous AA, but adds to referrer fie
         cmslite_themes.theme,
         cmslite_themes.subtheme,
         cmslite_themes.topic,
-        page_views.geo_city_and_region,
         page_views.page_title,
         page_views.page_display_url,
         page_views.page_view_start_date
@@ -603,7 +599,6 @@ explore: +page_views {
         cmslite_themes.theme,
         cmslite_themes.subtheme,
         cmslite_themes.topic,
-        page_views.geo_city_and_region,
         page_views.page_title,
         page_views.page_display_url,
         page_views.page_view_start_date
