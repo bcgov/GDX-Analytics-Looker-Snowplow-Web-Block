@@ -1,9 +1,13 @@
 view: youtube_embed_video {
   derived_table: {
     sql:SELECT yt.*, wp.id as page_view_id
-      FROM atomic.ca_bc_gov_youtube_youtube_playerstate_2  AS yt
-      JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON yt.root_id = wp.root_id
-      AND yt.root_tstamp = wp.root_tstamp ;;
+        FROM  (
+          SELECT * from atomic.ca_bc_gov_youtube_youtube_playerstate_2
+          UNION SELECT * from atomic.ca_bc_gov_youtube_youtube_playerstate_3
+        )
+        AS yt
+        JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON yt.root_id = wp.root_id
+        AND yt.root_tstamp = wp.root_tstamp ;;
     distribution_style: all
     persist_for: "2 hours"
   }
