@@ -20,6 +20,7 @@ view: youtube_embed_video {
 
   dimension: root_id {
     description: "Unique ID of the event"
+    primary_key: yes
     type: string
     sql: ${TABLE}.root_id ;;
   }
