@@ -506,6 +506,7 @@ view: shared_fields_common {
   }
 
   dimension: ip_isp {
+    label: "Internet Service Provider"
     type: string
     sql: ${TABLE}.ip_isp ;;
     group_label: "IP"
