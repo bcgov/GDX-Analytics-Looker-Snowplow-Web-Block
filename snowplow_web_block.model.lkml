@@ -389,6 +389,26 @@ explore: youtube_embed_video {
     relationship: one_to_one
   }
 }
+
+explore: workbc_careertoolkit {
+  label: "WorkBC Career Transition Toolkit"
+  persist_for: "2 hours"
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_careertoolkit.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
 explore: forms {
   persist_for: "60 minutes"
 
