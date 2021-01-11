@@ -82,6 +82,7 @@ view: chatbot_intents_and_clicks {
     }
     dimension: intent_agency {
       drill_fields: [intent_category, intent_subcategory, intent, page_views.chatbot_page_display_url]
+      sql: ${TABLE}.agency ;;
       group_label: "Intents"
     }
 

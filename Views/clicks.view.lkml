@@ -348,6 +348,19 @@ view: clicks {
     group_label: "Target"
   }
 
+# Custom dimension for TIBC reporting
+  dimension: tibc_click_conversion{
+    type: string
+    sql: CASE WHEN ${target_urlscheme} = 'mailto' THEN 'Email Link'
+              WHEN ${TABLE}.target_urlhost NOT IN ('www.british-columbia.cn', 'www.britishcolumbia.ca', 'www.britishcolumbia.jp', 'www.britishcolumbia.kr', 'app.britishcolumbia.ca') THEN 'External Link'
+              WHEN ${target_extension} = 'pdf' THEN 'PDF Downloads'
+              WHEN ${target_extension} = 'jpg' THEN 'JPG Downloads'
+              WHEN ${target_extension} = 'png' THEN 'PNG Downloads'
+        ELSE NULL END ;;
+    description: "Custom dimension to report on TIBC click conversions."
+    group_label: "TIBC"
+  }
+
   dimension: element_classes {
     type:  string
     sql: ${TABLE}.element_classes ;;
