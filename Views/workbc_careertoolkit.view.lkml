@@ -40,34 +40,36 @@ view: workbc_careertoolkit {
     type: string
     sql: ${TABLE}.action ;;
   }
-  dimension: initial_noc {
+  dimension: current_noc {
     type: string
     sql: ${TABLE}.current ;;
-    label: "Initial NOC"
+    drill_fields: [option_noc, option_grouping, option_description]
+    label: "Current NOC"
     link: {
-      label: "Visit Initial Career Profile"
+      label: "Visit Current Career Profile"
       url: "https://www.workbc.ca/Jobs-Careers/Explore-Careers/Browse-Career-Profile/{{ value }}"
       icon_url: "https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
     }
-    group_label: "Initial Selection"
+    group_label: "Current Selection"
   }
-  dimension: initial_description {
+  dimension: current_description {
     type: string
     sql: ${TABLE}.current_description ;;
-    label: "Initial NOC Description"
+    drill_fields: [option_noc, option_grouping, option_description]
+    label: "Current NOC Description"
     link: {
-      label: "Visit Initial Career Profile"
-      url: "https://www.workbc.ca/Jobs-Careers/Explore-Careers/Browse-Career-Profile/{{ initial_noc }}"
+      label: "Visit Current Career Profile"
+      url: "https://www.workbc.ca/Jobs-Careers/Explore-Careers/Browse-Career-Profile/{{ current_noc }}"
       icon_url: "https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
     }
-    group_label: "Initial Selection"
+    group_label: "Current Selection"
   }
-  dimension: initial_grouping {
+  dimension: current_grouping {
     type: string
     sql: ${TABLE}.current_grouping ;;
-    label: "Initial NOC Grouping"
-    drill_fields: [initial_description, initial_noc, option_noc, option_description]
-    group_label: "Initial Selection"
+    label: "Current NOC Grouping"
+    drill_fields: [current_description, current_noc, option_noc, option_grouping, option_description]
+    group_label: "Current Selection"
   }
   dimension: option_noc {
     type: string
@@ -82,7 +84,7 @@ view: workbc_careertoolkit {
   }
   dimension: option_description {
     type: string
-    sql: ${TABLE}.current_description ;;
+    sql: ${TABLE}.option_description ;;
     label: "Career Option NOC Description"
     link: {
       label: "Visit Career Option Profile"
@@ -93,7 +95,7 @@ view: workbc_careertoolkit {
   }
   dimension: option_grouping {
     type: string
-    sql: ${TABLE}.current_grouping ;;
+    sql: ${TABLE}.option_grouping ;;
     label: "Career Option NOC Grouping"
     drill_fields: [option_description, option_noc]
     group_label: "Career Option"
