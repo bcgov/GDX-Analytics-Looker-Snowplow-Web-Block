@@ -79,6 +79,23 @@ view: shared_fields_no_session {
     group_label: "Page"
   }
 
+  dimension: page_workbc_url {
+    description: "The identifier for a subsection of a website. The part of the URL between the second and third '/' in the path"
+    type: string
+    sql: CASE WHEN ${TABLE}.page_display_url LIKE 'https://www.workbc.ca/Jobs-Careers/Employers%' THEN 'https://www.workbc.ca/Jobs-Careers/Employers/*'
+      ELSE ${TABLE}.page_display_url
+      END ;;
+    group_label: "Page"
+  }
+    dimension: page_workbc_joburl {
+      description: "The identifier for a subsection of a website. The part of the URL between the second and third '/' in the path"
+      type: string
+      sql: CASE WHEN ${TABLE}.page_url LIKE '%&%' THEN SPLIT_PART(${TABLE}.page_url, '&', 1)
+          ELSE ${TABLE}.page_url
+        END ;;
+      group_label: "Page"
+    }
+
   dimension: page_section_exclude {
     description: "An exclusion filter for the identifier for a section of a website used to block sections of a site matching the pattern below.. The part of the URL after the domain before the next '/'."
     type: string

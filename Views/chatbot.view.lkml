@@ -1,6 +1,7 @@
 view: chatbot {
   derived_table: {
     sql: SELECT wp.id,
+          cb.root_id AS chat_event_id,
           action,
           agent,
           text,
@@ -12,6 +13,7 @@ view: chatbot {
           CASE WHEN action = 'close' THEN 1 ELSE 0 END AS close_count,
           CASE WHEN action = 'link_click' THEN 1 ELSE 0 END AS link_click_count,
           CASE WHEN action = 'get_answer' THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
+          CASE WHEN action = 'get_answer' THEN text ELSE NULL END AS intent_raw,
           CASE
                 WHEN action = 'get_answer' AND SPLIT_PART(text,'^',2) <> '' THEN SPLIT_PART(text,'^',2)
                 WHEN action = 'get_answer' THEN '1'
@@ -45,7 +47,12 @@ view: chatbot {
     }
     dimension: id {
       type: string
+      label: "Page View ID"
       sql: ${TABLE}.id ;;
+    }
+    dimension: chat_event_id {
+      type: string
+      sql: ${TABLE}.chat_event_id ;;
     }
     dimension: action {
       type: string
@@ -62,6 +69,10 @@ view: chatbot {
       }
     }
     dimension: intent {
+      drill_fields: [page_views.chatbot_page_display_url,intent_version]
+      group_label: "Intents"
+    }
+    dimension: intent_raw {
       drill_fields: [page_views.chatbot_page_display_url,intent_version]
       group_label: "Intents"
     }

@@ -1,6 +1,9 @@
 view: chatbot_intents_and_clicks {
   derived_table: {
     sql: SELECT wp.id,
+          cb.root_id AS chat_event_id,
+          events.page_urlhost,
+          events.page_url,
           action,
           agent,
           text,
@@ -9,6 +12,7 @@ view: chatbot_intents_and_clicks {
           CASE WHEN action = 'get_answer' THEN 1 ELSE 0 END AS answer_count,
           CASE WHEN action = 'link_click' THEN 1 ELSE 0 END AS link_click_count,
           CASE WHEN action = 'get_answer' THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
+          CASE WHEN action = 'get_answer' THEN text ELSE NULL END AS intent_raw,
           CASE
                 WHEN action = 'get_answer' AND SPLIT_PART(text,'^',2) <> '' THEN SPLIT_PART(text,'^',2)
                 WHEN action = 'get_answer' THEN '1'
@@ -30,6 +34,7 @@ view: chatbot_intents_and_clicks {
           FROM atomic.ca_bc_gov_chatbot_chatbot_1 AS cb
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
           LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
+          JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
           WHERE action IN ('get_answer', 'link_click','ask_question')
           ;;
 
@@ -43,7 +48,16 @@ view: chatbot_intents_and_clicks {
     }
     dimension: id {
       type: string
+      label: "Page View ID"
       sql: ${TABLE}.id ;;
+    }
+    dimension: page_urlhost {
+      type: string
+      sql: ${TABLE}.page_urlhost ;;
+    }
+    dimension: chat_event_id {
+      type: string
+      sql: ${TABLE}.chat_event_id ;;
     }
     dimension: action {
       type: string
@@ -60,6 +74,10 @@ view: chatbot_intents_and_clicks {
       }
     }
     dimension: intent {
+      drill_fields: [page_views.chatbot_page_display_url,intent_version]
+      group_label: "Intents"
+    }
+    dimension: intent_raw {
       drill_fields: [page_views.chatbot_page_display_url,intent_version]
       group_label: "Intents"
     }

@@ -6,7 +6,8 @@ view: cmslite_metadata {
             cm.hr_url,
             cm.language_code,
             cm.language_name,
-            cdl.value AS cdl_language
+            cdl.value AS cdl_language,
+            published_date
           FROM cmslite.metadata AS cm
           LEFT JOIN cmslite.metadata_languages AS cml ON cm.node_id = cml.node_id
           LEFT JOIN cmslite.dcterms_languages AS cdl ON cdl.id = cml.id;;
@@ -30,5 +31,19 @@ view: cmslite_metadata {
     type: string
     sql: ${TABLE}.language_code ;;
     description: "The language code specified in the CMS Lite page settings tab."
+  }
+
+  dimension_group: published {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.published_date ;;
   }
 }
