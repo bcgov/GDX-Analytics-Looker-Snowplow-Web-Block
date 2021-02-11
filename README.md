@@ -1,30 +1,31 @@
 ## GDX Looker Snowplow Web Block
 
-This Block represents an instance of the Government of British Columbia’s [LookML](https://docs.looker.com/data-modeling/learning-lookml/what-is-lookml), this project is used for Web Analytics. 
+This Block represents an instance of the Government of British Columbia’s [LookML](https://docs.looker.com/data-modeling/learning-lookml/what-is-lookml), this project is used for Web Analytics.
 
 ## Features
 
-This GDX Analytics project provides views into the web analytics data. 
+This GDX Analytics project provides views into the web analytics data.
+
 
 ## Requirements
- 
+
 Requires deployment onto a [Looker](https://looker.com/) instance with access to database tables as referenced by the '*.lkml' files.
 
 ## Project Status
 
 This project is in production and the GDX Analytics Team will continue to update and maintain the project as required.
- 
+
 ## Relevant Repositories
 [GDX-Analytics/](https://github.com/bcgov/GDX-Analytics/)
 
 This is the central repository for work by the GDX Analytics Team.
 
 ## Getting Help or Reporting an Issue
- 
+
 For any questions regarding this project, or for inquiries about starting a new analytics account, please contact the GDX Analytics Team.
 
 ## Contributors
- 
+
 The GDX Analytics Team are the main contributors to this project and maintain the code.
 
 ## How to Contribute
@@ -32,7 +33,7 @@ The GDX Analytics Team are the main contributors to this project and maintain th
 If you would like to contribute, please see our [CONTRIBUTING](CONTRIBUTING.md) guideleines.
 
 Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
- 
+
 ## License
 
 Copyright 2015 Province of British Columbia
