@@ -199,6 +199,44 @@ explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes
   }
 }
 
+explore: form_action {
+  label: "Form Actions"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${form_action.id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${form_action.formid} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: form_error {
+  label: "Form Errors"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${form_error.id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${form_error.formid} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
 explore: sessions {
   persist_for: "10 minutes"
 
