@@ -199,7 +199,6 @@ explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes
   }
 }
 
-
 explore: sessions {
   persist_for: "10 minutes"
 
