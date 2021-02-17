@@ -29,8 +29,9 @@ include: "/Includes/*.view"
 # include all dashboards in this project
 include: "/Dashboards/*.dashboard"
 
+# Commenting out loading of AA tables until bug is fixed in GDXDSD-3584
 # include all explores in this project
-include: "/Explores/*.explore"
+#include: "/Explores/*.explore"
 
 # hidden theme_cache explore supports suggest_explore for theme, subtheme, etc. filters
 include: "//cmslite_metadata/Explores/themes_cache.explore.lkml"
