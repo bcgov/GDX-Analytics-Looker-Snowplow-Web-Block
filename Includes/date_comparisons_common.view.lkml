@@ -49,12 +49,23 @@ view: date_comparisons_common {
     hidden: yes
   }
 
+  # NEED TO ADD DOCUMENTATION FOR EACH OCCURENCE OF THIS BELOW
+  parameter: comparison_period {
+    type: string
+    allowed_value: { value: "Previous Period" }
+    allowed_value: { value: "Previous Year" }
+    allowed_value: { value: "Previous Month" }
+    default_value: "Previous Period"
+  }
+
   # period_difference calculates the number of days between the start and end dates
   # selected on the flexible_filter_date_range filter, as selected in an Explore.
   dimension: period_difference {
     group_label: "Flexible Filter"
     type: number
-    sql:  DATEDIFF(DAY, ${date_start}, ${date_end})  ;;
+    sql:  CASE WHEN {% parameter comparison_period %} = 'Previous Year' THEN DATEDIFF(DAY, DATEADD(YEAR, -1, ${date_start}), ${date_start})
+          WHEN {% parameter comparison_period %} = 'Previous Month' THEN DATEDIFF(DAY, DATEADD(MONTH, -1, ${date_start}), ${date_start})
+      ELSE DATEDIFF(DAY, ${date_start}, ${date_end})  END ;;
     hidden: yes
   }
 
@@ -64,8 +75,9 @@ view: date_comparisons_common {
   #    https://www.sqlteam.com/articles/datediff-function-demystified
   filter: is_in_current_period_or_last_period {
     type: yesno
-    sql:  ${filter_start_raw} >= DATEADD('day', -${period_difference}, ${date_start})
-      AND ${filter_start_raw} < ${date_end} ;;
+    sql:
+        (${filter_start_raw} >= ${date_start} AND ${filter_start_raw} < ${date_end}) OR
+        (${filter_start_raw} >= DATEADD('day', -${period_difference}, ${date_start}) AND ${filter_start_raw} < DATEADD('day', -${period_difference}, ${date_end})) ;;
   }
 
 
@@ -85,7 +97,7 @@ view: date_comparisons_common {
     group_label: "Flexible Filter"
     type: yesno
     sql: ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
-      AND ${filter_start_raw} < ${date_start} ;;
+      AND ${filter_start_raw} < DATEADD(DAY, -${period_difference}, ${date_end}) ;;
     hidden: yes
   }
 
@@ -101,7 +113,7 @@ view: date_comparisons_common {
       }
       when: {
         sql: ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
-          AND ${filter_start_raw} < ${date_start} ;;
+          AND ${filter_start_raw} <  DATEADD(DAY, -${period_difference}, ${date_end}) ;;
         label: "Last Period"
       }
       else: "unknown"
@@ -112,7 +124,6 @@ view: date_comparisons_common {
   # comparison_date returns dates in the current_period providing a positive offset of
   # the last_period date range. Exploring comparison_date with any measure and a pivot
   # on date_window results in a pointwise comparison of current and last periods
-  #
   dimension: comparison_date_sort {
     group_label: "Flexible Filter"
     hidden: yes
