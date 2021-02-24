@@ -1,10 +1,20 @@
 view: chatbot {
   derived_table: {
-    sql: SELECT wp.id,
+    sql: with chatbot_combined AS ( -- link together V1 and V2, filling in NULL for the newly added fields that aren't in V1
+          SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree, ref_parent, action, agent, text, NULL AS frontend_id, NULL AS intent_confidence, NULL AS "sentiment.magnitude",   NULL AS "sentiment.score", NULL AS session_id FROM atomic.ca_bc_gov_chatbot_chatbot_1
+          UNION
+          SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree, ref_parent, action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score", session_id FROM atomic.ca_bc_gov_chatbot_chatbot_2
+        )
+        SELECT wp.id,
           cb.root_id AS chat_event_id,
           action,
           agent,
           text,
+          frontend_id,
+          intent_confidence,
+          "sentiment.magnitude" AS sentiment_magnitude,
+          "sentiment.score" AS sentiment_score,
+          session_id,
           CONVERT_TIMEZONE('UTC', 'America/Vancouver', cb.root_tstamp) AS timestamp,
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
           CASE WHEN action = 'get_answer' THEN 1 ELSE 0 END AS answer_count,
@@ -32,7 +42,7 @@ view: chatbot {
           --  WHEN hr_url IS NOT NULL AND SPLIT_PART(text, '#',2) = '' THEN hr_url
           --  WHEN hr_url IS NOT NULL AND SPLIT_PART(text, '#',2) <> '' THEN hr_url || '#' || SPLIT_PART(text, '#',2)
           --  ELSE text END AS link_click_url
-          FROM atomic.ca_bc_gov_chatbot_chatbot_1 AS cb
+          FROM chatbot_combined AS cb
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
           --LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
           ;;
@@ -89,6 +99,18 @@ view: chatbot {
       drill_fields: [intent_category, intent, page_views.chatbot_page_display_url]
       sql: ${TABLE}.agency ;;
       group_label: "Intents"
+    }
+    dimension: frontend_id {}
+    dimension: intent_confidence {}
+    dimension: sentiment_magnitude {
+      group_label: "Sentiment"
+    }
+    dimension: sentiment_score {
+      group_label: "Sentiment"
+    }
+
+    dimension: chat_session_id {
+      sql: ${TABLE}.session_id ;;
     }
 
     dimension: text {
