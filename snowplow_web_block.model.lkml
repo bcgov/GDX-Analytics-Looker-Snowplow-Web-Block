@@ -29,8 +29,9 @@ include: "/Includes/*.view"
 # include all dashboards in this project
 include: "/Dashboards/*.dashboard"
 
+# Commenting out loading of AA tables until bug is fixed in GDXDSD-3584
 # include all explores in this project
-include: "/Explores/*.explore"
+#include: "/Explores/*.explore"
 
 # hidden theme_cache explore supports suggest_explore for theme, subtheme, etc. filters
 include: "//cmslite_metadata/Explores/themes_cache.explore.lkml"
@@ -120,17 +121,17 @@ explore: page_views {
     relationship: one_to_one
   }
 
-join: myfs_component_name {
-  type:  left_outer
-  sql_on: ${page_views.page_view_id} = ${myfs_component_name.id} ;;
-  relationship: one_to_one
-}
+  join: myfs_component_name {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${myfs_component_name.id} ;;
+    relationship: one_to_one
+  }
 
-join: myfs_estimates {
-  type:  left_outer
-  sql_on: ${page_views.page_view_id} = ${myfs_estimates.id} ;;
-  relationship: one_to_one
-}
+  join: myfs_estimates {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${myfs_estimates.id} ;;
+    relationship: one_to_one
+  }
 
   join: performance_timing {
     type: left_outer
@@ -154,7 +155,6 @@ explore: myfs_estimates {
     sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
-
 }
 
 explore: chatbot {
@@ -347,6 +347,45 @@ explore: searches {
   }
 
 
+}
+
+explore: form_action {
+  label: "Form Actions"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${form_action.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${form_action.formid} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: form_action.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: form_error {
+  label: "Form Errors"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${form_error.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${form_error.formid} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: form_error.page_urlhost
+    user_attribute: urlhost
+  }
 }
 
 explore: cmslite_metadata {
