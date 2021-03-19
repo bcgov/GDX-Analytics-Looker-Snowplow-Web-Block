@@ -278,6 +278,11 @@ explore: clicks{
     sql_on: ${clicks.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
+  join: covid_language_matrix {
+    type: left_outer
+    sql_on:  ${clicks.page_display_url} = ${covid_language_matrix.translated_url} ;;
+    relationship: many_to_one
+  }
   access_filter: {
     field: node_id
     user_attribute: node_id
