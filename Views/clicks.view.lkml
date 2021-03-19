@@ -431,6 +431,52 @@ view: clicks {
     group_label: "Counts"
   }
 
+  measure: row_count_with_drill {
+    description: "A count of all rows in this Explore."
+    type: count
+    group_label: "Counts with Drills"
+    drill_fields: [target_display_url]
+  }
+
+
+  # click_count
+  # A count of all clicks, regardless of type
+  measure: click_count_with_drill {
+    description: "A count of all the clicks in this Explore (link clicks and downloads)."
+    type: count_distinct
+    sql: ${click_id} ;;
+    group_label: "Counts with Drills"
+    drill_fields: [target_display_url]
+  }
+
+  # link_click_count
+  # A count of link clicks
+  measure: link_click_count_with_drill {
+    description: "A count of only the link clicks in this Explore."
+    type: count_distinct
+    sql: ${click_id} ;;
+    filters: {
+      field: click_type
+      value: "link_click"
+    }
+    group_label: "Counts with Drills"
+    drill_fields: [target_display_url]
+  }
+
+  # download_click_count
+  # A count of download clicks
+  measure: download_click_count_with_drill {
+    description: "A count of only the download clicks in this Explore."
+    type: count_distinct
+    sql: ${click_id} ;;
+    filters: {
+      field: click_type
+      value: "download"
+    }
+    group_label: "Counts with Drills"
+    drill_fields: [target_display_url]
+  }
+
   # max_click_index
   # Table reference - INT8 ENCODE ZSTD
   # a measure returning the max value of click_in_session_index
