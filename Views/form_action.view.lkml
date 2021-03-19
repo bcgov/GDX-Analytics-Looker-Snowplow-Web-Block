@@ -7,6 +7,10 @@ view: form_action {
         action,
         formid,
         formstage,
+        CASE WHEN formid = 'FC005E942B274061A110A2CFC42C1EA2' THEN 'Notice'
+              WHEN formid = '34F8F542261449CBA35F220B74ADC393' THEN 'Schedule'
+              WHEN formid = 'C88D6641F78A4D5FBC383CC50E641CE6' THEN 'Evidence'
+              ELSE 'Other' END AS title,
         CASE WHEN message = '' THEN NULL ELSE message END AS message,
         CONVERT_TIMEZONE('UTC', 'America/Vancouver', fa.root_tstamp) AS timestamp,
         CASE WHEN action = 'submit' AND (message = 'submit' OR message IS NULL OR message = '') THEN 'submit success'
@@ -51,6 +55,7 @@ view: form_action {
   dimension: action {}
   dimension: result {}
   dimension: message {}
+  dimension: title {}
 
   dimension: formid {
     label: "Form ID"
