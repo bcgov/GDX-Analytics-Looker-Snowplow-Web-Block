@@ -8,9 +8,9 @@ view: covid_language_matrix {
           UNION
         SELECT title, english AS english_url, 'Spanish' AS language, spanish AS translated_url FROM cmslite.covid_language_matrix WHERE spanish <> ''
           UNION
-        SELECT title, english AS english_url, 'TC' AS language, tc AS translated_url FROM cmslite.covid_language_matrix WHERE tc <> ''
+        SELECT title, english AS english_url, 'Traditional Chinese' AS language, tc AS translated_url FROM cmslite.covid_language_matrix WHERE tc <> ''
           UNION
-        SELECT title, english AS english_url, 'SC' AS language, sc AS translated_url FROM cmslite.covid_language_matrix WHERE sc <> ''
+        SELECT title, english AS english_url, 'Simplified Chinese' AS language, sc AS translated_url FROM cmslite.covid_language_matrix WHERE sc <> ''
           UNION
         SELECT title, english AS english_url, 'Farsi' AS language, farsi AS translated_url FROM cmslite.covid_language_matrix WHERE farsi <> ''
           UNION
