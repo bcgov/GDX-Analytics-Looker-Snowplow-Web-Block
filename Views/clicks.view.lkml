@@ -14,7 +14,17 @@ view: clicks {
     sql: ${TABLE}.collector_tstamp ;;
   }
 
-
+  dimension: sbc_business_hours {
+    type: yesno
+    description: "Is the time between 7:30-5:00 M-F"
+    label: "SBC Business Hours"
+    sql: CASE WHEN DATE_PART('dayofweek',${TABLE}.collector_tstamp) IN (1,2,3,4,5)
+          AND (
+                DATE_PART('hour',${TABLE}.collector_tstamp) BETWEEN 8 AND 16
+                OR ( DATE_PART('hour',${TABLE}.collector_tstamp) = 7 AND DATE_PART('minute',${TABLE}.collector_tstamp) BETWEEN 30 AND 59)
+              ) THEN TRUE
+        ELSE FALSE END;;
+  }
 
   dimension: p_key {
     description: "The primary key, which is one of: User ID, Domain User ID, Session ID, or Click ID."
