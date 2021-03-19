@@ -25,6 +25,9 @@ view: covid_language_matrix {
         SELECT title, english AS english_url, 'Japanese' AS language, japanese AS translated_url FROM cmslite.covid_language_matrix WHERE japanese <> ''
           UNION
         SELECT title, english AS english_url, 'Hindi' AS language, hindi AS translated_url FROM cmslite.covid_language_matrix WHERE hindi <> '';;
+
+      persist_for: "24 hours"
+      distribution_style: all
   }
   label: "COVID Language Matrix"
 
