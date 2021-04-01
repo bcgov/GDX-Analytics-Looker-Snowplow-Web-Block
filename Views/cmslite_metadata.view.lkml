@@ -7,7 +7,9 @@ view: cmslite_metadata {
             cm.language_code,
             cm.language_name,
             cdl.value AS cdl_language,
-            published_date
+            published_date,
+            cm.page_type,
+            cm.keywords
           FROM cmslite.metadata AS cm
           LEFT JOIN cmslite.metadata_languages AS cml ON cm.node_id = cml.node_id
           LEFT JOIN cmslite.dcterms_languages AS cdl ON cdl.id = cml.id;;
@@ -45,5 +47,21 @@ view: cmslite_metadata {
       year
     ]
     sql: ${TABLE}.published_date ;;
+  }
+
+  dimension: page_type {
+    type: string
+    sql:  ${TABLE}.page_type ;;
+  }
+
+  dimension: keywords {
+    type: string
+    sql:  ${TABLE}.keywords ;;
+  }
+
+  measure: node_count {
+    type: count_distinct
+    sql: ${node_id} ;;
+    group_label: "Counts"
   }
 }

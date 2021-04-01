@@ -395,6 +395,12 @@ explore: cmslite_metadata {
     field: node_id
     user_attribute: node_id
   }
+
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${cmslite_metadata.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
 }
 
 explore: esb_se_pathways {
