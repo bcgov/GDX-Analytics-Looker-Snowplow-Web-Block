@@ -14,7 +14,17 @@ view: clicks {
     sql: ${TABLE}.collector_tstamp ;;
   }
 
-
+  dimension: sbc_business_hours {
+    type: yesno
+    description: "Is the time between 7:30-5:00 M-F"
+    label: "SBC Business Hours"
+    sql: CASE WHEN DATE_PART('dayofweek',${TABLE}.collector_tstamp) IN (1,2,3,4,5)
+          AND (
+                DATE_PART('hour',${TABLE}.collector_tstamp) BETWEEN 8 AND 16
+                OR ( DATE_PART('hour',${TABLE}.collector_tstamp) = 7 AND DATE_PART('minute',${TABLE}.collector_tstamp) BETWEEN 30 AND 59)
+              ) THEN TRUE
+        ELSE FALSE END;;
+  }
 
   dimension: p_key {
     description: "The primary key, which is one of: User ID, Domain User ID, Session ID, or Click ID."
@@ -419,6 +429,52 @@ view: clicks {
       value: "download"
     }
     group_label: "Counts"
+  }
+
+  measure: row_count_with_drill {
+    description: "A count of all rows in this Explore."
+    type: count
+    group_label: "Counts with Drills"
+    drill_fields: [target_display_url]
+  }
+
+
+  # click_count
+  # A count of all clicks, regardless of type
+  measure: click_count_with_drill {
+    description: "A count of all the clicks in this Explore (link clicks and downloads)."
+    type: count_distinct
+    sql: ${click_id} ;;
+    group_label: "Counts with Drills"
+    drill_fields: [target_display_url]
+  }
+
+  # link_click_count
+  # A count of link clicks
+  measure: link_click_count_with_drill {
+    description: "A count of only the link clicks in this Explore."
+    type: count_distinct
+    sql: ${click_id} ;;
+    filters: {
+      field: click_type
+      value: "link_click"
+    }
+    group_label: "Counts with Drills"
+    drill_fields: [target_display_url]
+  }
+
+  # download_click_count
+  # A count of download clicks
+  measure: download_click_count_with_drill {
+    description: "A count of only the download clicks in this Explore."
+    type: count_distinct
+    sql: ${click_id} ;;
+    filters: {
+      field: click_type
+      value: "download"
+    }
+    group_label: "Counts with Drills"
+    drill_fields: [target_display_url]
   }
 
   # max_click_index

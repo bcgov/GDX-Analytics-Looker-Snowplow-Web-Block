@@ -139,6 +139,12 @@ explore: page_views {
     relationship: one_to_one
   }
 
+  join: covid_language_matrix {
+    type: left_outer
+    sql_on:  ${page_views.page_display_url} = ${covid_language_matrix.translated_url} ;;
+    relationship: many_to_one
+  }
+
 }
 explore: myfs_estimates {
   persist_for: "10 minutes"
@@ -271,6 +277,11 @@ explore: clicks{
     type: left_outer
     sql_on: ${clicks.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
+  }
+  join: covid_language_matrix {
+    type: left_outer
+    sql_on:  ${clicks.page_display_url} = ${covid_language_matrix.translated_url} ;;
+    relationship: many_to_one
   }
   access_filter: {
     field: node_id
