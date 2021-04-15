@@ -58,10 +58,4 @@ view: cmslite_metadata {
     type: string
     sql:  ${TABLE}.keywords ;;
   }
-
-  measure: node_count {
-    type: count_distinct
-    sql: ${node_id} ;;
-    group_label: "Counts"
-  }
 }
