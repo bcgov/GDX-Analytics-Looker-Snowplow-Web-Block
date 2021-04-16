@@ -141,7 +141,7 @@ explore: page_views {
 
   join: covid_language_matrix {
     type: left_outer
-    sql_on:  ${page_views.page_display_url} = ${covid_language_matrix.translated_url} ;;
+    sql_on:  ${page_views.page_covid_display_url} = ${covid_language_matrix.translated_url} ;;
     relationship: many_to_one
   }
 
@@ -280,7 +280,7 @@ explore: clicks{
   }
   join: covid_language_matrix {
     type: left_outer
-    sql_on:  ${clicks.page_display_url} = ${covid_language_matrix.translated_url} ;;
+    sql_on:  ${clicks.page_covid_display_url} = ${covid_language_matrix.translated_url} ;;
     relationship: many_to_one
   }
   access_filter: {
