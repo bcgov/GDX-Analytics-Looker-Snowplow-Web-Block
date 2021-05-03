@@ -61,7 +61,7 @@ view: asset_downloads {
   }
 
   dimension: is_offsite {
-    type: string
+    type: yesno
     sql: CASE
       WHEN asset_downloads.asset_host = asset_downloads.referrer_urlhost_derived THEN FALSE
         ELSE TRUE END ;;
@@ -219,7 +219,7 @@ view: asset_downloads {
   }
 
   dimension: offsite_download {
-    type:  string
+    type:  yesno
     sql:  ${TABLE}.offsite_download;;
   }
 

@@ -1,6 +1,7 @@
 view: form_action {
   derived_table: {
-    sql: SELECT wp.id AS page_view_id,
+    sql: WITH base AS (
+      SELECT wp.id AS page_view_id,
         fa.root_id AS form_event_id,
         events.page_urlhost,
         events.page_url,
@@ -13,6 +14,8 @@ view: form_action {
               ELSE 'Other' END AS title,
         CASE WHEN message = '' THEN NULL ELSE message END AS message,
         CONVERT_TIMEZONE('UTC', 'America/Vancouver', fa.root_tstamp) AS timestamp,
+        CONVERT_TIMEZONE('UTC', 'America/Vancouver', wp.root_tstamp) AS page_view_timestamp,
+        DATEDIFF('second', fa.root_tstamp, wp.root_tstamp) AS time_diff,
         CASE WHEN action = 'submit' AND (message = 'submit' OR message IS NULL OR message = '') THEN 'submit success'
               WHEN action = 'submit' AND message = 'validation-error' THEN 'submit validation error'
               WHEN action = 'submit' AND message = 'form-error' THEN 'submit form error'
@@ -31,6 +34,38 @@ view: form_action {
         FROM atomic.ca_bc_gov_form_action_1 AS fa
         JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON fa.root_id = wp.root_id AND fa.root_tstamp = wp.root_tstamp
         JOIN atomic.events ON fa.root_id = events.event_id AND fa.root_tstamp = events.collector_tstamp
+      ),
+      totals AS (
+        SELECT
+          page_view_id,
+          page_url,
+          formid,
+          formstage,
+          COUNT(form_event_id) AS action_total,
+          MIN(timestamp) AS min_timestamp,
+          MAX(timestamp) AS max_timestamp,
+          MIN(page_view_timestamp) AS min_page_view_timestamp,
+          MIN(time_diff) AS first_diff,
+          MAX(time_diff) AS last_diff,
+          SUM(submit_count) AS submit_total,
+          SUM(submit_success_count) AS submit_success_total,
+          SUM(submit_validation_error_count) AS submit_validation_error_total,
+          SUM(submit_form_error_count) AS submit_form_error_total,
+          SUM(submission_error_count) AS submission_error_total,
+          SUM(clear_count) AS clear_total,
+          SUM(pdf_count) AS pdf_total,
+          SUM(loaded_count) AS loaded_total,
+          SUM(emailed_count) AS emailed_total
+        FROM base
+        GROUP BY 1,2,3,4)
+      SELECT base.page_view_id, base.form_event_id, base.page_urlhost, base.page_url, base.action, base.formid, base.formstage, base.title, base.message, base.timestamp, base.page_view_timestamp, base.time_diff, base.result, base.submit_count, base.submit_success_count, base.submit_validation_error_count, base.submit_form_error_count, base.submission_error_count, base.clear_count, base.pdf_count, base.loaded_count, base.emailed_count,
+
+        min_page_view_timestamp, min_timestamp, max_timestamp, totals.first_diff, totals.last_diff, totals.action_total, totals.submit_total, totals.submit_success_total, totals.submit_validation_error_total, totals.submit_form_error_total, totals.submission_error_total, totals.clear_total, totals.pdf_total, totals.loaded_total, totals.emailed_total
+      FROM base
+      JOIN totals ON totals.page_view_id = base.page_view_id AND
+                      totals.page_url = base.page_url AND
+                      totals.formid = base.formid AND
+                      (totals.formstage = base.formstage OR (base.formstage IS NULL AND totals.formstage IS NULL)) -- All other fields in the join can't be NULL
         ;;
     distribution_style: all
     persist_for: "1 hours"
@@ -66,6 +101,60 @@ view: form_action {
     }
   }
   dimension: formstage {}
+
+
+  dimension: first_diff {
+    group_label: "Totals"
+  }
+  dimension: last_diff {
+    group_label: "Totals"
+  }
+  dimension: action_total {
+    group_label: "Totals"
+  }
+  dimension: submit_total {
+    group_label: "Totals"
+    }
+  dimension: submit_success_total {
+    group_label: "Totals"
+    }
+  dimension: submit_validation_error_total {
+    group_label: "Totals"
+    }
+  dimension: submit_form_error_total {
+    group_label: "Totals"
+    }
+  dimension: submission_error_total {
+    group_label: "Totals"
+    }
+  dimension: clear_total {
+    group_label: "Totals"
+    }
+  dimension: pdf_total {
+    group_label: "Totals"
+    }
+  dimension: loaded_total {
+    group_label: "Totals"
+    }
+  dimension: emailed_total {
+    group_label: "Totals"
+    }
+
+  dimension: min_timestamp {
+    group_label: "Totals"
+  }
+  dimension: max_timestamp {
+    group_label: "Totals"
+  }
+  dimension: total_time {
+    group_label: "Totals"
+    sql:  DATEDIFF(seconds, ${min_timestamp}, ${max_timestamp}) ;;
+    #value_format: "[h]:mm:ss"
+  }
+
+  dimension: min_page_view_timestamp {
+    group_label: "Totals"
+  }
 
   measure: unique_submit_count {
     type: count_distinct
@@ -134,6 +223,11 @@ view: form_action {
     type: sum
     sql: ${TABLE}.emailed_count ;;
     group_label: "Counts"
+  }
+  measure: average_time {
+    type: average_distinct
+    sql: ${total_time} ;;
+    sql_distinct_key: ${page_view_id} ;;
   }
   measure: row_count {
     type: count

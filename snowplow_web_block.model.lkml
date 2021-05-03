@@ -449,6 +449,61 @@ explore: youtube_embed_video {
   }
 }
 
+
+explore: workbc_careersearch_click{
+  label: "WorkBC Career Search Tool Clicks"
+  persist_for: "2 hours"
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_careersearch_click.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: workbc_careersearch_find {
+  label: "WorkBC Career Search Tool"
+  persist_for: "2 hours"
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_careersearch_find.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: workbc_careersearch_compare {
+  label: "WorkBC Career Search Compare Tool"
+  persist_for: "2 hours"
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_careersearch_compare.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
 explore: workbc_careertoolkit {
   label: "WorkBC Career Transition Toolkit"
   persist_for: "2 hours"
