@@ -519,6 +519,27 @@ explore: performance_timing {
   }
 }
 
+explore: google_translate {
+  persist_for: "60 minutes"
+
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${google_translate.page_view_id} ;;
+    relationship: many_to_one
+  }
+
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+}
+
 
 ### Datagroups
 
