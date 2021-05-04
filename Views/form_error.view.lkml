@@ -6,6 +6,10 @@ view: form_error {
         events.page_urlhost,
         events.page_url,
         formid,
+        CASE WHEN formid = 'FC005E942B274061A110A2CFC42C1EA2' THEN 'Notice'
+              WHEN formid = '34F8F542261449CBA35F220B74ADC393' THEN 'Schedule'
+              WHEN formid = 'C88D6641F78A4D5FBC383CC50E641CE6' THEN 'Evidence'
+              ELSE 'Other' END AS title,
         formstage,
         error,
         error_index,
@@ -42,6 +46,13 @@ view: form_error {
   dimension: field_type {}
   dimension: fieldname {}
 
+  dimension: title {
+    link: {
+      label: "Visit Form"
+      url: "https://forms2.gov.bc.ca/forms/content?id={{ formid }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+  }
 
   dimension: formid {
     label: "Form ID"
