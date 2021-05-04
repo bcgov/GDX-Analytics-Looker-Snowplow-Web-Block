@@ -90,7 +90,13 @@ view: form_action {
   dimension: action {}
   dimension: result {}
   dimension: message {}
-  dimension: title {}
+  dimension: title {
+    link: {
+      label: "Visit Form"
+      url: "https://forms2.gov.bc.ca/forms/content?id={{ formid }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+  }
 
   dimension: formid {
     label: "Form ID"
