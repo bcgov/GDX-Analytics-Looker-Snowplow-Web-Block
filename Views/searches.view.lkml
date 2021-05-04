@@ -19,7 +19,7 @@ view: searches {
   # duplicate from atomic.events (events.view.lkml)
   dimension_group: search_time {
     type: time
-    timeframes: [hour,date,week,month,quarter,year,raw]
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
     sql:  ${TABLE}.collector_tstamp ;;
     group_label: "Search"
   }
