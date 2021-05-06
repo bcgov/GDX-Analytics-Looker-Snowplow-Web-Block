@@ -449,6 +449,29 @@ explore: youtube_embed_video {
   }
 }
 
+explore: sbc_online_appointments{
+  label: "SBC Online Appointments"
+  persist_for: "2 hours"
+}
+explore: sbc_online_appointments_clicks{
+  label: "SBC Online Appointments Clicks"
+  persist_for: "2 hours"
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${sbc_online_appointments_clicks.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
 
 explore: workbc_careersearch_click{
   label: "WorkBC Career Search Tool Clicks"

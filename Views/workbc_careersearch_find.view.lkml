@@ -11,6 +11,14 @@ view: workbc_careersearch_find {
           "filters.occupational_interest" AS interest,
           "filters.region" AS region,
           CONVERT_TIMEZONE('UTC', 'America/Vancouver', fc.root_tstamp) AS timestamp,
+          CASE WHEN "filters.annual_salary" <> 'All' THEN 1 ELSE 0 END AS annual_salary_count,
+          CASE WHEN "filters.education" <> 'All' THEN 1 ELSE 0 END AS education_count,
+          CASE WHEN "filters.industry" NOT IN ('All','A') THEN 1 ELSE 0 END AS industry_count,
+          CASE WHEN "filters.job_type" <> 'All' THEN 1 ELSE 0 END AS job_type_count,
+          CASE WHEN "filters.keyword" <> '' THEN 1 ELSE 0 END AS keyword_count,
+          CASE WHEN "filters.occupational_category" <> 'All' THEN 1 ELSE 0 END AS category_count,
+          CASE WHEN "filters.occupational_interest" <> 'All' THEN 1 ELSE 0 END AS interest_count,
+          CASE WHEN "filters.region" <> 'All' THEN 1 ELSE 0 END AS region_count,
           CASE WHEN action = 'apply' THEN 1 ELSE 0 END AS apply_count,
           CASE WHEN action = 'reset' THEN 1 ELSE 0 END AS reset_count,
           CASE WHEN action = 'load' THEN 1 ELSE 0 END AS load_count
@@ -28,16 +36,15 @@ view: workbc_careersearch_find {
     sql: ${TABLE}.page_view_id ;;
   }
 
-  dimension: root_id {
-    description: "Unique ID of the event"
-    primary_key: yes
-    type: string
-    sql: ${TABLE}.root_id ;;
-  }
-
   dimension: action {
     type: string
     sql: ${TABLE}.action ;;
+  }
+
+  dimension_group: event_date {
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    sql: ${TABLE}.timestamp ;;
   }
 
 
@@ -62,6 +69,40 @@ view: workbc_careersearch_find {
   measure: reset_count {
     type: sum
     sql: ${TABLE}.load_count ;;
+  }
+
+
+  measure: annual_salary_count {
+    type: sum
+    sql: ${TABLE}.annual_salary_count ;;
+  }
+  measure: education_count {
+    type: sum
+    sql: ${TABLE}.education_count ;;
+  }
+  measure: industry_count {
+    type: sum
+    sql: ${TABLE}.industry_count ;;
+  }
+  measure: job_type_count {
+    type: sum
+    sql: ${TABLE}.job_type_count ;;
+  }
+  measure: keyword_count {
+    type: sum
+    sql: ${TABLE}.keyword_count ;;
+  }
+  measure: category_count {
+    type: sum
+    sql: ${TABLE}.category_count ;;
+  }
+  measure: interest_count {
+    type: sum
+    sql: ${TABLE}.interest_count ;;
+  }
+  measure: region_count {
+    type: sum
+    sql: ${TABLE}.region_count ;;
   }
 
 }
