@@ -20,7 +20,7 @@ view: workbc_careersearch_click {
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON sc.root_id = wp.root_id AND sc.root_tstamp = wp.root_tstamp
           LEFT JOIN microservice.careertoolkit_workbc AS noc -- the "00" trick is temporarily needed until the lookup table gets fixed
-              ON sc.click_type IN ('find_jobs','job_profile') AND (noc.noc = sc.text OR sc.text = '0' || noc.noc OR sc.text = '00' || noc.noc OR sc.text = '00' || noc.noc)
+              ON sc.click_type IN ('preview','find_jobs','job_profile') AND (noc.noc = sc.text OR sc.text = '0' || noc.noc OR sc.text = '00' || noc.noc OR sc.text = '00' || noc.noc)
 
 
           ;;
@@ -45,8 +45,38 @@ view: workbc_careersearch_click {
   dimension: source {}
   dimension: text {}
   dimension: url {}
-  dimension: noc {}
-  dimension: description {}
+  dimension: noc {
+
+    link: {
+      label: "View Profile"
+      url: "https://workbc.ca/Jobs-Careers/Explore-Careers/Browse-Career-Profile/{{noc}}"
+      icon_url: "https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
+    }
+    link: {
+      label: "View Job Search"
+      url: "https://workbc.ca/jobs-careers/find-jobs/jobs.aspx?searchNOC={{noc}}"
+      icon_url: "https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
+    }
+  }
+  dimension: description {
+    link: {
+      label: "View Profile"
+      url: "https://workbc.ca/Jobs-Careers/Explore-Careers/Browse-Career-Profile/{{noc}}"
+      icon_url: "https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
+    }
+    link: {
+      label: "View Job Search"
+      url: "https://workbc.ca/jobs-careers/find-jobs/jobs.aspx?searchNOC={{noc}}"
+      icon_url: "https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
+    }
+  }
+
+
+  dimension_group: event {
+    sql: ${TABLE}.timestamp ;;
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+  }
 
   measure: count {
     type: count
