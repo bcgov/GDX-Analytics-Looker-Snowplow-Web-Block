@@ -1,9 +1,10 @@
 view: workbc_careersearch_compare {
   derived_table: {
     sql: SELECT wp.id AS page_view_id, action,
-          noc_1, noc1.description AS description_1,
-          noc_2, noc2.description AS description_2,
-          noc_3, noc3.description AS description_3,
+          noc_1 AS noc, noc1.description AS description,
+          1 AS position,
+          --noc_2, noc2.description AS description_2,
+          --noc_3, noc3.description AS description_3,
           CONVERT_TIMEZONE('UTC', 'America/Vancouver', cc.root_tstamp) AS timestamp,
           CASE WHEN action = 'compare' THEN 1 ELSE 0 END AS compare_count,
           CASE WHEN action = 'clear' THEN 1 ELSE 0 END AS clear_count
@@ -12,11 +13,34 @@ view: workbc_careersearch_compare {
               ON cc.root_id = wp.root_id AND cc.root_tstamp = wp.root_tstamp
           LEFT JOIN microservice.careertoolkit_workbc AS noc1 -- the "00" trick is temporarily needed until the lookup table gets fixed
               ON noc1.noc = cc.noc_1 OR cc.noc_1 = '0' || noc1.noc OR cc.noc_1 = '00' || noc1.noc OR cc.noc_1 = '00' || noc1.noc
+--          LEFT JOIN microservice.careertoolkit_workbc AS noc2 -- the "00" trick is temporarily needed until the lookup table gets fixed
+--              ON noc2.noc = cc.noc_2 OR cc.noc_2 = '0' || noc2.noc OR cc.noc_2 = '00' || noc2.noc OR cc.noc_2 = '00' || noc2.noc
+--          LEFT JOIN microservice.careertoolkit_workbc AS noc3 -- the "00" trick is temporarily needed until the lookup table gets fixed
+--              ON noc3.noc = cc.noc_3 OR cc.noc_3 = '0' || noc3.noc OR cc.noc_3 = '00' || noc3.noc OR cc.noc_3 = '00' || noc3.noc
+      UNION
+        SELECT wp.id AS page_view_id, action,
+          noc_2 AS noc, noc2.description AS description,
+          2 AS position,
+          CONVERT_TIMEZONE('UTC', 'America/Vancouver', cc.root_tstamp) AS timestamp,
+          CASE WHEN action = 'compare' THEN 1 ELSE 0 END AS compare_count,
+          CASE WHEN action = 'clear' THEN 1 ELSE 0 END AS clear_count
+        FROM atomic.ca_bc_gov_workbc_compare_careers_1 AS cc
+          JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
+              ON cc.root_id = wp.root_id AND cc.root_tstamp = wp.root_tstamp
           LEFT JOIN microservice.careertoolkit_workbc AS noc2 -- the "00" trick is temporarily needed until the lookup table gets fixed
               ON noc2.noc = cc.noc_2 OR cc.noc_2 = '0' || noc2.noc OR cc.noc_2 = '00' || noc2.noc OR cc.noc_2 = '00' || noc2.noc
+      UNION
+        SELECT wp.id AS page_view_id, action,
+          noc_3 AS noc, noc3.description AS description,
+          3 AS position,
+          CONVERT_TIMEZONE('UTC', 'America/Vancouver', cc.root_tstamp) AS timestamp,
+          CASE WHEN action = 'compare' THEN 1 ELSE 0 END AS compare_count,
+          CASE WHEN action = 'clear' THEN 1 ELSE 0 END AS clear_count
+        FROM atomic.ca_bc_gov_workbc_compare_careers_1 AS cc
+          JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
+              ON cc.root_id = wp.root_id AND cc.root_tstamp = wp.root_tstamp
           LEFT JOIN microservice.careertoolkit_workbc AS noc3 -- the "00" trick is temporarily needed until the lookup table gets fixed
               ON noc3.noc = cc.noc_3 OR cc.noc_3 = '0' || noc3.noc OR cc.noc_3 = '00' || noc3.noc OR cc.noc_3 = '00' || noc3.noc
-
                     ;;
     distribution_style: all
     persist_for: "2 hours"
@@ -39,13 +63,36 @@ view: workbc_careersearch_compare {
     type: string
     sql: ${TABLE}.action ;;
   }
-  dimension: noc_1 {}
-  dimension: description_1 {}
-  dimension: noc_2 {}
-  dimension: description_2 {}
-  dimension: noc_3 {}
-  dimension: description_3 {}
-
+  dimension: noc {
+    link: {
+      label: "View Profile"
+      url: "https://workbc.ca/Jobs-Careers/Explore-Careers/Browse-Career-Profile/{{noc}}"
+      icon_url: "https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
+    }
+    link: {
+      label: "View Job Search"
+      url: "https://workbc.ca/jobs-careers/find-jobs/jobs.aspx?searchNOC={{noc}}"
+      icon_url: "https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
+    }
+  }
+  dimension: description {
+    link: {
+      label: "View Profile"
+      url: "https://workbc.ca/Jobs-Careers/Explore-Careers/Browse-Career-Profile/{{noc}}"
+      icon_url: "https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
+    }
+    link: {
+      label: "View Job Search"
+      url: "https://workbc.ca/jobs-careers/find-jobs/jobs.aspx?searchNOC={{noc}}"
+      icon_url: "https://www.workbc.ca/App_Themes/Default/Images/favicon.ico"
+    }
+  }
+  dimension: position {}
+  dimension_group: event {
+    sql: ${TABLE}.timestamp ;;
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+  }
   measure: compare_count {
     type: sum
     sql: ${TABLE}.compare_count ;;

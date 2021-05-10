@@ -41,7 +41,7 @@ view: workbc_careersearch_find {
     sql: ${TABLE}.action ;;
   }
 
-  dimension_group: event_date {
+  dimension_group: event {
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
     sql: ${TABLE}.timestamp ;;
