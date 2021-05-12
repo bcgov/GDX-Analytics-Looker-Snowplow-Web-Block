@@ -404,6 +404,23 @@ view: shared_fields_common {
     drill_fields: [marketing_drills*]
   }
 
+  dimension: social_site {
+    type: string
+    # The first line of the CASE is to remove some common false positives
+    sql: CASE WHEN ${TABLE}.channel <> 'Social' OR ${TABLE}.refr_urlhost IN ('www2.gov.bc.ca','www.google.com','www.google.ca','www.bccannabisstores.com','www.cbc.ca','news.url.google.com') THEN NULL
+            WHEN ${TABLE}.refr_urlhost IN ('www.twitter.com','twitter.com','t.co') THEN 'Twitter'
+            WHEN ${TABLE}.refr_urlhost LIKE '%facebook.com' THEN 'Facebook'
+            WHEN ${TABLE}.refr_urlhost LIKE '%youtube.com' THEN 'YouTube'
+            WHEN ${TABLE}.refr_urlhost LIKE '%instagram.com' THEN 'Instagram'
+            WHEN ${TABLE}.refr_urlhost LIKE '%reddit.com' THEN 'Reddit'
+            WHEN ${TABLE}.refr_urlhost LIKE '%linkedin.com' OR ${TABLE}.refr_urlhost = 'lnkd.in' THEN 'LinkedIn'
+            WHEN ${TABLE}.refr_urlhost LIKE '%pinterest.com' THEN 'Pinterest'
+            ELSE ${TABLE}.refr_urlhost END ;;
+    group_label: "Marketing"
+    drill_fields: [marketing_drills*]
+  }
+
+
   dimension: marketing_date {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',1) ;;
