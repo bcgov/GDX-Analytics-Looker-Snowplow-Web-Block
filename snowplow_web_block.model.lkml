@@ -164,7 +164,7 @@ explore: myfs_estimates {
 }
 
 explore: chatbot {
-  persist_for: "2 hours"
+  persist_with: aa_datagroup_cmsl_loaded
 
   label: "Chatbot"
 
@@ -187,6 +187,8 @@ explore: chatbot {
 
 explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes of making it faster
   label: "Chatbot Intents and Clicks"
+
+  persist_with: aa_datagroup_cmsl_loaded
 
   join: page_views {
     type:  left_outer
