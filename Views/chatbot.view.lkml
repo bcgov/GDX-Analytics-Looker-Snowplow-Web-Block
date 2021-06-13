@@ -44,11 +44,12 @@ view: chatbot {
           --  ELSE text END AS link_click_url
           FROM chatbot_combined AS cb
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
+          WHERE timestamp < DATE_TRUNC('day',GETDATE())
           --LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
           ;;
 
       distribution_style: all
-      persist_for: "8 hours"
+      datagroup_trigger: aa_datagroup_cmsl_loaded
     }
 
     dimension_group: event {
