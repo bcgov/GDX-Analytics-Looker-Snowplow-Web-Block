@@ -146,6 +146,36 @@ explore: page_views {
   }
 
 }
+
+
+explore: tibc_page_views {
+  persist_for: "10 minutes"
+  label: "TIBC Page Views"
+
+  join: sessions {
+    type: left_outer
+    sql_on: ${sessions.session_id} = ${tibc_page_views.session_id};;
+    relationship: many_to_many
+  }
+
+  join: users {
+    sql_on: ${tibc_page_views.domain_userid} = ${users.domain_userid} ;;
+    relationship: many_to_one
+  }
+
+  join: performance_timing {
+    type: left_outer
+    sql_on: ${tibc_page_views.page_view_id} = ${performance_timing.page_view_id} ;;
+    relationship: one_to_one
+  }
+
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${tibc_page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+}
+
 explore: myfs_estimates {
   persist_for: "10 minutes"
 
@@ -314,6 +344,18 @@ explore: clicks{
     field: cmslite_themes.theme_id
     user_attribute: theme
   }
+}
+
+explore: tibc_clicks{
+  persist_for: "10 minutes"
+  label: "TIBC Clicks"
+
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${tibc_clicks.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+
 }
 
 explore: searches {
@@ -627,4 +669,10 @@ datagroup: aa_datagroup_cmsl_loaded {
   label: "Updates with todays date at 4:55AM"
   description: "Triggers CMS Lite Metadata dependent Aggregate Aware tables to rebuild after each new day and after nightly cmslitemetadata microservice has run."
   sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '295 minutes')) ;;
+}
+
+datagroup: aa_datagroup_tibc_ready {
+  label: "Updates with todays date at 4:05AM"
+  description: "Triggers AA tables for TIBC 50 minutes before CMS AA."
+  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '245 minutes')) ;;
 }
