@@ -403,7 +403,7 @@ dimension: chatbot_page_display_url {
     -- When user selects a dimension from the dimension_selectors from the filter, it will change the reporting dimension
        CASE
          WHEN {% parameter dimension_selectors %} = 'url' THEN
-           ${page_views.page_display_url}
+           ${page_display_url}
          WHEN {% parameter dimension_selectors %} = 'Theme' THEN
           ${cmslite_themes.theme}
 
