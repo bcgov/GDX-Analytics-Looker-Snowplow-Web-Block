@@ -19,7 +19,7 @@ view: sbc_online_appointments {
               ON ap.root_id = wp.root_id AND ap.root_tstamp = wp.root_tstamp
           JOIN derived.page_views AS pv ON pv.page_view_id = wp.id
         WHERE status = 'new' -- for now, report only on new appointments, not updates
-          AND min_timestamp < DATE_TRUNC('day',GETDATE())
+          AND timestamp < DATE_TRUNC('day',GETDATE())
 
       ),
       final_selections AS ( -- this is to assign the location and service as the latest selection
