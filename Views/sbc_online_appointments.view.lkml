@@ -19,6 +19,8 @@ view: sbc_online_appointments {
               ON ap.root_id = wp.root_id AND ap.root_tstamp = wp.root_tstamp
           JOIN derived.page_views AS pv ON pv.page_view_id = wp.id
         WHERE status = 'new' -- for now, report only on new appointments, not updates
+          AND min_timestamp < DATE_TRUNC('day',GETDATE())
+
       ),
       final_selections AS ( -- this is to assign the location and service as the latest selection
         SELECT session_id, location, service, appointment_step, ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY step_order DESC, timestamp DESC) AS session_id_ranked
@@ -41,6 +43,12 @@ view: sbc_online_appointments {
     sql: ${TABLE}.root_id ;;
   }
 
+
+  dimension_group: visit {
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    sql: ${TABLE}.min_timestamp ;;
+  }
 
   dimension: appointment_step {}
   dimension: latest_step {}

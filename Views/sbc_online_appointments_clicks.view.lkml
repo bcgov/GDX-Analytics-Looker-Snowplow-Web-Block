@@ -25,6 +25,7 @@ view: sbc_online_appointments_clicks {
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON ac.root_id = wp.root_id AND ac.root_tstamp = wp.root_tstamp
           JOIN derived.page_views AS pv ON pv.page_view_id = wp.id
+        WHERE timestamp < DATE_TRUNC('day',GETDATE())
           ;;
     distribution_style: all
     datagroup_trigger: datagroup_sbc_online_appointments
@@ -41,6 +42,12 @@ view: sbc_online_appointments_clicks {
     primary_key: yes
     type: string
     sql: ${TABLE}.root_id ;;
+  }
+
+  dimension_group: click {
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    sql: ${TABLE}.timestamp ;;
   }
 
   dimension: session_id {}
