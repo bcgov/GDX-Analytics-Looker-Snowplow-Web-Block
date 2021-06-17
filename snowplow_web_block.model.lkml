@@ -671,8 +671,14 @@ datagroup: aa_datagroup_cmsl_loaded {
   sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '295 minutes')) ;;
 }
 
-datagroup: aa_datagroup_tibc_ready {
+datagroup: datagroup_tibc_ready {
   label: "Updates with todays date at 4:05AM"
-  description: "Triggers AA tables for TIBC 50 minutes before CMS AA."
+  description: "Triggers PDTs for TIBC 50 minutes before CMS AA."
+  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '245 minutes')) ;;
+}
+
+datagroup: datagroup_sbc_online_appointments {
+  label: "Updates with todays date at 4:15AM"
+  description: "Triggers PDTS for sbc_online_appointments 40 minutes before CMS AA."
   sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '245 minutes')) ;;
 }

@@ -8,7 +8,7 @@ view: tibc_clicks {
           ;;
 
       distribution_style: all
-      datagroup_trigger:  aa_datagroup_tibc_ready
+      datagroup_trigger: datagroup_tibc_ready
     }
 
 
