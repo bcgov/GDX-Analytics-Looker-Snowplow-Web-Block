@@ -18,8 +18,7 @@ view: sbc_online_appointments {
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON ap.root_id = wp.root_id AND ap.root_tstamp = wp.root_tstamp
           JOIN derived.page_views AS pv ON pv.page_view_id = wp.id
-        WHERE ap.root_tstamp BETWEEN '2021-05-04 08:00:00' AND '2021-05-05 08:00:00'
-          AND status = 'new' -- for now, report only on new appointments, not updates
+        WHERE status = 'new' -- for now, report only on new appointments, not updates
       ),
       final_selections AS ( -- this is to assign the location and service as the latest selection
         SELECT session_id, location, service, appointment_step, ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY step_order DESC, timestamp DESC) AS session_id_ranked
@@ -32,7 +31,7 @@ view: sbc_online_appointments {
       GROUP BY 1,2,3,4
           ;;
     distribution_style: all
-    persist_for: "2 hours"
+    datagroup_trigger: datagroup_sbc_online_appointments
   }
 
   dimension: root_id {
