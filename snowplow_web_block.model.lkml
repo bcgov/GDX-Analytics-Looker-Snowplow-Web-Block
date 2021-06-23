@@ -36,6 +36,8 @@ include: "/Explores/*.explore"
 # hidden theme_cache explore supports suggest_explore for theme, subtheme, etc. filters
 include: "//cmslite_metadata/Explores/themes_cache.explore.lkml"
 
+include: "//cmslite_metadata/Views/asset_themes.view.lkml"
+
 # hidden cicy_cache explore supports suggest_explore for the geo filters
 explore: geo_cache {
   hidden: yes
@@ -616,6 +618,12 @@ explore: asset_downloads {
   join: cmslite_metadata {
     type: left_outer
     sql_on: ${asset_downloads.asset_url} = ${cmslite_metadata.hr_url} ;;
+    relationship: one_to_one
+  }
+
+  join: asset_themes {
+    type: left_outer
+    sql_on: ${cmslite_metadata.node_id} = ${asset_themes.node_id} ;;
     relationship: one_to_one
   }
 }
