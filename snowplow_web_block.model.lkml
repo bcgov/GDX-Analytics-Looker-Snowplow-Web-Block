@@ -36,9 +36,10 @@ include: "/Explores/*.explore"
 # hidden theme_cache explore supports suggest_explore for theme, subtheme, etc. filters
 include: "//cmslite_metadata/Explores/themes_cache.explore.lkml"
 
+# Import asset_themes view for asset downloads explore
 include: "//cmslite_metadata/Views/asset_themes.view.lkml"
 
-# hidden cicy_cache explore supports suggest_explore for the geo filters
+# hidden ciy_cache explore supports suggest_explore for the geo filters
 explore: geo_cache {
   hidden: yes
 }
