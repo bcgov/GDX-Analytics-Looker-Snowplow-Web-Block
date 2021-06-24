@@ -34,7 +34,7 @@ include: "/Dashboards/*.dashboard"
 include: "/Explores/*.explore"
 
 # hidden theme_cache explore supports suggest_explore for theme, subtheme, etc. filters
-include: "//cmslite_metadata/Explores/themes_cache.explore.lkml"
+# include: "//cmslite_metadata/Explores/themes_cache.explore.lkml"
 
 # hidden cicy_cache explore supports suggest_explore for the geo filters
 explore: geo_cache {
