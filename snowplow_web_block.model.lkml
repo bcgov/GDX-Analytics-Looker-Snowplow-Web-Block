@@ -34,7 +34,7 @@ include: "/Dashboards/*.dashboard"
 include: "/Explores/*.explore"
 
 # hidden theme_cache explore supports suggest_explore for theme, subtheme, etc. filters
-include: "//cmslite_metadata/Explores/themes_cache.explore.lkml"
+# include: "//cmslite_metadata/Explores/themes_cache.explore.lkml"
 
 # Import asset_themes view for asset downloads explore
 include: "//cmslite_metadata/Views/asset_themes.view.lkml"
@@ -615,6 +615,12 @@ explore: asset_downloads {
     field: asset_downloads.asset_host
     user_attribute: urlhost
   }
+
+  access_filter: {
+    field: asset_downloads.asset_display_url
+    user_attribute: asset_display_url
+  }
+
 
   join: cmslite_metadata {
     type: left_outer
