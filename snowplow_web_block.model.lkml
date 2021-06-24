@@ -618,13 +618,13 @@ explore: asset_downloads {
 
   join: cmslite_metadata {
     type: left_outer
-    sql_on: ${asset_downloads.asset_url} = ${cmslite_metadata.hr_url} ;;
+    sql_on: ${asset_downloads.asset_display_url} = ${cmslite_metadata.hr_url} ;;
     relationship: one_to_one
   }
 
   join: asset_themes {
     type: left_outer
-    sql_on: ${cmslite_metadata.node_id} = ${asset_themes.node_id} ;;
+    sql_on: ${asset_downloads.asset_display_url} = ${asset_themes.hr_url} ;;
     relationship: one_to_one
   }
 }
