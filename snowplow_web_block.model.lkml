@@ -613,6 +613,12 @@ explore: asset_downloads {
     user_attribute: urlhost
   }
 
+  access_filter: {
+    field: asset_downloads.asset_display_url
+    user_attribute: asset_display_url
+  }
+
+
   join: cmslite_metadata {
     type: left_outer
     sql_on: ${asset_downloads.asset_url} = ${cmslite_metadata.hr_url} ;;
