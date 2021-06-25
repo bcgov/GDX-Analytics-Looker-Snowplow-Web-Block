@@ -92,7 +92,7 @@ view: chatbot {
       group_label: "Intents"
     }
     dimension: intent_category {
-    #  drill_fields: [intent, intent_subcategory, page_views.chatbot_page_display_url]
+      #  drill_fields: [intent, intent_subcategory, page_views.chatbot_page_display_url]
       group_label: "Intents"
     }
 
