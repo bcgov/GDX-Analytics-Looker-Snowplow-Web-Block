@@ -235,7 +235,7 @@ explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes
   }
 
   access_filter: {
-    field: page_views.page_urlhost
+    field: chatbot_intents_and_clicks.page_urlhost
     user_attribute: urlhost
   }
 }
@@ -403,8 +403,6 @@ explore: searches {
     field: cmslite_themes.theme_id
     user_attribute: theme
   }
-
-
 }
 
 explore: form_action {

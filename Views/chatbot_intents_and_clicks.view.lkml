@@ -7,7 +7,7 @@ view: chatbot_intents_and_clicks {
         )
         SELECT wp.id,
           cb.root_id AS chat_event_id,
-          events.page_urlhost,
+          COALESCE(events.page_urlhost,'') AS page_urlhost,
           events.page_url,
           action,
           agent,
@@ -42,9 +42,9 @@ view: chatbot_intents_and_clicks {
             WHEN hr_url IS NOT NULL AND SPLIT_PART(text, '#',2) <> '' THEN hr_url || '#' || SPLIT_PART(text, '#',2)
             ELSE text END AS link_click_url
           FROM chatbot_combined AS cb
-          JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
+          LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
           LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
-          JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
+          LEFT JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
           WHERE action IN ('get_answer', 'link_click','ask_question')
               AND timestamp < DATE_TRUNC('day',GETDATE())
           ;;
@@ -157,5 +157,15 @@ view: chatbot_intents_and_clicks {
       type: sum
       sql: ${TABLE}.answer_count - ${TABLE}.question_count ;;
     }
+
+    measure: average_intent_confidence {
+      type: average
+      sql: ${TABLE}.intent_confidence;;
+    }
+    measure: average_sentiment_score {
+      type: average
+      sql: ${TABLE}.sentiment_score;;
+    }
+
 
   }
