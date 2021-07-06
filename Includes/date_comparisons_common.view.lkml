@@ -105,19 +105,10 @@ view: date_comparisons_common {
   # that compare current_period and last_period
   dimension: date_window {
     group_label: "Flexible Filter"
-    case: {
-      when: {
-        sql: ${filter_start_raw} >= ${date_start}
-          AND ${filter_start_raw} < ${date_end} ;;
-        label: "Current Period"
-      }
-      when: {
-        sql: ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
-          AND ${filter_start_raw} <  DATEADD(DAY, -${period_difference}, ${date_end}) ;;
-        label: "Last Period"
-      }
-      else: "unknown"
-    }
+    sql: CASE WHEN ${filter_start_raw} >= ${date_start} AND ${filter_start_raw} < ${date_end} THEN 'Current Period'
+            WHEN ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
+                  AND ${filter_start_raw} <  DATEADD(DAY, -${period_difference}, ${date_end}) THEN 'Last Period'
+            ELSE 'Unknown' END ;;
     description: "Pivot on Date Window to compare measures between the current and last periods, use with Comparison Date"
   }
 
