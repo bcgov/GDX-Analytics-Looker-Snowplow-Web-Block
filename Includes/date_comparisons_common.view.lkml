@@ -108,6 +108,7 @@ view: date_comparisons_common {
   # that compare current_period and last_period
   dimension: date_window {
     group_label: "Flexible Filter"
+    label: "{% if comparison_period._parameter_value == \"'No Comparison'\" %}  {% else %} Date Window {% endif %}"
     sql: CASE WHEN {% parameter comparison_period %} = 'No Comparison' THEN ''
             WHEN ${filter_start_raw} >= ${date_start} AND ${filter_start_raw} < ${date_end} THEN 'Current Period'
             WHEN ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
