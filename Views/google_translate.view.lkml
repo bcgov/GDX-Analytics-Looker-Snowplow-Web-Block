@@ -31,6 +31,7 @@ view: google_translate {
 
   dimension: page_view_id {
     description: "Unique page view ID"
+    primary_key: yes
     type: string
     sql: ${TABLE}.page_view_id ;;
   }
