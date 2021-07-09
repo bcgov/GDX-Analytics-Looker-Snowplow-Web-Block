@@ -654,6 +654,28 @@ explore: performance_timing {
   }
 }
 
+
+explore: healthgateway_actions {
+  label: "Health Gateway Actions"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${healthgateway_actions.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: healthgateway_actions.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+
 explore: google_translate {
   persist_for: "60 minutes"
 
