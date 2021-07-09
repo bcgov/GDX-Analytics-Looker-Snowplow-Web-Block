@@ -11,8 +11,6 @@
     fields:
     - sessions.date_window
     - sessions.average_session_length
-    fill_fields:
-    - sessions.date_window
     filters:
       sessions.is_in_current_period_or_last_period: 'Yes'
     sorts:
@@ -87,8 +85,6 @@
     fields:
     - sessions.date_window
     - sessions.user_count
-    fill_fields:
-    - sessions.date_window
     filters:
       sessions.is_in_current_period_or_last_period: 'Yes'
     sorts:
@@ -226,8 +222,6 @@
     fields:
     - sessions.date_window
     - sessions.page_view_count
-    fill_fields:
-    - sessions.date_window
     filters:
       sessions.is_in_current_period_or_last_period: 'Yes'
     sorts:
@@ -303,8 +297,6 @@
     - sessions.date_window
     - sessions.bounced_user_count
     - sessions.user_count
-    fill_fields:
-    - sessions.date_window
     filters:
       sessions.is_in_current_period_or_last_period: 'Yes'
     sorts:
