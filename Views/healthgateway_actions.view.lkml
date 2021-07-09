@@ -32,12 +32,7 @@ view: healthgateway_actions {
     sql: ${TABLE}.page_urlhost ;;
   }
   dimension: page_url {}
-  dimension: root_id {
-    description: "Unique ID of the event"
-    primary_key: yes
-    type: string
-    sql: ${TABLE}.root_id ;;
-  }
+
 
   dimension: action {}
   dimension: message {}
