@@ -87,5 +87,6 @@ view: google_translate {
   measure: count_translations {
     description: "Count of translation events."
     type: count
+    drill_fields: [target_language, count_translations, page_views.page_display_url]
   }
 }
