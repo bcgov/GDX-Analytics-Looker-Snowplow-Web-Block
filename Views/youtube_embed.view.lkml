@@ -2,8 +2,38 @@ view: youtube_embed_video {
   derived_table: {
     sql:SELECT yt.*, wp.id as page_view_id
         FROM  (
-          SELECT * from atomic.ca_bc_gov_youtube_youtube_playerstate_2
-          UNION SELECT * from atomic.ca_bc_gov_youtube_youtube_playerstate_3
+          SELECT root_id,
+          video_id,
+          author,
+          video_src,
+          title,
+          status,
+          ref_parent,
+          ref_tree,
+          ref_root,
+          schema_version,
+          schema_format,
+          schema_name,
+          schema_vendor,
+          root_tstamp
+          from atomic.ca_bc_gov_youtube_youtube_playerstate_2
+          UNION
+            SELECT
+            root_id,
+            video_id,
+            author,
+            video_src,
+            title,
+            status,
+            ref_parent,
+            ref_tree,
+            ref_root,
+            schema_version,
+            schema_format,
+            schema_name,
+            schema_vendor,
+            root_tstamp
+          from atomic.ca_bc_gov_youtube_youtube_playerstate_3
         )
         AS yt
         JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON yt.root_id = wp.root_id
@@ -117,7 +147,7 @@ view: youtube_embed_video {
 
   dimension: video_display_source {
     description: "The video source URL without timestamp"
-    label: "Source"
+    label: "Display Source"
     type: string
     sql: 'https://www.youtube.com/watch?v=' || ${video_id};;
   }
