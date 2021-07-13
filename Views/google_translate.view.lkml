@@ -1,10 +1,10 @@
 view: google_translate {
   derived_table: {
-    sql:SELECT google_translate.*, wp.id as page_view_id
+    sql:SELECT google_translate.*, language_lookup.language_name, wp.id as page_view_id
         FROM atomic.ca_bc_gov_googtrans_google_translate_1 AS google_translate
-        JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
-        ON google_translate.root_id = wp.root_id
-        AND google_translate.root_tstamp = wp.root_tstamp ;;
+        JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON google_translate.root_id = wp.root_id
+        AND google_translate.root_tstamp = wp.root_tstamp
+        JOIN test.google_translate_languages as language_lookup on SPLIT_PART(google_translate.translation_data,'/',3) =  language_lookup.language_code ;;
     distribution_style: all
     persist_for: "2 hours"
   }
@@ -23,10 +23,16 @@ view: google_translate {
     sql: SPLIT_PART(${TABLE}.translation_data,'/',2)  ;;
   }
 
-  dimension: target_language {
-    description: "The target language of the translated site"
+  dimension: target_language_code {
+    description: "The target language code of the translated site"
     type: string
     sql: SPLIT_PART(${TABLE}.translation_data,'/',3)  ;;
+  }
+
+  dimension: target_language_name {
+    description: "The target language of the translated site"
+    type: string
+    sql: ${TABLE}.language_name  ;;
   }
 
   dimension: page_view_id {
@@ -87,6 +93,5 @@ view: google_translate {
   measure: count_translations {
     description: "Count of translation events."
     type: count
-    drill_fields: [target_language, count_translations, page_views.page_display_url]
   }
 }
