@@ -33,7 +33,7 @@ view: google_translate {
     description: "The target language of the translated site"
     type: string
     sql: ${TABLE}.language_name  ;;
-    drill_fields: [page_views.page_display_url]
+    drill_fields: [page_views.page_display_url, page_views.page_title]
   }
 
   dimension: page_view_id {
@@ -94,6 +94,6 @@ view: google_translate {
   measure: count_translations {
     description: "Count of translation events."
     type: count
-    drill_fields: [target_language_name, count_translations]
+    drill_fields: [target_language_name, count_translations, page_views.page_title, page_views.page_display_url]
   }
 }
