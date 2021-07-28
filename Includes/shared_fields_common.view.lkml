@@ -79,6 +79,12 @@ view: shared_fields_common {
     sql: ${TABLE}.br_lang ;;
     group_label: "Browser"
   }
+  dimension: browser_language_group {
+    description: "The language group the browser is set to for localization."
+    type: string
+    sql: LOWER(SPLIT_PART(${TABLE}.br_lang,'-',1)) ;;
+    group_label: "Browser"
+  }
 
 
 
