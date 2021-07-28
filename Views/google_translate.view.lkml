@@ -7,6 +7,7 @@ view: google_translate {
           language_lookup.language_name,
           SPLIT_PART(google_translate.translation_data,'/',2) AS source_language,
           SPLIT_PART(google_translate.translation_data,'/',3) AS target_language_code,
+          COALESCE(language_lookup.language_name, target_language_code) AS target_language_name,
           wp.id AS page_view_id
         FROM atomic.ca_bc_gov_googtrans_google_translate_1 AS google_translate
         LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON google_translate.root_id = wp.root_id
@@ -39,7 +40,7 @@ view: google_translate {
   dimension: target_language_name {
     description: "The target language of the translated site"
     type: string
-    sql: COALESCE(${TABLE}.language_name, ${TABLE}.target_language_code)  ;;
+    sql: ${TABLE}.target_language_name  ;;
     drill_fields: [page_views.page_display_url, page_views.page_title]
   }
 
