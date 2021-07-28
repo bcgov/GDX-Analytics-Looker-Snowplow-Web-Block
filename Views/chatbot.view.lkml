@@ -22,7 +22,7 @@ view: chatbot {
           CASE WHEN action = 'hello' THEN 1 ELSE 0 END AS hello_count,
           CASE WHEN action = 'close' THEN 1 ELSE 0 END AS close_count,
           CASE WHEN action = 'link_click' THEN 1 ELSE 0 END AS link_click_count,
-          CASE WHEN action = 'click_chip' THEN 1 ELSE 0 END AS chip_count,
+--           CASE WHEN action = 'click_chip' THEN 1 ELSE 0 END AS chip_count,
           CASE WHEN action = 'get_answer' THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
           CASE WHEN action = 'get_answer' THEN text ELSE NULL END AS intent_raw,
           CASE
@@ -148,10 +148,10 @@ view: chatbot {
       type: sum
       sql: ${TABLE}.link_click_count ;;
     }
-    measure: chip_count {
-      type: sum
-      sql: ${TABLE}.chip_count ;;
-    }
+#    measure: chip_count {
+#      type: sum
+#      sql: ${TABLE}.chip_count ;;
+#    }
     measure: chatbot_event_count {
       type: count
     }
