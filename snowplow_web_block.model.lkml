@@ -148,6 +148,12 @@ explore: page_views {
     relationship: many_to_one
   }
 
+  join: google_translate {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${google_translate.page_view_id} ;;
+    relationship: many_to_one
+  }
+
 }
 
 
