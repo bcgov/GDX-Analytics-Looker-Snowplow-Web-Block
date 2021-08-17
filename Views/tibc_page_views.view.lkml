@@ -14,7 +14,6 @@ view: tibc_page_views {
 
   extends: [page_views]
 
-# TIBC dimensions
   dimension: tibc_section {
     description: "The identifier for a section of a website. The part of the URL after the domain before the next '/'"
     type: string
@@ -44,29 +43,6 @@ view: tibc_page_views {
             ELSE 'ZZZZZOther' END ;;
     group_label: "TIBC"
   }
-
-  dimension: page_urlhost_date_window {
-    group_label: "Flexible Filter"
-    label: "Site"
-    sql: CASE WHEN {% parameter comparison_period %} = 'No Comparison' THEN ${TABLE}.page_urlhost
-    WHEN ${filter_start_raw} >= ${date_start} AND ${filter_start_raw} < ${date_end} THEN  ${TABLE}.page_urlhost || ' (cur)'
-    WHEN ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
-    AND ${filter_start_raw} <  DATEADD(DAY, -${period_difference}, ${date_end}) THEN ${TABLE}.page_urlhost || ' (last)'
-    ELSE 'Unknown' END ;;
-
-    order_by_field: page_urlhost_date_window_sort
-  }
-  dimension: page_urlhost_date_window_sort {
-    group_label: "Flexible Filter"
-    label: "Site"
-    sql: CASE WHEN {% parameter comparison_period %} = 'No Comparison' THEN ${TABLE}.page_urlhost
-            WHEN ${filter_start_raw} >= ${date_start} AND ${filter_start_raw} < ${date_end} THEN 'Current Period' || ${TABLE}.page_urlhost
-            WHEN ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
-                  AND ${filter_start_raw} <  DATEADD(DAY, -${period_difference}, ${date_end}) THEN 'Last Period' || ${TABLE}.page_urlhost
-            ELSE 'Unknown' END ;;
-    hidden: yes
-  }
-
 
   dimension: comparison_date_sort {
     group_label: "Flexible Filter"
@@ -137,7 +113,7 @@ view: tibc_page_views {
                   AND ${filter_start_raw} <  DATEADD(DAY, -${period_difference}, ${date_end}) THEN
                   TO_CHAR(DATEADD(DAY, -${period_difference},${date_start}) ,'YYYY-MM-DD') || ' - ' || TO_CHAR(DATEADD(DAY, -1 -${period_difference}, ${date_end}),'YYYY-MM-DD')
             ELSE 'Unknown' END ;;
-    description: "Pivot on Date Window to compare measures between the current and last periods, use with Comparison Date"
+    description: "Pivot on Date Window to compare measures between the current and last periods, use with Comparison Date. This version shows the date range as the label."
   }
 
 
