@@ -625,6 +625,11 @@ explore: asset_downloads {
     user_attribute: asset_display_url
   }
 
+  access_filter: {
+    field: asset_themes.asset_theme
+    user_attribute: theme
+  }
+
 
   join: cmslite_metadata {
     type: left_outer
