@@ -191,37 +191,6 @@ view: shared_fields_no_session {
     hidden: yes
   }
 
-# TIBC dimensions
-  dimension: tibc_section {
-    description: "The identifier for a section of a website. The part of the URL after the domain before the next '/'"
-    type: string
-    label: "TIBC Section"
-    drill_fields: [page_display_url]
-    sql: CASE
-            WHEN ${TABLE}.page_section = '' THEN 'Home'
-            WHEN ${TABLE}.page_section IN ('invest','invest-kr','Invest') THEN 'Invest'
-            WHEN ${TABLE}.page_section IN ('buy','Buy') THEN 'Buy'
-            WHEN ${TABLE}.page_section IN ('global','Global') THEN 'Global'
-            WHEN ${TABLE}.page_section IN ('export','Export') THEN 'Export'
-            ELSE 'Other' END ;;
-    group_label: "TIBC"
-    order_by_field: tibc_section_sort
-  }
-
-  dimension: tibc_section_sort {
-    label: "TIBC Section Sort"
-    type: string
-    hidden: yes
-    description: "The identifier for a section of a website. The part of the URL after the domain before the next '/'"
-    sql: CASE WHEN ${TABLE}.page_section = '' THEN '00-Home'
-            WHEN ${TABLE}.page_section IN ('invest','invest-kr','Invest') THEN 'Invest'
-            WHEN ${TABLE}.page_section IN ('buy','Buy') THEN 'Buy'
-            WHEN ${TABLE}.page_section IN ('global','Global') THEN 'Global'
-            WHEN ${TABLE}.page_section IN ('export','Export') THEN 'Export'
-            ELSE 'ZZZZZOther' END ;;
-    group_label: "TIBC"
-  }
-
 # Custom Dimensions for Welcome BC
   dimension: welcomebc_page_section {
     label: "WelcomeBC Page Section"
