@@ -258,7 +258,7 @@ view: sessions {
   measure: average_session_length {
     type: average
     sql: ${session_length} / 86400.0;;
-    value_format: "h:mm:ss"
+    value_format: "[h]:mm:ss"
 #     to_char(${session_length}::interval, 'HH24:MI:SS') ;;
   }
 #   to_char(${session_length})
