@@ -18,7 +18,7 @@ view: healthgateway_actions {
 
           ;;
     distribution_style: all
-    persist_for: "2 hours"
+    datagroup_trigger: datagroup_healthgateway_updated
   }
 
 
@@ -35,6 +35,15 @@ view: healthgateway_actions {
 
 
   dimension: action {}
+
+  dimension: action_name {
+    type: string
+    sql: CASE WHEN ${action} = 'save_qr' THEN 'Save Vax (quick)'
+              WHEN ${action} = 'view_qr' THEN 'View Vax (quick)'
+              WHEN ${action} = 'view_card' THEN 'View Vax (full)'
+              WHEN ${action} = 'download_card' THEN 'Save Vax (full)'
+          ELSE ${action} END ;;
+  }
   dimension: message {}
   dimension: text {}
 
