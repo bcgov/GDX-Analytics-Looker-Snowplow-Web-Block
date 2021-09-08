@@ -728,3 +728,10 @@ datagroup: datagroup_sbc_online_appointments {
   description: "Triggers PDTS for sbc_online_appointments 40 minutes before CMS AA."
   sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '245 minutes')) ;;
 }
+
+
+datagroup: datagroup_healthgateway_updated {
+  label: "Updates hourly for health gateway"
+  description: "Updates hourly for health gateway"
+  sql_trigger: SELECT DATE_TRUNC('hour',timezone('America/Vancouver', now() - interval '30 minutes')) ;;
+}
