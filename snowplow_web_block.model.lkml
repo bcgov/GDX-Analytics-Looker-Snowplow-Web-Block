@@ -687,6 +687,27 @@ explore: healthgateway_actions {
 }
 
 
+explore: healthgateway_actions_inc {
+  label: "Health Gateway Actions (incremental)"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${healthgateway_actions_inc.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: healthgateway_actions_inc.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+
 explore: google_translate {
   persist_for: "60 minutes"
 
@@ -726,7 +747,7 @@ datagroup: datagroup_tibc_ready {
 datagroup: datagroup_sbc_online_appointments {
   label: "Updates with todays date at 4:15AM"
   description: "Triggers PDTS for sbc_online_appointments 40 minutes before CMS AA."
-  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '245 minutes')) ;;
+  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '255 minutes')) ;;
 }
 
 
@@ -734,4 +755,9 @@ datagroup: datagroup_healthgateway_updated {
   label: "Updates hourly for health gateway"
   description: "Updates hourly for health gateway"
   sql_trigger: SELECT DATE_TRUNC('hour',timezone('America/Vancouver', now() - interval '30 minutes')) ;;
+}
+datagroup: datagroup_healthgateway_updated_inc {
+  label: "Updates with today's date at 0:55AM"
+  description: "Updates with today's date at 0:55AM"
+  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '55 minutes')) ;;
 }
