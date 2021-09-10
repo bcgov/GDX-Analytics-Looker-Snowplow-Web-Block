@@ -754,7 +754,7 @@ datagroup: datagroup_sbc_online_appointments {
 datagroup: datagroup_healthgateway_updated {
   label: "Updates hourly for health gateway"
   description: "Updates hourly for health gateway"
-  sql_trigger: SELECT DATE_TRUNC('hour',timezone('America/Vancouver', now() - interval '30 minutes')) ;;
+  sql_trigger: SELECT DATE_TRUNC('hour',timezone('America/Vancouver', now() - interval '15 minutes')) ;;
 }
 datagroup: datagroup_healthgateway_updated_2 {
   label: "Update every 30 minutes"
