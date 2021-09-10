@@ -759,5 +759,7 @@ datagroup: datagroup_healthgateway_updated {
 datagroup: datagroup_healthgateway_updated_inc {
   label: "Updates with today's date at 0:55AM"
   description: "Updates with today's date at 0:55AM"
-  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '55 minutes')) ;;
+#  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '55 minutes')) ;;
+  sql_trigger: SELECT DATE_TRUNC('hour',timezone('America/Vancouver', now() - interval '10 minutes')) ;;
+
 }
