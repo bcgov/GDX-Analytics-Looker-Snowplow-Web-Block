@@ -19,7 +19,7 @@ view: healthgateway_actions_inc {
 
           ;;
     distribution_style: all
-    datagroup_trigger: datagroup_healthgateway_updated_inc
+    datagroup_trigger: datagroup_healthgateway_updated_2
     increment_key: "event_minute10"
     increment_offset: 9
   }
