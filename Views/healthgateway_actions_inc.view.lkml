@@ -1,7 +1,9 @@
 view: healthgateway_actions_inc {
   label: "Health Gateway Actions"
   derived_table: {
-    sql: SELECT wp.id AS page_view_id,domain_sessionid AS session_id,
+    sql: SELECT
+          ga.root_id AS root_id,
+          wp.id AS page_view_id,domain_sessionid AS session_id,
           COALESCE(events.page_urlhost,'') AS page_urlhost,
           events.page_url,
           action,
@@ -15,13 +17,13 @@ view: healthgateway_actions_inc {
           LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON ga.root_id = wp.root_id AND ga.root_tstamp = wp.root_tstamp
           LEFT JOIN atomic.events ON ga.root_id = events.event_id AND ga.root_tstamp = events.collector_tstamp
-        WHERE {% incrementcondition %} ga.root_tstamp {% endincrementcondition %}
+        WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
 
           ;;
     distribution_style: all
     datagroup_trigger: datagroup_healthgateway_updated_2
-    increment_key: "event_minute10"
-    increment_offset: 9
+    increment_key: "event_hour"
+    increment_offset: 3
   }
 
 
