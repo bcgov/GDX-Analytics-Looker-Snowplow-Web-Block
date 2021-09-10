@@ -1,7 +1,9 @@
 view: healthgateway_actions_inc {
   label: "Health Gateway Actions"
   derived_table: {
-    sql: SELECT wp.id AS page_view_id,domain_sessionid AS session_id,
+    sql: SELECT
+          ga.root_id AS root_id,
+          wp.id AS page_view_id,domain_sessionid AS session_id,
           COALESCE(events.page_urlhost,'') AS page_urlhost,
           events.page_url,
           action,
