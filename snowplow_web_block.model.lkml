@@ -757,9 +757,11 @@ datagroup: datagroup_healthgateway_updated {
   sql_trigger: SELECT DATE_TRUNC('hour',timezone('America/Vancouver', now() - interval '30 minutes')) ;;
 }
 datagroup: datagroup_healthgateway_updated_inc {
-  label: "Updates with today's date at 0:55AM"
-  description: "Updates with today's date at 0:55AM"
+  label: "Update every 30 minutes"
+  description: "Update every 30 minutes"
 #  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '55 minutes')) ;;
-  sql_trigger: SELECT DATE_TRUNC('hour',timezone('America/Vancouver', now() - interval '10 minutes')) ;;
+  sql_trigger: SELECT CASE WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 30 THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            END ;;
 
 }
