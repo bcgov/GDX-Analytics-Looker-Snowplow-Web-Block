@@ -17,10 +17,13 @@ view: healthgateway_actions {
           LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON ga.root_id = wp.root_id AND ga.root_tstamp = wp.root_tstamp
           LEFT JOIN atomic.events ON ga.root_id = events.event_id AND ga.root_tstamp = events.collector_tstamp
-
-          ;;
+        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+        ;;
     distribution_style: all
     datagroup_trigger: datagroup_healthgateway_updated
+    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
+                # to reprocess up to 3 hours of results
+    increment_offset: 3
   }
 
 
