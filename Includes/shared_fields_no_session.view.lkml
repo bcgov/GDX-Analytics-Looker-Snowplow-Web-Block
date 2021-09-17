@@ -143,8 +143,7 @@ view: shared_fields_no_session {
   dimension: page_display_url {
     label: "Page Display URL"
     # when editing also see clicks.truncated_target_url_nopar_case_insensitive
-    description: "Cleaned URL of the page without query string or standard file names like index.
-    "
+    description: "Cleaned URL of the page without query string or standard file names like index.html"
     sql: ${TABLE}.page_display_url ;;
     group_label: "Page"
     drill_fields: [page_views.page_referrer,page_views.page_url]
@@ -158,7 +157,7 @@ view: shared_fields_no_session {
   dimension: page_covid_display_url {
     # NOTE: This is also used when joining to covid_language_matrix
     label: "Page Display URL (COVID)"
-    description: "Like Display URL, but comines the two https://www2.gov.bc.ca/getvaccinated URLs"
+    description: "Like Display URL, but comines the static HTML URLs"
     sql: CASE 
         WHEN ${TABLE}.page_display_url = 'https://www2.gov.bc.ca/getvaccinated.html' THEN 'https://www2.gov.bc.ca/gov/content/covid-19/vaccine/register' 
         WHEN ${TABLE}.page_display_url = 'https://www2.gov.bc.ca/vaccinecard.html' THEN 'https://www2.gov.bc.ca/gov/content/covid-19/vaccine/proof' 
