@@ -157,8 +157,11 @@ view: shared_fields_no_session {
   dimension: page_covid_display_url {
     # NOTE: This is also used when joining to covid_language_matrix
     label: "Page Display URL (COVID)"
-    description: "Like Display URL, but comines the two https://www2.gov.bc.ca/getvaccinated URLs"
-    sql: CASE WHEN ${TABLE}.page_display_url = 'https://www2.gov.bc.ca/getvaccinated.html' THEN 'https://www2.gov.bc.ca/gov/content/covid-19/vaccine/register' ELSE ${TABLE}.page_display_url END ;;
+    description: "Like Display URL, but comines the static HTML URLs"
+    sql: CASE 
+        WHEN ${TABLE}.page_display_url = 'https://www2.gov.bc.ca/getvaccinated.html' THEN 'https://www2.gov.bc.ca/gov/content/covid-19/vaccine/register' 
+        WHEN ${TABLE}.page_display_url = 'https://www2.gov.bc.ca/vaccinecard.html' THEN 'https://www2.gov.bc.ca/gov/content/covid-19/vaccine/proof' 
+      ELSE ${TABLE}.page_display_url END ;;
     group_label: "Page"
     drill_fields: [page_views.page_referrer,page_views.page_url]
     link: {
