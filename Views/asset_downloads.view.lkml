@@ -224,7 +224,7 @@ view: asset_downloads {
   }
 
   dimension: direct_download {
-    type:  string
+    type:  yesno
     sql:  ${TABLE}.direct_download;;
   }
 

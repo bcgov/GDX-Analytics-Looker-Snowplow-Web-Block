@@ -17,13 +17,15 @@ view: form_action {
         CONVERT_TIMEZONE('UTC', 'America/Vancouver', wp.root_tstamp) AS page_view_timestamp,
         DATEDIFF('second', fa.root_tstamp, wp.root_tstamp) AS time_diff,
         CASE WHEN action = 'submit' AND (message = 'submit' OR message IS NULL OR message = '') THEN 'submit success'
+              WHEN action = 'submit' AND (message = 'emailed') THEN 'submit emailed'
               WHEN action = 'submit' AND message = 'validation-error' THEN 'submit validation error'
               WHEN action = 'submit' AND message = 'form-error' THEN 'submit form error'
-              WHEN action = 'submission-error' THEN 'submit form error'
+              WHEN action = 'submission-error' OR message = 'submission-error' THEN 'submit form error'
               ELSE NULL
         END AS result,
         CASE WHEN action = 'submit' THEN 1 ELSE 0 END AS submit_count,
         CASE WHEN action = 'submit' AND (message = 'submit' OR message IS NULL OR message = '') THEN 1 ELSE 0 END AS submit_success_count,
+        CASE WHEN action = 'submit' AND (message = 'emailed') THEN 1 ELSE 0 END AS submit_emailed_count,
         CASE WHEN action = 'submit' AND message = 'validation-error' THEN 1 ELSE 0 END AS submit_validation_error_count,
         CASE WHEN action = 'submit' AND message = 'form-error' THEN 1 ELSE 0 END AS submit_form_error_count,
         CASE WHEN action = 'submission-error' THEN 1 ELSE 0 END AS submission_error_count,
@@ -83,6 +85,10 @@ view: form_action {
   dimension: page_urlhost {
     type: string
     sql: ${TABLE}.page_urlhost ;;
+  }
+  dimension: page_url {
+    type: string
+    sql: ${TABLE}.page_url;;
   }
   dimension: form_event_id {
     label: "Form Event ID"
@@ -173,6 +179,12 @@ view: form_action {
     type: count_distinct
     sql_distinct_key: ${TABLE}.page_view_id ;;
     sql: CASE WHEN ${TABLE}.result = 'submit success' THEN ${TABLE}.page_view_id ELSE NULL END ;;
+    group_label: "Unique Counts"
+  }
+  measure: unique_submit_emailed_count {
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.page_view_id ;;
+    sql: CASE WHEN ${TABLE}.result = 'submit emailed' THEN ${TABLE}.page_view_id ELSE NULL END ;;
     group_label: "Unique Counts"
   }
 

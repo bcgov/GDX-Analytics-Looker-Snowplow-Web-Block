@@ -34,9 +34,12 @@ include: "/Dashboards/*.dashboard"
 include: "/Explores/*.explore"
 
 # hidden theme_cache explore supports suggest_explore for theme, subtheme, etc. filters
-include: "//cmslite_metadata/Explores/themes_cache.explore.lkml"
+# include: "//cmslite_metadata/Explores/themes_cache.explore.lkml"
 
-# hidden cicy_cache explore supports suggest_explore for the geo filters
+# Import asset_themes view for asset downloads explore
+include: "//cmslite_metadata/Views/asset_themes.view.lkml"
+
+# hidden city_cache explore supports suggest_explore for the geo filters
 explore: geo_cache {
   hidden: yes
 }
@@ -145,6 +148,12 @@ explore: page_views {
     relationship: many_to_one
   }
 
+  join: google_translate {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${google_translate.page_view_id} ;;
+    relationship: many_to_one
+  }
+
 }
 
 
@@ -232,7 +241,7 @@ explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes
   }
 
   access_filter: {
-    field: page_views.page_urlhost
+    field: chatbot_intents_and_clicks.page_urlhost
     user_attribute: urlhost
   }
 }
@@ -400,8 +409,6 @@ explore: searches {
     field: cmslite_themes.theme_id
     user_attribute: theme
   }
-
-
 }
 
 explore: form_action {
@@ -613,9 +620,26 @@ explore: asset_downloads {
     user_attribute: urlhost
   }
 
+  access_filter: {
+    field: asset_downloads.asset_display_url
+    user_attribute: asset_display_url
+  }
+
+  access_filter: {
+    field: asset_themes.asset_theme
+    user_attribute: asset_theme
+  }
+
+
   join: cmslite_metadata {
     type: left_outer
-    sql_on: ${asset_downloads.asset_url} = ${cmslite_metadata.hr_url} ;;
+    sql_on: ${asset_downloads.asset_display_url} = ${cmslite_metadata.hr_url} ;;
+    relationship: one_to_one
+  }
+
+  join: asset_themes {
+    type: left_outer
+    sql_on: ${asset_downloads.asset_display_url} = ${asset_themes.hr_url} ;;
     relationship: one_to_one
   }
 }
@@ -638,6 +662,27 @@ explore: performance_timing {
     type: left_outer
     sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
+  }
+}
+
+
+explore: healthgateway_actions {
+  label: "Health Gateway Actions"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${healthgateway_actions.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: healthgateway_actions.page_urlhost
+    user_attribute: urlhost
   }
 }
 
@@ -680,5 +725,14 @@ datagroup: datagroup_tibc_ready {
 datagroup: datagroup_sbc_online_appointments {
   label: "Updates with todays date at 4:15AM"
   description: "Triggers PDTS for sbc_online_appointments 40 minutes before CMS AA."
-  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '245 minutes')) ;;
+  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '255 minutes')) ;;
+}
+
+
+datagroup: datagroup_healthgateway_updated {
+  label: "Health Gateway Datagroup"
+  description: "Update every 30 minutes to drive the Health Gateway incremental PDT"
+  sql_trigger: SELECT CASE WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 30
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
 }

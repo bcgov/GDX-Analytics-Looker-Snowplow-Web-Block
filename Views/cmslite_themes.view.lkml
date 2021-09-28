@@ -10,7 +10,6 @@ view: cmslite_themes {
   # Hide unneeded dimensions from base view
   dimension: parent_node_id {hidden: yes}
   dimension: parent_title {hidden:yes}
-  dimension: title {hidden: yes}
   dimension: hr_url {hidden: yes}
 
 

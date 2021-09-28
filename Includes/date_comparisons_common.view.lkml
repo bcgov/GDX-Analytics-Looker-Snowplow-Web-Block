@@ -55,6 +55,7 @@ view: date_comparisons_common {
     allowed_value: { value: "Previous Period" }
     allowed_value: { value: "Previous Year" }
     allowed_value: { value: "Previous Month" }
+    allowed_value: { value: "No Comparison" }
     default_value: "Previous Period"
   }
 
@@ -63,7 +64,8 @@ view: date_comparisons_common {
   dimension: period_difference {
     group_label: "Flexible Filter"
     type: number
-    sql:  CASE WHEN {% parameter comparison_period %} = 'Previous Year' THEN DATEDIFF(DAY, DATEADD(YEAR, -1, ${date_start}), ${date_start})
+    sql:  CASE WHEN {% parameter comparison_period %} = 'No Comparison' THEN 0
+          WHEN {% parameter comparison_period %} = 'Previous Year' THEN DATEDIFF(DAY, DATEADD(YEAR, -1, ${date_start}), ${date_start})
           WHEN {% parameter comparison_period %} = 'Previous Month' THEN DATEDIFF(DAY, DATEADD(MONTH, -1, ${date_start}), ${date_start})
       ELSE DATEDIFF(DAY, ${date_start}, ${date_end})  END ;;
     hidden: yes
@@ -96,8 +98,9 @@ view: date_comparisons_common {
   dimension: last_period {
     group_label: "Flexible Filter"
     type: yesno
-    sql: ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
-      AND ${filter_start_raw} < DATEADD(DAY, -${period_difference}, ${date_end}) ;;
+    sql: CASE WHEN {% parameter comparison_period %} = 'No Comparison' THEN FALSE
+          ELSE ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
+            AND ${filter_start_raw} < DATEADD(DAY, -${period_difference}, ${date_end}) END ;;
     hidden: yes
   }
 
@@ -105,19 +108,12 @@ view: date_comparisons_common {
   # that compare current_period and last_period
   dimension: date_window {
     group_label: "Flexible Filter"
-    case: {
-      when: {
-        sql: ${filter_start_raw} >= ${date_start}
-          AND ${filter_start_raw} < ${date_end} ;;
-        label: "Current Period"
-      }
-      when: {
-        sql: ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
-          AND ${filter_start_raw} <  DATEADD(DAY, -${period_difference}, ${date_end}) ;;
-        label: "Last Period"
-      }
-      else: "unknown"
-    }
+    label: "{% if comparison_period._parameter_value == \"'No Comparison'\" %}  {% else %} Date Window {% endif %}"
+    sql: CASE WHEN {% parameter comparison_period %} = 'No Comparison' THEN ' '
+            WHEN ${filter_start_raw} >= ${date_start} AND ${filter_start_raw} < ${date_end} THEN 'Current Period'
+            WHEN ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
+                  AND ${filter_start_raw} <  DATEADD(DAY, -${period_difference}, ${date_end}) THEN 'Last Period'
+            ELSE 'Unknown' END ;;
     description: "Pivot on Date Window to compare measures between the current and last periods, use with Comparison Date"
   }
 
@@ -146,11 +142,12 @@ view: date_comparisons_common {
 
 
   dimension: comparison_date {
+    label: "{% if comparison_period._parameter_value == \"'No Comparison'\" %} Date {% else %} Comparison Date {% endif %}"
     drill_fields: [youtube_embed_video.title,youtube_embed_video.video_id,youtube_embed_video.video_display_source]
     group_label: "Flexible Filter"
     type: string
     sql:
-       CASE
+      CASE WHEN {% parameter comparison_period %} = 'No Comparison' THEN TO_CHAR(${filter_start_date},'YYYY-MM-DD')
          WHEN ${filter_start_raw} >= ${date_start}
              AND ${filter_start_raw} < ${date_end}
             THEN TO_CHAR(${filter_start_date},'Mon DD') || '/' || TO_CHAR(DATEADD(DAY,-${period_difference},(${filter_start_date})),'Mon DD')

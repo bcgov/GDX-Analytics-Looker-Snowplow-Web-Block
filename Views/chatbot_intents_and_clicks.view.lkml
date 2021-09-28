@@ -7,7 +7,7 @@ view: chatbot_intents_and_clicks {
         )
         SELECT wp.id,
           cb.root_id AS chat_event_id,
-          events.page_urlhost,
+          COALESCE(events.page_urlhost,'') AS page_urlhost,
           events.page_url,
           action,
           agent,
@@ -21,6 +21,7 @@ view: chatbot_intents_and_clicks {
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
           CASE WHEN action = 'get_answer' THEN 1 ELSE 0 END AS answer_count,
           CASE WHEN action = 'link_click' THEN 1 ELSE 0 END AS link_click_count,
+          CASE WHEN action = 'click_chip' THEN 1 ELSE 0 END AS chip_count,
           CASE WHEN action = 'get_answer' THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
           CASE WHEN action = 'get_answer' THEN text ELSE NULL END AS intent_raw,
           CASE
@@ -40,12 +41,14 @@ view: chatbot_intents_and_clicks {
           CASE WHEN action <> 'link_click' THEN NULL
             WHEN hr_url IS NOT NULL AND SPLIT_PART(text, '#',2) = '' THEN hr_url
             WHEN hr_url IS NOT NULL AND SPLIT_PART(text, '#',2) <> '' THEN hr_url || '#' || SPLIT_PART(text, '#',2)
-            ELSE text END AS link_click_url
+            ELSE text END AS link_click_url,
+          CASE WHEN action <> 'click_chip' THEN NULL
+            ELSE text END AS chip_text
           FROM chatbot_combined AS cb
-          JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
+          LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
           LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
-          JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
-          WHERE action IN ('get_answer', 'link_click','ask_question')
+          LEFT JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
+          WHERE action IN ('get_answer', 'link_click','ask_question','click_chip')
               AND timestamp < DATE_TRUNC('day',GETDATE())
           ;;
 
@@ -100,7 +103,6 @@ view: chatbot_intents_and_clicks {
       drill_fields: [intent, intent_subcategory, page_views.chatbot_page_display_url]
       group_label: "Intents"
     }
-
     dimension: intent_subcategory {
       drill_fields: [intent, page_views.chatbot_page_display_url]
       group_label: "Intents"
@@ -115,12 +117,21 @@ view: chatbot_intents_and_clicks {
       group_label: "Intents"
     }
 
+    dimension: chip_text {}
+
     dimension: frontend_id {}
-    dimension: intent_confidence {}
+    dimension: intent_confidence {
+      group_label: "Intents"
+    }
     dimension: sentiment_magnitude {
       group_label: "Sentiment"
     }
     dimension: sentiment_score {
+      group_label: "Sentiment"
+    }
+    dimension: sentiment_is_positive {
+      type: yesno
+      sql: sentiment_score >=0 ;;
       group_label: "Sentiment"
     }
 
@@ -142,6 +153,10 @@ view: chatbot_intents_and_clicks {
       type: sum
       sql: ${TABLE}.question_count ;;
     }
+    measure: chip_count {
+      type: sum
+      sql: ${TABLE}.chip_count ;;
+    }
     measure: answer_count {
       type: sum
       sql: ${TABLE}.answer_count ;;
@@ -157,5 +172,15 @@ view: chatbot_intents_and_clicks {
       type: sum
       sql: ${TABLE}.answer_count - ${TABLE}.question_count ;;
     }
+
+    measure: average_intent_confidence {
+      type: average
+      sql: ${TABLE}.intent_confidence;;
+    }
+    measure: average_sentiment_score {
+      type: average
+      sql: ${TABLE}.sentiment_score;;
+    }
+
 
   }

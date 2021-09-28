@@ -1,10 +1,18 @@
 view: google_translate {
   derived_table: {
-    sql:SELECT google_translate.*, wp.id as page_view_id
+    sql:SELECT
+          google_translate.root_id,
+          google_translate.translation_data,
+          google_translate.root_tstamp,
+          language_lookup.language_name,
+          SPLIT_PART(google_translate.translation_data,'/',2) AS source_language,
+          SPLIT_PART(google_translate.translation_data,'/',3) AS target_language_code,
+          COALESCE(language_lookup.language_name, target_language_code) AS target_language_name,
+          wp.id AS page_view_id
         FROM atomic.ca_bc_gov_googtrans_google_translate_1 AS google_translate
-        JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
-        ON google_translate.root_id = wp.root_id
-        AND google_translate.root_tstamp = wp.root_tstamp ;;
+        LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON google_translate.root_id = wp.root_id
+        AND google_translate.root_tstamp = wp.root_tstamp
+        LEFT JOIN google.google_translate_languages AS language_lookup ON SPLIT_PART(google_translate.translation_data,'/',3) = language_lookup.language_code ;;
     distribution_style: all
     persist_for: "2 hours"
   }
@@ -20,17 +28,25 @@ view: google_translate {
   dimension: source_language {
     description: "The original language of the translated site"
     type: string
-    sql: SPLIT_PART(${TABLE}.translation_data,'/',2)  ;;
+    sql: ${TABLE}.source_language ;;
   }
 
-  dimension: target_language {
+  dimension: target_language_code {
+    description: "The target language code of the translated site"
+    type: string
+    sql: ${TABLE}.target_language_code  ;;
+  }
+
+  dimension: target_language_name {
     description: "The target language of the translated site"
     type: string
-    sql: SPLIT_PART(${TABLE}.translation_data,'/',3)  ;;
+    sql: ${TABLE}.target_language_name  ;;
+    drill_fields: [page_views.page_display_url, page_views.page_title]
   }
 
   dimension: page_view_id {
     description: "Unique page view ID"
+    primary_key: yes
     type: string
     sql: ${TABLE}.page_view_id ;;
   }
@@ -86,5 +102,6 @@ view: google_translate {
   measure: count_translations {
     description: "Count of translation events."
     type: count
+    drill_fields: [target_language_name, count_translations, page_views.page_title, page_views.page_display_url]
   }
 }

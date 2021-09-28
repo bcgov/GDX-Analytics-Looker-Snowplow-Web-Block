@@ -1,3 +1,5 @@
+[![Lifecycle:Maturing](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](<Redirect-URL>)
+
 ## GDX Looker Snowplow Web Block
 
 This Block represents an instance of the Government of British Columbia’s [LookML](https://docs.looker.com/data-modeling/learning-lookml/what-is-lookml), this project is used for Web Analytics.
