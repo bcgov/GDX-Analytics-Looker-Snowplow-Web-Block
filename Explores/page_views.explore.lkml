@@ -100,3 +100,29 @@ explore: +page_views {
     }
   }
 }
+
+explore: +page_views {
+  aggregate_table: aa__page_views_kpi{
+    query: {
+      dimensions: [
+        cmslite_themes.theme_id,
+        page_views.app_id,
+        page_views.node_id,
+        page_views.page_exclusion_filter,
+        page_views.page_section,
+        page_views.page_sub_section,
+        page_views.page_urlhost,
+        date_window
+      ]
+      measures: [row_count]
+      filters: [
+        page_views.flexible_filter_date_range: "7 days ago for 7 days",
+        page_views.is_in_current_period_or_last_period: "Yes"
+      ]
+    }
+
+    materialization: {
+      datagroup_trigger: aa_datagroup_cmsl_loaded
+    }
+  }
+}
