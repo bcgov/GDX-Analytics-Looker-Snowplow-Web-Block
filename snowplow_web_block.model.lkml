@@ -608,6 +608,45 @@ explore: workbc_careertoolkit {
     user_attribute: urlhost
   }
 }
+
+explore: workbc_careereducation_find {
+  label: "WorkBC Career Education Tool"
+  persist_for: "2 hours"
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_careereducation_find.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: workbc_careereducation_click {
+  label: "WorkBC Career Education Tool Clicks"
+  persist_for: "2 hours"
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_careereducation_click.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
 explore: forms {
   persist_for: "60 minutes"
 
