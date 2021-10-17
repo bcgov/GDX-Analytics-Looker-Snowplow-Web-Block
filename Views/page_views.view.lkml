@@ -537,6 +537,15 @@ dimension: chatbot_page_display_url {
     value_format: "0.00\%"
     group_label: "Engagement"
   }
+
+  measure: desktop_page_views {
+    type: sum
+    sql: CASE WHEN page_views.dvce_type = 'Computer' THEN 1 ELSE 0 END;;
+  }
+  measure: mobile_page_views {
+    type: sum
+    sql: CASE WHEN page_views.dvce_type IN ('Mobile','Tablet') THEN 1 ELSE 0 END;;
+  }
 }
 
 # If necessary, uncomment the line below to include explore_source.

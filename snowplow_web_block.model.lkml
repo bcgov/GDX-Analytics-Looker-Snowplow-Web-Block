@@ -154,6 +154,17 @@ explore: page_views {
     relationship: many_to_one
   }
 
+  join: language_cohorts_sessions {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${page_views.session_id} = ${language_cohorts_sessions.session_id} ;;
+  }
+
+  join: language_cohorts_users {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${page_views.domain_userid} = ${language_cohorts_users.domain_userid} ;;
+  }
 }
 
 
@@ -686,6 +697,15 @@ explore: healthgateway_actions {
   }
 }
 
+explore: health_app_views {
+  label: "Health App Views"
+
+  access_filter: {
+    field: health_app_views.app_type
+    user_attribute: urlhost
+  }
+}
+
 explore: google_translate {
   persist_for: "60 minutes"
 
@@ -706,7 +726,6 @@ explore: google_translate {
     relationship: one_to_one
   }
 }
-
 
 ### Datagroups
 
