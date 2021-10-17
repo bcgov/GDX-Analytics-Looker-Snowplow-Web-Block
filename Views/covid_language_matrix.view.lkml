@@ -63,6 +63,10 @@ view: covid_language_matrix {
       url: "{{ covid_language_matrix.english_url }}"
       icon_url: "https://looker.com/favicon.ico"
     }
+  }
 
+  measure: korean_count {
+    type: sum
+    sql: CASE WHEN ${language} = 'Korean' THEN 1 ELSE 0 END ;;
   }
 }

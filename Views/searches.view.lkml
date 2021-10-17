@@ -195,6 +195,18 @@ view: searches {
     }
   }
 
+  dimension: search_terms_gov_inmeta {
+    label: "Search Terms -- +inmeta fix"
+    description: "The search term(s) that were queried on www2.gov.bc.ca."
+    type:  string
+    sql:  LOWER(SPLIT_PART(${TABLE}.terms, '+inmeta', 1)) ;;
+    group_label: "Results"
+    link: {
+      label: "View Search"
+      url: "https://www2.gov.bc.ca/gov/search?id=2E4C7D6BCAA4470AAAD2DCADF662E6A0&q={{ value }}"
+      icon_url: "https://www2.gov.bc.ca/favicon.ico"
+    }
+  }
   dimension: search_terms_workbc {
     label: "WorkBC Search Terms"
     description: "The search term(s) that were queried on WorkBC."
