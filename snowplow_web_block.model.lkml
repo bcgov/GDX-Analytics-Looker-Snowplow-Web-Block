@@ -706,6 +706,15 @@ explore: health_app_views {
   }
 }
 
+explore: health_app_actions {
+  label: "Health App Actions"
+
+  access_filter: {
+    field: health_app_actions.app_type
+    user_attribute: urlhost
+  }
+}
+
 explore: google_translate {
   persist_for: "60 minutes"
 
