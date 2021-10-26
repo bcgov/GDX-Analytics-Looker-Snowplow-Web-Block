@@ -562,17 +562,6 @@ view: shared_fields_common {
     sql: ${ip_address} = '184.69.13.226' OR ${ip_address} = '184.71.25.166' ;;
   }
 
-  # dimension: ip_isp {
-  # type: string
-  # sql: ${TABLE}.ip_isp ;;
-  # group_label: "IP"
-  # }
-
-  # dimension: ip_organization {
-  # type: string
-  # sql: ${TABLE}.ip_organization ;;
-  # group_label: "IP"
-  # }
 
   # dimension: ip_domain {
   # type: string

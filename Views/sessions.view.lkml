@@ -69,25 +69,6 @@ view: sessions {
     # hidden: yes
   }
 
-  # Session Time (User Timezone)
-
-  # dimension_group: session_start_local {
-  # type: time
-  # timeframes: [time, time_of_day, hour_of_day, day_of_week]
-  # sql: ${TABLE}.session_start_local ;;
-  #X# group_label:"Session Time (User Timezone)"
-  # convert_tz: no
-  # }
-
-  # dimension_group: session_end_local {
-  # type: time
-  # timeframes: [time, time_of_day, hour_of_day, day_of_week]
-  # sql: ${TABLE}.session_end_local ;;
-  #X# group_label:"Session Time (User Timezone)"
-  # convert_tz: no
-  # hidden: yes
-  # }
-
   # Engagement
 
   dimension: page_views {
@@ -221,12 +202,6 @@ view: sessions {
     group_label: "First Page"
   }
 
-  # dimension: first_page_urlport {
-  # type: number
-  # sql: ${TABLE}.first_page_urlport ;;
-  # group_label: "First Page"
-  # hidden: yes
-  # }
 
   dimension: first_page_urlquery {
     description: "The URL query of the page where a session began."
@@ -235,11 +210,6 @@ view: sessions {
     group_label: "First Page"
   }
 
-  # dimension: first_page_urlfragment {
-  # type: string
-  # sql: ${TABLE}.first_page_urlfragment ;;
-  # group_label: "First Page"
-  # }
 
   dimension: first_page_title {
     description: "The Title for the page where a session began."
@@ -262,7 +232,6 @@ view: sessions {
 #     to_char(${session_length}::interval, 'HH24:MI:SS') ;;
   }
 #   to_char(${session_length})
-
   measure: row_count {
     type: count
     group_label: "Counts"
@@ -286,9 +255,6 @@ view: sessions {
     group_label: "Counts"
     #drill_fields: [session_count]
   }
-  #set: session_count{
-  #  fields: [session_id, session_start_date, first_page_url, referrer_medium, page_view_count, total_time_engaged]
-  #}
 
   measure: user_count {
     type: count_distinct
@@ -296,47 +262,35 @@ view: sessions {
     group_label: "Counts"
     #drill_fields: [user_count]
   }
-  #set: user_count{
-  #  fields: [domain_userid, users.first_page_url, session_count, average_time_engaged, total_time_engaged]
-  #}
 
   measure: new_user_count {
     type: count_distinct
     sql: ${domain_userid} ;;
-
     filters: {
       field: session_index
       value: "1"
     }
-
     group_label: "Counts"
     #drill_fields: [new_user_count]
   }
-  #set: new_user_count{
-  #  fields: [domain_userid, users.first_page_url, session_count, average_time_engaged, total_time_engaged]
-  #}
 
   measure: bounced_user_count {
     type: count_distinct
     sql: ${domain_userid} ;;
-
     filters: {
       field: user_bounced
       value: "yes"
     }
-
     group_label: "Counts"
   }
 
   measure: engaged_user_count {
     type: count_distinct
     sql: ${domain_userid} ;;
-
     filters: {
       field: user_engaged
       value: "yes"
     }
-
     group_label: "Counts"
   }
 
