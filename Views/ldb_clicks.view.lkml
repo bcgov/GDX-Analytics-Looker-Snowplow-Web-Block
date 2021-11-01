@@ -20,7 +20,7 @@ view: ldb_clicks {
         WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
         ;;
     distribution_style: all
-    datagroup_trigger:datagroup_25_55
+    datagroup_trigger: datagroup_25_55
     increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
     # to reprocess up to 3 hours of results
     increment_offset: 3
