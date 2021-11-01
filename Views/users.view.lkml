@@ -118,12 +118,6 @@ view: users {
     group_label: "First Page"
   }
 
-  # dimension: first_page_urlscheme {
-  # type: string
-  # sql: ${TABLE}.first_page_urlscheme ;;
-  # group_label: "First Page"
-  # hidden: yes
-  # }
 
   dimension: first_page_urlhost {
     type: string
@@ -131,12 +125,6 @@ view: users {
     group_label: "First Page"
   }
 
-  # dimension: first_page_urlport {
-  # type: number
-  # sql: ${TABLE}.first_page_urlport ;;
-  # group_label: "First Page"
-  # hidden: yes
-  # }
 
   dimension: first_page_urlpath {
     type: string
@@ -150,11 +138,6 @@ view: users {
     group_label: "First Page"
   }
 
-  # dimension: first_page_urlfragment {
-  # type: string
-  # sql: ${TABLE}.first_page_urlfragment ;;
-  # group_label: "First Page"
-  # }
 
   dimension: first_page_title {
     type: string
@@ -183,12 +166,6 @@ view: users {
     group_label: "Referer"
   }
 
-  # dimension: referer_urlport {
-  # type: number
-  # sql: ${TABLE}.refr_urlport ;;
-  # group_label: "Referer"
-  # hidden: yes
-  # }
 
   dimension: referer_urlpath {
     type: string
@@ -202,11 +179,6 @@ view: users {
     group_label: "Referer"
   }
 
-  # dimension: referer_urlfragment {
-  # type: string
-  # sql: ${TABLE}.refr_urlfragment ;;
-  # group_label: "Referer"
-  # }
 
   dimension: referer_medium {
     type: string
