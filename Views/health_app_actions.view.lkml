@@ -87,4 +87,8 @@ view: health_app_actions {
   dimension: device_manufacturer {}
   dimension: device_model {}
   dimension: user_ipaddress {}
+
+  measure: count {
+    type: count
+  }
 }

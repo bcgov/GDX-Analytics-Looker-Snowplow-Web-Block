@@ -754,6 +754,31 @@ explore: health_app_actions {
   }
 }
 
+
+explore: ldb_clicks {
+  label: "LDB Actions"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${ldb_clicks.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  join: ldb_sku {
+    type:  left_outer
+    sql_on: ${ldb_sku.sku} = ${ldb_clicks.sku} ;;
+    relationship: many_to_one
+  }
+  access_filter: {
+    field: ldb_clicks.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
 explore: google_translate {
   persist_for: "60 minutes"
 
@@ -800,6 +825,14 @@ datagroup: datagroup_healthgateway_updated {
   label: "Health Gateway Datagroup"
   description: "Update every 30 minutes to drive the Health Gateway incremental PDT"
   sql_trigger: SELECT CASE WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 30
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+}
+
+datagroup: datagroup_25_55 {
+  label: "25 and 55 Minute Datagroup"
+  description: "Update every 30 minutes to drive incrementals PDT at 25 and 55 past the hour"
+  sql_trigger: SELECT CASE WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 25 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 55
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
             ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
 }
