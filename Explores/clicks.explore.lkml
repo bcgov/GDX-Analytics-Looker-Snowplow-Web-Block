@@ -35,8 +35,11 @@ explore: +clicks {
       ]
     }
 
+    # click_type has been added as a sortkey in the materialization since, as a filter on
+    # both dashboard tiles Top Download Click and Top Link Click, it supports faster queries
     materialization: {
       datagroup_trigger: aa_datagroup_cmsl_loaded
+      sortkeys: [clicks.click_type]
     }
   }
 }
