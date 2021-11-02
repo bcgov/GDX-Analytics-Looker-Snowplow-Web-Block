@@ -36,6 +36,9 @@ view: form_action {
         FROM atomic.ca_bc_gov_form_action_1 AS fa
         JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON fa.root_id = wp.root_id AND fa.root_tstamp = wp.root_tstamp
         JOIN atomic.events ON fa.root_id = events.event_id AND fa.root_tstamp = events.collector_tstamp
+                  WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+                                  --below it is called min_timestamp
+
       ),
       totals AS (
         SELECT
@@ -68,9 +71,10 @@ view: form_action {
                       totals.page_url = base.page_url AND
                       totals.formid = base.formid AND
                       (totals.formstage = base.formstage OR (base.formstage IS NULL AND totals.formstage IS NULL)) -- All other fields in the join can't be NULL
-        ;;
+          ;;
+    datagroup_trigger:datagroup_25_55
     distribution_style: all
-    persist_for: "1 hours"
+    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
   }
 
   dimension_group: event {
