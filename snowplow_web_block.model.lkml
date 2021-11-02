@@ -39,6 +39,9 @@ include: "/Explores/*.explore"
 # Import asset_themes view for asset downloads explore
 include: "//cmslite_metadata/Views/asset_themes.view.lkml"
 
+# Import metadata view from cmslite_metadata project
+include: "//cmslite_metadata/Views/metadata.view"
+
 # hidden city_cache explore supports suggest_explore for the geo filters
 explore: geo_cache {
   hidden: yes
@@ -435,6 +438,11 @@ explore: form_action {
     sql_on: ${form_action.formid} = ${cmslite_themes.node_id} ;;
     relationship: one_to_one
   }
+  join: metadata {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${metadata.node_id} ;;
+    relationship: one_to_one
+  }
 
   access_filter: {
     field: form_action.page_urlhost
@@ -455,6 +463,11 @@ explore: form_error {
     relationship: one_to_one
   }
 
+  join: metadata {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${metadata.node_id} ;;
+    relationship: one_to_one
+  }
   access_filter: {
     field: form_error.page_urlhost
     user_attribute: urlhost
