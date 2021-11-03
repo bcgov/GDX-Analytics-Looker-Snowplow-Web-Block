@@ -37,7 +37,6 @@ view: form_action {
         JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON fa.root_id = wp.root_id AND fa.root_tstamp = wp.root_tstamp
         JOIN atomic.events ON fa.root_id = events.event_id AND fa.root_tstamp = events.collector_tstamp
                   WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
-                                  --below it is called min_timestamp
 
       ),
       totals AS (

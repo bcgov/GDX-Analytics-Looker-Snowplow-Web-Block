@@ -19,10 +19,12 @@ view: form_error {
         FROM atomic.ca_bc_gov_form_error_1 AS fe
         JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON fe.root_id = wp.root_id AND fe.root_tstamp = wp.root_tstamp
         JOIN atomic.events ON fe.root_id = events.event_id AND fe.root_tstamp = events.collector_tstamp
+        WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
         ;;
+    datagroup_trigger:datagroup_25_55
     distribution_style: all
-    persist_for: "1 hours"
-  }
+    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
+    }
 
   dimension_group: event {
     type: time
