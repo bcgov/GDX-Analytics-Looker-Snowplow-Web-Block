@@ -8,8 +8,10 @@ view: ldb_clicks {
           events.page_url,
           click_type,
           lc.sku,
-          CASE WHEN click_type = 'add_to_cellar' THEN 1 ELSE 0 end AS add_to_cellar_count,
-          CASE WHEN click_type = 'where_to_buy' THEN 1 ELSE 0 end AS where_to_buy_count,
+          CASE WHEN click_type = 'add_to_cellar' THEN 1 ELSE NULL end AS add_to_cellar_count,
+          CASE WHEN click_type = 'where_to_buy' THEN 1 ELSE NULL end AS where_to_buy_count,
+          CASE WHEN click_type = 'add_to_cellar' THEN session_id ELSE NULL end AS add_to_cellar_session_id,
+          CASE WHEN click_type = 'where_to_buy' THEN session_id ELSE NULL end AS where_to_buy_session_id,
           CONVERT_TIMEZONE('UTC', 'America/Vancouver', lc.root_tstamp) AS timestamp
 
         FROM atomic.ca_bc_gov_ldb_click_1 AS lc
@@ -63,8 +65,20 @@ view: ldb_clicks {
     type: sum
     sql: ${TABLE}.add_to_cellar_count;;
   }
+  measure: add_to_cellar_count_by_session {
+    description: "Count of sessions that included an Add to Cellar"
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.add_to_cellar_session_id ;;
+    sql: ${TABLE}.add_to_cellar_session_id;;
+  }
   measure: where_to_buy_count {
     type: sum
     sql: ${TABLE}.where_to_buy_count;;
+  }
+  measure: where_to_buy_count_by_session {
+    description: "Count of sessions that included an Where to Buy"
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.where_to_buy_session_id ;;
+    sql: ${TABLE}.where_to_buy_session_id;;
   }
 }
