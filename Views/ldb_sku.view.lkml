@@ -40,14 +40,29 @@ view: ldb_sku {
   dimension: category {
     type: string
     sql: ${TABLE}.category ;;
+    drill_fields: [sub_category]
+  }
+
+  dimension: sub_category {
+    type: string
+    sql: ${TABLE}.sub_category ;;
   }
 
   dimension: country {
     type: string
     map_layer_name: countries
+    drill_fields: [region,sub_region]
     sql: ${TABLE}.country ;;
   }
-
+  dimension: region {
+    type: string
+    drill_fields: [sub_region]
+    sql: ${TABLE}.region ;;
+  }
+  dimension: sub_region {
+    type: string
+    sql: ${TABLE}.sub_region ;;
+  }
   dimension: craft_beer {
     type: yesno
     sql: ${TABLE}.craft_beer ;;
@@ -173,11 +188,6 @@ view: ldb_sku {
     sql: ${TABLE}.rating ;;
   }
 
-  dimension: region {
-    type: string
-    sql: ${TABLE}.region ;;
-  }
-
   dimension: regular_price {
     type: number
     sql: ${TABLE}.regular_price ;;
@@ -201,16 +211,6 @@ view: ldb_sku {
   dimension: store_count {
     type: number
     sql: ${TABLE}.store_count ;;
-  }
-
-  dimension: sub_category {
-    type: string
-    sql: ${TABLE}.sub_category ;;
-  }
-
-  dimension: sub_region {
-    type: string
-    sql: ${TABLE}.sub_region ;;
   }
 
   dimension: sweetness {
