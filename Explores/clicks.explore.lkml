@@ -26,8 +26,7 @@ explore: +clicks {
         clicks.page_title,
         clicks.page_display_url,
         clicks.page_urlhost,
-        clicks.click_time_date,
-        clicks.offsite_click_binary
+        clicks.click_time_date
       ]
       measures: [clicks.row_count]
       filters: [
