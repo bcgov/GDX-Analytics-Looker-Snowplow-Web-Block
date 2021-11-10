@@ -71,7 +71,7 @@ view: page_views {
     sql: ${TABLE}.page_view_start_time ;;
     drill_fields: [page_display_url, marketing_drills*]
     label: "Page View Start"
-    group_label: "Page View Date (Markerting Drill)"
+    group_label: "Page View Date (Marketing Drill)"
   }
 
 
