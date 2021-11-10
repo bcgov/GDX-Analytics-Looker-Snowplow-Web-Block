@@ -23,14 +23,14 @@ view: sbc_online_appointments {
 
       ),
       final_selections AS ( -- this is to assign the location and service as the latest selection
-        SELECT session_id, location, service, appointment_step, ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY step_order DESC, timestamp DESC) AS session_id_ranked
+        SELECT session_id, location, service, appointment_step, appointment_id, client_id, ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY step_order DESC, timestamp DESC) AS session_id_ranked
         FROM raw_list
       )
-      SELECT rl.session_id, fs.location, fs.service, fs.appointment_step, MIN(timestamp) AS min_timestamp, MAX(timestamp) AS max_timestamp,
+      SELECT rl.session_id, fs.location, fs.service, fs.appointment_step, fs.appointment_id, fs.client_id, MIN(timestamp) AS min_timestamp, MAX(timestamp) AS max_timestamp,
         MAX(step_order) AS latest_step
       FROM raw_list AS rl
       JOIN final_selections AS fs ON fs.session_id = rl.session_id AND fs.session_id_ranked = 1
-      GROUP BY 1,2,3,4
+      GROUP BY 1,2,3,4,5,6
           ;;
     distribution_style: all
     datagroup_trigger: datagroup_sbc_online_appointments
@@ -51,6 +51,8 @@ view: sbc_online_appointments {
   }
 
   dimension: appointment_step {}
+  dimension: appointment_id {}
+  dimension: client_id {}
   dimension: latest_step {}
   dimension: session_id {}
   dimension: location {}

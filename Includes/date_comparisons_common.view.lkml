@@ -1,5 +1,8 @@
 view: date_comparisons_common {
 
+  # NOTE: currently this code is duplicated in the CFMS Block. Please ensure that the two files are kept in sync.
+  #   We'll resolve this conflict in a ticket soon.
+
   # filter_start is a placeholder dimension for the date_comparisons_common view.
 
   # In order to extend this view, this dimension must be modified in the extending view.
