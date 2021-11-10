@@ -42,6 +42,9 @@ include: "//cmslite_metadata/Views/asset_themes.view.lkml"
 # Import metadata view from cmslite_metadata project
 include: "//cmslite_metadata/Views/metadata.view"
 
+# Import CFMS POC to merge SBC TheQ data to Online Appointment booking
+include: "//cfms_block/Views/cfms_poc.view.lkml"
+
 # hidden city_cache explore supports suggest_explore for the geo filters
 explore: geo_cache {
   hidden: yes
@@ -527,6 +530,12 @@ explore: youtube_embed_video {
 explore: sbc_online_appointments{
   label: "SBC Online Appointments"
   persist_for: "2 hours"
+
+  join: cfms_poc {
+    type: left_outer
+    sql_on: ${cfms_poc.client_id} = ${sbc_online_appointments.client_id} AND ${cfms_poc.service_count}=1 ;;
+    relationship: one_to_one
+  }
 }
 explore: sbc_online_appointments_clicks{
   label: "SBC Online Appointments Clicks"
@@ -766,7 +775,6 @@ explore: health_app_actions {
     user_attribute: urlhost
   }
 }
-
 
 explore: ldb_clicks {
   label: "LDB Actions"
