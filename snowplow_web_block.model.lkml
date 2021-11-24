@@ -158,6 +158,11 @@ explore: page_views {
     sql_on:  ${page_views.page_covid_display_url} = ${covid_language_matrix.translated_url} ;;
     relationship: many_to_one
   }
+  join: embc_language_matrix {
+    type: left_outer
+    sql_on:  ${page_views.page_display_url} = ${embc_language_matrix.translated_url} ;;
+    relationship: many_to_one
+  }
 
   join: google_translate {
     type: left_outer
@@ -344,6 +349,11 @@ explore: clicks{
   join: covid_language_matrix {
     type: left_outer
     sql_on:  ${clicks.page_covid_display_url} = ${covid_language_matrix.translated_url} ;;
+    relationship: many_to_one
+  }
+  join: embc_language_matrix {
+    type: left_outer
+    sql_on:  ${clicks.page_display_url} = ${embc_language_matrix.translated_url} ;;
     relationship: many_to_one
   }
   access_filter: {
