@@ -714,12 +714,6 @@ explore: asset_downloads {
     user_attribute: asset_display_url
   }
 
-  access_filter: {
-    field: asset_themes.asset_theme
-    user_attribute: asset_theme
-  }
-
-
   join: cmslite_metadata {
     type: left_outer
     sql_on: ${asset_downloads.asset_display_url} = ${cmslite_metadata.hr_url} ;;
@@ -729,6 +723,18 @@ explore: asset_downloads {
   join: asset_themes {
     type: left_outer
     sql_on: ${asset_downloads.asset_display_url} = ${asset_themes.hr_url} ;;
+    relationship: one_to_one
+  }
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${asset_downloads.asset_host} = ${page_views.page_urlhost} ;;
+    relationship: one_to_one
+  }
+
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${asset_downloads.asset_display_url} = ${cmslite_themes.hr_url} ;;
     relationship: one_to_one
   }
 }
