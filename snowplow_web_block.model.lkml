@@ -736,17 +736,6 @@ explore: asset_downloads {
     relationship: one_to_one
   }
 
-  join: page_views {
-    type: left_outer
-    sql_on: ${asset_downloads.asset_host} = ${page_views.page_urlhost} ;;
-    relationship: one_to_one
-  }
-
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${asset_downloads.asset_display_url} = ${cmslite_themes.hr_url} ;;
-    relationship: one_to_one
-  }
 }
 
 explore: performance_timing {
