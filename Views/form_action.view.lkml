@@ -118,6 +118,7 @@ view: form_action {
 
   dimension: formstage {
     type:  string
+    order_by_field: formstage_bucket_sort
     sql:
       CASE
         WHEN ${TABLE}.formstage IS NULL AND ${TABLE}.page_urlhost = 'www.pnpapplication.gov.bc.ca' THEN 'Print Mode'
@@ -177,109 +178,9 @@ view: form_action {
     group_label: "Totals"
   }
 
-  # PNP Formstage buckets
-  dimension: formstage_bucket {
-    description: "Formstages broken out by stage order."
-    case: {
-      when: {
-        sql: ${TABLE}.formstage in ('Registrant','Applicant') ;;
-        label: "Registrant/Applicant"
-      }
-      when: {
-        sql: ${TABLE}.formstage in ('Nominee Applicant') ;;
-        label: "Nominee Applicant"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Education') ;;
-        label: "Education"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Personal Information') ;;
-        label: "Personal Information"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Details') ;;
-        label: "Details"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Background') ;;
-        label: "Background"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Experience') ;;
-        label: "Experience"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Work Experience') ;;
-        label: "Work Experience"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Net Worth') ;;
-        label: "Net Worth"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Personal Net Worth') ;;
-        label: "Personal Net Worth"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Adaptability') ;;
-        label: "Adaptability"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Family') ;;
-        label: "Family"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Job Offer') ;;
-        label: "Job Offer"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Language') ;;
-        label: "Language"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Business Concept') ;;
-        label: "Business Concept"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Business Plan') ;;
-        label: "Business Plan"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Business') ;;
-        label: "Business"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Personal Investment') ;;
-        label: "Personal Investment"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Jobs') ;;
-        label: "Jobs"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Attachments') ;;
-        label: "Attachments"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Submit') ;;
-        label: "Submit"
-      }
-      when: {
-        sql:  ${TABLE}.formstage = ('Request for Review') ;;
-        label: "Request for Review"
-      }
-      when: {
-        sql:  ${TABLE}.message = ('Print Mode') ;;
-        label: "Print Mode"
-      }
-      else:"Unknown"
-    }
-    group_label: "Form Stages"
-  }
-
   dimension: formstage_bucket_sort {
     description: "Use in combination with Form Stage Bucket to enforce sort order. Hide from display."
+    hidden:  yes
     case: {
       when: {
         sql: ${TABLE}.formstage in ('Registrant','Applicant') ;;
@@ -377,64 +278,6 @@ view: form_action {
     }
     group_label: "Form Stages"
   }
-
-  measure: formstage_bucket_1 {
-    description: "Count of form stage 1."
-    type:  sum
-    sql:  CASE WHEN  ${TABLE}.formstage in ('Registrant','Applicant') THEN 1
-              ELSE 0
-              END;;
-    label: "Formstage 1"
-    group_label: "Form Stages Buckets"
-  }
-
-  measure: formstage_bucket_2 {
-    description: "Count of form stage 2"
-    type:  sum
-    sql:  CASE WHEN  ${TABLE}.formstage in ('Education') THEN 1
-              ELSE 0
-              END;;
-    label: "Formstage 2"
-    group_label: "Form Stages Buckets"
-  }
-
-  measure: formstage_bucket_3 {
-    description: "Count of form stage 3"
-    type:  sum
-    sql:  CASE WHEN  ${TABLE}.formstage in ('Experience') THEN 1
-              ELSE 0
-              END;;
-    label: "Formstage 3"
-    group_label: "Form Stages Buckets"
-  }
-  measure: formstage_bucket_4 {
-    description: "Count of form stage 4"
-    type:  sum
-    sql:  CASE WHEN  ${TABLE}.formstage in ('Work Experience') THEN 1
-              ELSE 0
-              END;;
-    label: "Formstage 4"
-    group_label: "Form Stages Buckets"
-  }
-  measure: formstage_bucket_5 {
-    description: "Count of form stage 5"
-    type:  sum
-    sql:  CASE WHEN  ${TABLE}.formstage in ('Net Worth') THEN 1
-              ELSE 0
-              END;;
-    label: "Formstage 5"
-    group_label: "Form Stages Buckets"
-  }
-  measure: formstage_bucket_6 {
-    description: "Count of form stage 6"
-    type:  sum
-    sql:  CASE WHEN  ${TABLE}.formstage in ('Education') THEN 1
-              ELSE 0
-              END;;
-    label: "Formstage 6"
-    group_label: "Form Stages Buckets"
-  }
-
 
   measure: unique_submit_count {
     type: count_distinct
