@@ -16,18 +16,18 @@ view: form_action {
         CONVERT_TIMEZONE('UTC', 'America/Vancouver', fa.root_tstamp) AS timestamp,
         CONVERT_TIMEZONE('UTC', 'America/Vancouver', wp.root_tstamp) AS page_view_timestamp,
         DATEDIFF('second', fa.root_tstamp, wp.root_tstamp) AS time_diff,
-        CASE WHEN action = 'submit' AND (message = 'submit' OR message IS NULL OR message = '') THEN 'submit success'
+        CASE WHEN action = 'submit' AND (message = 'success' OR message = 'submit' OR message IS NULL OR message = '') THEN 'submit success'
               WHEN action = 'submit' AND (message = 'emailed') THEN 'submit emailed'
               WHEN action = 'submit' AND message = 'validation-error' THEN 'submit validation error'
-              WHEN action = 'submit' AND message = 'form-error' THEN 'submit form error'
+              WHEN action = 'submit' AND (message = 'failure' OR message = 'form-error') THEN 'submit form error'
               WHEN action = 'submission-error' OR message = 'submission-error' THEN 'submit form error'
               ELSE NULL
         END AS result,
         CASE WHEN action = 'submit' THEN 1 ELSE 0 END AS submit_count,
-        CASE WHEN action = 'submit' AND (message = 'submit' OR message IS NULL OR message = '') THEN 1 ELSE 0 END AS submit_success_count,
+        CASE WHEN action = 'submit' AND (message = 'success' OR message = 'submit' OR message IS NULL OR message = '') THEN 1 ELSE 0 END AS submit_success_count,
         CASE WHEN action = 'submit' AND (message = 'emailed') THEN 1 ELSE 0 END AS submit_emailed_count,
         CASE WHEN action = 'submit' AND message = 'validation-error' THEN 1 ELSE 0 END AS submit_validation_error_count,
-        CASE WHEN action = 'submit' AND message = 'form-error' THEN 1 ELSE 0 END AS submit_form_error_count,
+        CASE WHEN action = 'submit' AND (message = 'failure' OR message = 'form-error') THEN 1 ELSE 0 END AS submit_form_error_count,
         CASE WHEN action = 'submission-error' THEN 1 ELSE 0 END AS submission_error_count,
         CASE WHEN action = 'clear' THEN 1 ELSE 0 END AS clear_count,
         CASE WHEN action = 'pdf' THEN 1 ELSE 0 END AS pdf_count,
@@ -115,8 +115,15 @@ view: form_action {
       icon_url: "https://looker.com/favicon.ico"
     }
   }
-  dimension: formstage {}
 
+  dimension: formstage {
+    type:  string
+    order_by_field: formstage_bucket_sort
+    sql:
+      CASE
+        WHEN ${TABLE}.formstage IS NULL AND ${TABLE}.page_urlhost = 'www.pnpapplication.gov.bc.ca' THEN 'Print Mode'
+        ELSE ${TABLE}.formstage END ;;
+  }
 
   dimension: first_diff {
     group_label: "Totals"
@@ -169,6 +176,107 @@ view: form_action {
 
   dimension: min_page_view_timestamp {
     group_label: "Totals"
+  }
+
+  dimension: formstage_bucket_sort {
+    description: "Use in combination with Form Stage Bucket to enforce sort order. Hide from display."
+    hidden:  yes
+    case: {
+      when: {
+        sql: ${TABLE}.formstage in ('Registrant','Applicant') ;;
+        label: "1"
+      }
+      when: {
+        sql: ${TABLE}.formstage in ('Nominee Applicant') ;;
+        label: "2"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Education') ;;
+        label: "3"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Personal Information') ;;
+        label: "4"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Details') ;;
+        label: "5"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Background') ;;
+        label: "6"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Experience') ;;
+        label: "7"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Work Experience') ;;
+        label: "8"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Net Worth') ;;
+        label: "9"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Personal Net Worth') ;;
+        label: "10"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Adaptability') ;;
+        label: "11"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Family') ;;
+        label: "12"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Job Offer') ;;
+        label: "13"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Language') ;;
+        label: "14"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Business') ;;
+        label: "15"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Business Concept') ;;
+        label: "16"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Business Plan') ;;
+        label: "17"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Personal Investment') ;;
+        label: "18"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Jobs') ;;
+        label: "19"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Attachments') ;;
+        label: "20"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Submit') ;;
+        label: "21"
+      }
+      when: {
+        sql:  ${TABLE}.formstage = ('Request for Review') ;;
+        label: "22"
+      }
+      when: {
+        sql:  ${TABLE}.message = ('Print Mode') ;;
+        label: "23"
+      }
+      else:"Unknown"
+    }
+    group_label: "Form Stages"
   }
 
   measure: unique_submit_count {
