@@ -45,16 +45,19 @@ view: chatbot {
           --  ELSE text END AS link_click_url
           FROM chatbot_combined AS cb
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
-          WHERE timestamp < DATE_TRUNC('day',GETDATE())
-          --LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
+          -- set to run incrementally
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
           ;;
-
-      distribution_style: all
-      datagroup_trigger: aa_datagroup_cmsl_loaded
+    distribution_style: all
+    datagroup_trigger: datagroup_healthgateway_updated
+    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
+    # to reprocess up to 3 hours of results
+    increment_offset: 3
     }
 
     dimension_group: event {
       type: time
+      timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
       sql: ${TABLE}.timestamp ;;
     }
     dimension: id {
