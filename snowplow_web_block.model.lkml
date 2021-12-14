@@ -878,3 +878,11 @@ datagroup: datagroup_25_55 {
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
             ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
 }
+
+datagroup: datagroup_05_35 {
+  label: "05 and 35 Minute Datagroup"
+  description: "Update every 30 minutes to drive incrementals PDT at 05 and 35 past the hour"
+  sql_trigger: SELECT CASE WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 05 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 35
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+}

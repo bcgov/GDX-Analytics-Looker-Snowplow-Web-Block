@@ -49,15 +49,22 @@ view: chatbot_intents_and_clicks {
           LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
           LEFT JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
           WHERE action IN ('get_answer', 'link_click','ask_question','click_chip')
-              AND timestamp < DATE_TRUNC('day',GETDATE())
+              AND {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+
           ;;
 
-      distribution_style: all
-      datagroup_trigger: aa_datagroup_cmsl_loaded
+    distribution_style: all
+    # the incremental build will occur at 5 and 35 past the hour
+    datagroup_trigger: datagroup_05_35
+    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
+    # to reprocess up to 3 hours of results
+    increment_offset: 3
+
     }
 
     dimension_group: event {
       type: time
+      timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
       sql: ${TABLE}.timestamp ;;
     }
     dimension: id {
