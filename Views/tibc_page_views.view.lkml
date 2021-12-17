@@ -11,7 +11,6 @@ view: tibc_page_views {
       datagroup_trigger: datagroup_tibc_ready
     }
 
-
   extends: [page_views]
 
   dimension: tibc_section {
@@ -20,13 +19,17 @@ view: tibc_page_views {
     label: "TIBC Section"
     drill_fields: [page_display_url]
     sql: CASE
-            WHEN ${TABLE}.page_section = '' THEN 'Home'
-            WHEN ${TABLE}.page_section IN ('invest-capital-in-bc','expand-to-bc','buy-from-bc','why-british-columbia-canada','about-british-columbia-canada','industries') THEN 'International'
-            WHEN ${TABLE}.page_section IN ('for-bc-businesses') THEN 'Export'
-            WHEN ${TABLE}.page_section IN ('invest','invest-kr','Invest') THEN 'Kentico Site Invest section'
-            WHEN ${TABLE}.page_section IN ('buy','Buy') THEN 'Kentico Site Buy section'
-            WHEN ${TABLE}.page_section IN ('global','Global') THEN 'Kentico Site Global section'
-            WHEN ${TABLE}.page_section IN ('export','Export') THEN 'Kentico Site Export section'
+            WHEN ${TABLE}.page_section = '' THEN 'International'
+            WHEN ${TABLE}.page_section IN ('for-bc-businesses','export','Export') THEN 'Export'
+            WHEN ${TABLE}.page_section IN ('buy','Buy','buy-from-bc') THEN 'Buy'
+            WHEN ${TABLE}.page_section IN ('invest-capital-in-bc','invest','invest-kr','Invest') THEN 'Invest'
+            WHEN ${TABLE}.page_section IN ('expand-to-bc') THEN 'Expand'
+            WHEN ${TABLE}.page_section IN ('global','Global','event','news-stories','about-trade-and-invest-bc') THEN 'Global'
+            WHEN ${TABLE}.page_section IN ('industries') THEN 'Sectors'
+            WHEN ${TABLE}.page_section IN ('china') THEN 'China'
+            WHEN ${TABLE}.page_section IN ('japan') THEN 'Japan'
+            WHEN ${TABLE}.page_section IN ('korea') THEN 'Korea'
+            WHEN ${TABLE}.page_section IN ('why-british-columbia-canada','about-british-columbia-canada') THEN 'Discovery'
             ELSE 'Other' END ;;
     group_label: "TIBC"
     order_by_field: tibc_section_sort
@@ -37,32 +40,16 @@ view: tibc_page_views {
     type: string
     hidden: yes
     description: "The identifier for a section of the TIBC website."
-    sql: CASE WHEN ${TABLE}.page_section = '' THEN '00-Home'
-            WHEN ${TABLE}.page_section = '' THEN 'Home'
-            WHEN ${TABLE}.page_section IN ('invest-capital-in-bc','expand-to-bc','buy-from-bc','why-british-columbia-canada','about-british-columbia-canada','industries') THEN 'International'
-            WHEN ${TABLE}.page_section IN ('for-bc-businesses') THEN 'Export'
-            WHEN ${TABLE}.page_section IN ('invest','invest-kr','Invest') THEN 'YYYKentico Site Invest section'
-            WHEN ${TABLE}.page_section IN ('buy','Buy') THEN 'YYYKentico Site Buy section'
-            WHEN ${TABLE}.page_section IN ('global','Global') THEN 'YYYKentico Site Global section'
-            WHEN ${TABLE}.page_section IN ('export','Export') THEN 'YYYKentico Site Export section'
-            ELSE 'ZZZZZOther' END ;;
-    group_label: "TIBC"
-  }
-
-  dimension: tibc_sub_section {
-    description: "The identifier for a sub section of the TIBC website."
-    type: string
-    label: "TIBC Sub Section"
-    drill_fields: [page_display_url]
     sql: CASE
-            WHEN ${TABLE}.page_section = '' THEN NULL
-            WHEN ${TABLE}.page_section IN ('invest-capital-in-bc') THEN 'Invest'
+            WHEN ${TABLE}.page_section = '' THEN 'International'
+            WHEN ${TABLE}.page_section IN ('for-bc-businesses','export','Export') THEN 'Export'
+            WHEN ${TABLE}.page_section IN ('buy','Buy','buy-from-bc') THEN 'Buy'
+            WHEN ${TABLE}.page_section IN ('invest-capital-in-bc','invest','invest-kr','Invest') THEN 'Invest'
             WHEN ${TABLE}.page_section IN ('expand-to-bc') THEN 'Expand'
-            WHEN ${TABLE}.page_section IN ('buy-from-bc') THEN 'Buy'
-            WHEN ${TABLE}.page_section IN ('why-british-columbia-canada') THEN 'Why Choose BC'
-            WHEN ${TABLE}.page_section IN ('about-british-columbia-canada') THEN 'About BC'
-            WHEN ${TABLE}.page_section IN ('industries') THEN 'Opportunity in BC'
-            ELSE 'Other' END ;;
+            WHEN ${TABLE}.page_section IN ('global','Global','event','news-stories','about-trade-and-invest-bc') THEN 'Global'
+            WHEN ${TABLE}.page_section IN ('industries') THEN 'Sectors'
+            WHEN ${TABLE}.page_section IN ('why-british-columbia-canada','about-british-columbia-canada') THEN 'Discovery'
+            ELSE 'ZZZZZOther' END ;;
     group_label: "TIBC"
   }
 
