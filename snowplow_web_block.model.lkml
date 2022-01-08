@@ -715,6 +715,11 @@ explore: asset_downloads {
   persist_for: "60 minutes"
 
   access_filter: {
+    field: asset_themes.asset_theme_id
+    user_attribute: asset_theme
+  }
+
+  access_filter: {
     field: asset_downloads.asset_host
     user_attribute: urlhost
   }
