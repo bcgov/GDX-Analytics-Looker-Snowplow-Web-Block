@@ -716,7 +716,7 @@ explore: asset_downloads {
 
   access_filter: {
     field: asset_themes.asset_theme_id
-    user_attribute: asset_theme
+    user_attribute: asset_theme_id
   }
 
   access_filter: {
