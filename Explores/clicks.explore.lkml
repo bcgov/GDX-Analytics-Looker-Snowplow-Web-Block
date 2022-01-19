@@ -32,6 +32,10 @@ explore: +clicks {
       filters: [
         clicks.click_time_date: "7 days ago for 7 days"
       ]
+      sorts: [
+        clicks.click_type: desc,
+        clicks.offsite_click: desc
+      ]
     }
 
     # click_type has been added as a sortkey in the materialization since, as a filter on
