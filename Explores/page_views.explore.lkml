@@ -61,6 +61,10 @@ explore: +page_views {  # This matches the previous AA, but adds to referrer fie
       filters: [
         page_views.page_view_start_date: "7 days ago for 7 days"
       ]
+      sorts: [
+        page_views.page_display_url: desc,
+        page_views.referrer_medium: desc
+      ]
     }
 
     materialization: {
