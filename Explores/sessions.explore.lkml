@@ -26,6 +26,9 @@ explore: +sessions {
         sessions.flexible_filter_date_range: "7 days ago for 7 days",
         sessions.is_in_current_period_or_last_period: "Yes"
       ]
+      sorts: [
+        cmslite_themes.node_id: desc
+      ]
     }
     materialization: {
       datagroup_trigger: aa_datagroup_cmsl_loaded
