@@ -27,7 +27,7 @@ explore: +sessions {
         sessions.is_in_current_period_or_last_period: "Yes"
       ]
       sorts: [
-        cmslite_themes.node_id: desc
+        sessions.node_id: desc
       ]
     }
     materialization: {
