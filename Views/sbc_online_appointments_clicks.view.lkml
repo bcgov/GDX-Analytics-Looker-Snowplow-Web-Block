@@ -29,6 +29,7 @@ view: sbc_online_appointments_clicks {
           ;;
     distribution_style: all
     datagroup_trigger: datagroup_sbc_online_appointments
+    publish_as_db_view: yes
   }
 
   dimension: page_view_id {
