@@ -34,6 +34,7 @@ view: sbc_online_appointments {
           ;;
     distribution_style: all
     datagroup_trigger: datagroup_sbc_online_appointments
+    publish_as_db_view: yes
   }
 
   dimension: root_id {
