@@ -15,11 +15,11 @@ view: corp_calendar_clicks {
           LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON cc.root_id = wp.root_id AND cc.root_tstamp = wp.root_tstamp
           LEFT JOIN atomic.events ON cc.root_id = events.event_id AND cc.root_tstamp = events.collector_tstamp
---        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
         ;;
     distribution_style: all
     datagroup_trigger: datagroup_25_55
-#    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
+    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
     # to reprocess up to 3 hours of results
     increment_offset: 3
   }
