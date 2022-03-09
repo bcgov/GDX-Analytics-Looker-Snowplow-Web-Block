@@ -44,14 +44,13 @@ view: corp_calendar_searches {
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON ca.root_id = wp.root_id AND ca.root_tstamp = wp.root_tstamp
           LEFT JOIN atomic.events ON ca.root_id = events.event_id AND ca.root_tstamp = events.collector_tstamp
-         --        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+                 WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
         ;;
- #   datagroup_trigger: datagroup_25_55
-#    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
+    datagroup_trigger: datagroup_25_55
+    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
     # to reprocess up to 3 hours of results
-#    increment_offset: 3
+    increment_offset: 3
     distribution_style: all
-    persist_for: "2 hours"
   }
 
   extends: [date_comparisons_common]
