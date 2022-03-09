@@ -825,6 +825,43 @@ explore: ldb_clicks {
     user_attribute: urlhost
   }
 }
+explore: corp_calendar_clicks {
+  label: "Corp Cal Clicks"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${corp_calendar_clicks.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: corp_calendar_clicks.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: corp_calendar_searches {
+  label: "Corp Cal Searches"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${corp_calendar_searches.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: corp_calendar_searches.page_urlhost
+    user_attribute: urlhost
+  }
+}
 
 explore: google_translate {
   persist_for: "60 minutes"
