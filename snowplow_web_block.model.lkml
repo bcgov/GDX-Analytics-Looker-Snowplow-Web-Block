@@ -844,6 +844,42 @@ explore: corp_calendar_clicks {
   }
 }
 
+explore: wellbeing_clicks {
+  label: "wellbeing.gov.bc.ca Clicks"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${wellbeing_clicks.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: wellbeing_clicks.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: wellbeing_resources {
+  label: "wellbeing.gov.bc.ca Resources"
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${wellbeing_resources.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: wellbeing_resources.page_urlhost
+    user_attribute: urlhost
+  }
+}
 explore: corp_calendar_searches {
   label: "Corp Cal Searches"
 
@@ -925,6 +961,14 @@ datagroup: datagroup_05_35 {
   label: "05 and 35 Minute Datagroup"
   description: "Update every 30 minutes to drive incrementals PDT at 05 and 35 past the hour"
   sql_trigger: SELECT CASE WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 05 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 35
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+}
+
+datagroup: datagroup_10_40 {
+  label: "10 and 40 Minute Datagroup"
+  description: "Update every 30 minutes to drive incrementals PDT at 10 and 40 past the hour"
+  sql_trigger: SELECT CASE WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 10 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 40
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
             ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
 }
