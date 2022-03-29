@@ -6,6 +6,13 @@ view: sbc_online_appointments_clicks {
           label,
           logged_in,
           appointment_step,
+          CASE WHEN appointment_step = 'Location Selection' THEN 1
+            WHEN appointment_step = 'Select Service' THEN 2
+            WHEN appointment_step = 'Select Date' THEN 3
+            WHEN appointment_step = 'Login to Confirm Appointment' THEN 4
+            WHEN appointment_step = 'Appointment Summary' THEN 5
+            WHEN appointment_step = 'Appointment Confirmed' THEN 6
+            ELSE NULL END AS step_order,
           location,
           service,
           url,
@@ -55,6 +62,7 @@ view: sbc_online_appointments_clicks {
   dimension: label {}
   dimension: logged_in {}
   dimension: appointment_step {}
+  dimension: step_order {}
   dimension: location {}
   dimension: service {}
   dimension: url {}
