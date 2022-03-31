@@ -34,7 +34,7 @@ view: wellbeing_resources {
           CASE WHEN region LIKE '%Fraser Health%' THEN 1 ELSE 0 END AS fraser_count,
           CASE WHEN region LIKE '%Interior Health%' THEN 1 ELSE 0 END AS interior_count,
           CASE WHEN region LIKE '%Northern Health%' THEN 1 ELSE 0 END AS northern_count,
-          CASE WHEN region LIKE '%Vancouver Coastal Helth%' THEN 1 ELSE 0 END AS vancouver_count,
+          CASE WHEN region LIKE '%Vancouver Coastal Health%' THEN 1 ELSE 0 END AS vancouver_count,
           CASE WHEN region LIKE '%Island Health%' THEN 1 ELSE 0 END AS island_count,
           --- Topics
           CASE WHEN topic LIKE '%Addiction and recovery%' THEN 1 ELSE 0 END AS addiction_count,
@@ -213,7 +213,7 @@ view: wellbeing_resources {
   }
   measure: vancouver_count {
     type: sum
-    label: "Vancouver Coastal Helth count"
+    label: "Vancouver Coastal Health count"
     group_label: "Region Counts"
   }
   measure: island_count {
