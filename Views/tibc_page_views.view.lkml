@@ -13,6 +13,27 @@ view: tibc_page_views {
 
   extends: [page_views]
 
+  dimension: is_external_referrer_theme {
+    hidden:  yes
+    sql: NULL ;;
+  }
+
+  dimension: is_external_referrer_subtheme {
+    hidden:  yes
+    sql: NULL ;;
+  }
+
+  dimension: refr_theme {
+    hidden:  yes
+    sql: NULL ;;
+  }
+
+  dimension: refr_subtheme {
+    hidden:  yes
+    sql: NULL ;;
+  }
+
+
   dimension: tibc_section {
     description: "The identifier for a section of the TIBC website."
     type: string
