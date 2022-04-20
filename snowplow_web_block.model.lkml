@@ -1048,30 +1048,40 @@ explore: google_translate {
 }
 
 ### Datagroups
-
+## NOTE: These groups are set to run outside of the "overnight-defrag" window.
+##        As such, no incremental jobs should run between 3:45 and 5:15 AM Pacific Time
 datagroup: aa_datagroup_cmsl_loaded {
-  label: "Updates with todays date at 4:55AM"
+  label: "Updates with todays date at 5:45AM"
   description: "Triggers CMS Lite Metadata dependent Aggregate Aware tables to rebuild after each new day and after nightly cmslitemetadata microservice has run."
-  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '295 minutes')) ;;
+  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '345 minutes')) ;;
 }
 
 datagroup: datagroup_tibc_ready {
-  label: "Updates with todays date at 4:05AM"
-  description: "Triggers PDTs for TIBC 50 minutes before CMS AA."
-  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '245 minutes')) ;;
+  label: "Updates with todays date at 5:15AM"
+  description: "Triggers PDTs for TIBC 30 minutes before CMS AA."
+  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '315 minutes')) ;;
 }
 
 datagroup: datagroup_sbc_online_appointments {
-  label: "Updates with todays date at 4:15AM"
-  description: "Triggers PDTS for sbc_online_appointments 40 minutes before CMS AA."
-  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '255 minutes')) ;;
+  label: "Updates with todays date at 5:30AM"
+  description: "Triggers PDTS for sbc_online_appointments 15 minutes before CMS AA."
+  sql_trigger: SELECT DATE(timezone('America/Vancouver', now() - interval '330 minutes')) ;;
 }
 
+
+## To avoid the "overnight-defrag" window, when the hour is 3, 4, or 5, return a fixed time
+##    of the last run before 3:15am so these are "paused" during that window
+##    The common code looks like:
+##        SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+##                 THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+##    This is because the triggers return either the hour or the half hour depending on when they are in their window.
 
 datagroup: datagroup_healthgateway_updated {
   label: "Health Gateway Datagroup"
   description: "Update every 30 minutes to drive the Health Gateway incremental PDT"
-  sql_trigger: SELECT CASE WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 30
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 30
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
             ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
 }
@@ -1079,7 +1089,9 @@ datagroup: datagroup_healthgateway_updated {
 datagroup: datagroup_25_55 {
   label: "25 and 55 Minute Datagroup"
   description: "Update every 30 minutes to drive incrementals PDT at 25 and 55 past the hour"
-  sql_trigger: SELECT CASE WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 25 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 55
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 25 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 55
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
             ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
 }
@@ -1087,7 +1099,9 @@ datagroup: datagroup_25_55 {
 datagroup: datagroup_05_35 {
   label: "05 and 35 Minute Datagroup"
   description: "Update every 30 minutes to drive incrementals PDT at 05 and 35 past the hour"
-  sql_trigger: SELECT CASE WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 05 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 35
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 05 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 35
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
             ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
 }
@@ -1095,7 +1109,9 @@ datagroup: datagroup_05_35 {
 datagroup: datagroup_10_40 {
   label: "10 and 40 Minute Datagroup"
   description: "Update every 30 minutes to drive incrementals PDT at 10 and 40 past the hour"
-  sql_trigger: SELECT CASE WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 10 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 40
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 10 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 40
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
             ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
 }
