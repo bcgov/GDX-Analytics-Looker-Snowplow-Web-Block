@@ -1,3 +1,5 @@
+# Version 1.0.0
+
 include: "/Includes/shared_fields_common.view"
 include: "/Includes/shared_fields_no_session.view"
 include: "/Includes/date_comparisons_common.view"
@@ -10,17 +12,21 @@ view: page_views {
 
   dimension: is_external_referrer_theme {
     type:  yesno
-    group_label: "External Referrer Filters"
+    group_label: "Referrer"
     label: "Referrer is External Theme"
-    description: "Referrer is not from the target theme."
+    description: "Referrer is not from the target pageview theme. This filter only compares
+    the theme ID of the target page to theme ID of the referrer page. This means that a non-government page
+    will have an empty string for theme ID and will be captured if this filter is set to Yes."
     sql: ${cmslite_themes.theme_id} <> ${cmslite_referrer_themes.theme_id} ;;
   }
 
     dimension: is_external_referrer_subtheme {
     type:  yesno
-    group_label: "External Referrer Filters"
+    group_label: "Referrer"
     label: "Referrer is External Subtheme"
-    description: "Referrer is not from the target subtheme."
+    description: "Referrer is not from the target pageview subtheme. This filter only compares
+    the subtheme ID of the target page to subtheme ID of the referrer page. This means that a non-government page
+    will have an empty string for subtheme ID and will be captured if this filter is set to Yes."
     sql: ${cmslite_themes.subtheme_id} <> ${cmslite_referrer_themes.subtheme_id} ;;
   }
 
