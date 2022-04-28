@@ -8,6 +8,37 @@ view: page_views {
 
   extends: [shared_fields_common,shared_fields_no_session,date_comparisons_common]
 
+  dimension: is_external_referrer_theme {
+    type:  yesno
+    group_label: "External Referrer Filters"
+    label: "Referrer is External Theme"
+    description: "Referrer is not from the target theme."
+    sql: ${cmslite_themes.theme_id} <> ${cmslite_referrer_themes.theme_id} ;;
+  }
+
+    dimension: is_external_referrer_subtheme {
+    type:  yesno
+    group_label: "External Referrer Filters"
+    label: "Referrer is External Subtheme"
+    description: "Referrer is not from the target subtheme."
+    sql: ${cmslite_themes.subtheme_id} <> ${cmslite_referrer_themes.subtheme_id} ;;
+  }
+
+
+  dimension: refr_theme {
+    description: "The theme in CMSLite of the referrer."
+    group_label: "Referrer"
+    type: string
+    sql:  ${cmslite_referrer_themes.theme} ;;
+  }
+
+  dimension: refr_subtheme {
+    description: "The subtheme in CMSLite of the referrer."
+    group_label: "Referrer"
+    type: string
+    sql:  ${cmslite_referrer_themes.subtheme} ;;
+  }
+
   dimension_group: filter_start {
     sql: ${TABLE}.page_view_start_time ;;
   }

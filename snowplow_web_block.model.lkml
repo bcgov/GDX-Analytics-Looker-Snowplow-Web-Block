@@ -120,7 +120,14 @@ explore: page_views {
   join: cmslite_themes {
     type: left_outer
     sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
+    relationship: many_to_one
+  }
+
+  join: cmslite_referrer_themes {
+    from:  cmslite_themes
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${page_views.page_referrer_display_url} = ${cmslite_referrer_themes.hr_url} ;;
   }
 
   join: gdx_analytics_whitelist {
@@ -214,8 +221,12 @@ explore: tibc_page_views {
 
 explore: myfs_estimates {
   persist_for: "10 minutes"
-
   label: "MyFS Estimates"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type:  left_outer
@@ -231,8 +242,12 @@ explore: myfs_estimates {
 
 explore: chatbot {
   persist_with: aa_datagroup_cmsl_loaded
-
   label: "Chatbot"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type:  left_outer
@@ -253,8 +268,12 @@ explore: chatbot {
 
 explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes of making it faster
   label: "Chatbot Intents and Clicks"
-
   persist_with: aa_datagroup_cmsl_loaded
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type:  left_outer
@@ -445,6 +464,11 @@ explore: searches {
 
 explore: form_action {
   label: "Form Actions"
+  fields: [ALL_FIELDS*,
+          -page_views.is_external_referrer_theme,
+          -page_views.is_external_referrer_subtheme,
+          -page_views.refr_theme,
+          -page_views.refr_subtheme]
 
   join: page_views {
     type:  left_outer
@@ -469,6 +493,11 @@ explore: form_action {
 }
 explore: form_error {
   label: "Form Errors"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type:  left_outer
@@ -522,6 +551,11 @@ explore: cmslite_metadata {
 explore: esb_se_pathways {
   persist_for: "60 minutes"
   label: "ESB SE Pathways"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type: left_outer
@@ -537,6 +571,11 @@ explore: esb_se_pathways {
 
 explore: youtube_embed_video {
   persist_for: "60 minutes"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type: left_outer
@@ -567,6 +606,12 @@ explore: sbc_online_appointments{
 explore: sbc_online_appointments_clicks{
   label: "SBC Online Appointments Clicks"
   persist_for: "2 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
   join: page_views {
     type: left_outer
     sql_on: ${page_views.page_view_id} = ${sbc_online_appointments_clicks.page_view_id} ;;
@@ -587,6 +632,12 @@ explore: sbc_online_appointments_clicks{
 explore: workbc_careersearch_click{
   label: "WorkBC Career Search Tool Clicks"
   persist_for: "2 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
   join: page_views {
     type: left_outer
     sql_on: ${page_views.page_view_id} = ${workbc_careersearch_click.page_view_id} ;;
@@ -605,6 +656,12 @@ explore: workbc_careersearch_click{
 explore: workbc_careersearch_find {
   label: "WorkBC Career Search Tool"
   persist_for: "2 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
   join: page_views {
     type: left_outer
     sql_on: ${page_views.page_view_id} = ${workbc_careersearch_find.page_view_id} ;;
@@ -623,6 +680,12 @@ explore: workbc_careersearch_find {
 explore: workbc_careersearch_compare {
   label: "WorkBC Career Search Compare Tool"
   persist_for: "2 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
   join: page_views {
     type: left_outer
     sql_on: ${page_views.page_view_id} = ${workbc_careersearch_compare.page_view_id} ;;
@@ -641,6 +704,11 @@ explore: workbc_careersearch_compare {
 explore: workbc_careertoolkit {
   label: "WorkBC Career Transition Toolkit"
   persist_for: "2 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type: left_outer
@@ -661,6 +729,12 @@ explore: workbc_careertoolkit {
 explore: workbc_careereducation_find {
   label: "WorkBC Career Education Tool"
   persist_for: "2 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
   join: page_views {
     type: left_outer
     sql_on: ${page_views.page_view_id} = ${workbc_careereducation_find.page_view_id} ;;
@@ -680,6 +754,12 @@ explore: workbc_careereducation_find {
 explore: workbc_careereducation_click {
   label: "WorkBC Career Education Tool Clicks"
   persist_for: "2 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
   join: page_views {
     type: left_outer
     sql_on: ${page_views.page_view_id} = ${workbc_careereducation_click.page_view_id} ;;
@@ -698,6 +778,11 @@ explore: workbc_careereducation_click {
 
 explore: forms {
   persist_for: "60 minutes"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type: left_outer
@@ -744,6 +829,11 @@ explore: asset_downloads {
 
 explore: performance_timing {
   persist_for: "60 minutes"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   access_filter: {
     field: page_views.page_urlhost
@@ -766,6 +856,11 @@ explore: performance_timing {
 
 explore: healthgateway_actions {
   label: "Health Gateway Actions"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type:  left_outer
@@ -804,6 +899,11 @@ explore: health_app_actions {
 
 explore: ldb_clicks {
   label: "LDB Actions"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type:  left_outer
@@ -827,6 +927,11 @@ explore: ldb_clicks {
 }
 explore: corp_calendar_clicks {
   label: "Corp Cal Clicks"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type:  left_outer
@@ -846,6 +951,11 @@ explore: corp_calendar_clicks {
 
 explore: wellbeing_clicks {
   label: "wellbeing.gov.bc.ca Clicks"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type:  left_outer
@@ -862,8 +972,14 @@ explore: wellbeing_clicks {
     user_attribute: urlhost
   }
 }
+
 explore: wellbeing_resources {
   label: "wellbeing.gov.bc.ca Resources"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type:  left_outer
@@ -880,8 +996,14 @@ explore: wellbeing_resources {
     user_attribute: urlhost
   }
 }
+
 explore: corp_calendar_searches {
   label: "Corp Cal Searches"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   join: page_views {
     type:  left_outer
@@ -901,6 +1023,11 @@ explore: corp_calendar_searches {
 
 explore: google_translate {
   persist_for: "60 minutes"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
   access_filter: {
     field: page_views.page_urlhost
