@@ -11,7 +11,7 @@ view: page_views {
   dimension: is_external_referrer_theme {
     type:  yesno
     group_label: "External Referrer Filters"
-    label: "Is External Theme Referrer"
+    label: "Referrer is External Theme"
     description: "Referrer is not from the target theme."
     sql: ${cmslite_themes.theme} <> ${cmslite_referrer_themes.theme} ;;
   }
@@ -19,7 +19,7 @@ view: page_views {
     dimension: is_external_referrer_subtheme {
     type:  yesno
     group_label: "External Referrer Filters"
-    label: "Is External Subtheme Referrer"
+    label: "Referrer is External Subtheme"
     description: "Referrer is not from the target subtheme."
     sql: ${cmslite_themes.subtheme} <> ${cmslite_referrer_themes.subtheme} ;;
   }
