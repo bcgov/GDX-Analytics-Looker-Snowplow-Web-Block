@@ -1,3 +1,4 @@
+# Version: 1.1.0
 include: "/Includes/date_comparisons_common.view"
 
 view: corp_calendar_searches {
@@ -9,7 +10,7 @@ view: corp_calendar_searches {
           count AS results_count,
           "filters.category" AS categories,
           "filters.comm_contact" AS comm_contact,
-          TO_DATE("filters.date_confirmed", 'YYYY-MM-DD') AS date_confirmed,
+          "filters.date_confirmed" AS date_confirmed,
           "filters.distribution" AS distribution,
           TO_DATE("filters.from_date", 'YYYY-MM-DD') AS from_date,
           "filters.intiative" AS intiative,
@@ -105,9 +106,8 @@ view: corp_calendar_searches {
     type: yesno
   }
 
-  dimension_group: date_confirmed {
-    type: time
-    timeframes: [date, day_of_month, day_of_week, week, month, quarter, year]
+  dimension: date_confirmed {
+    type: string
   }
   dimension_group: from_date {
     type: time
