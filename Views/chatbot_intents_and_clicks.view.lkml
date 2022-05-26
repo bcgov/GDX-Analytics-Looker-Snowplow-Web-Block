@@ -1,3 +1,4 @@
+# Version 1.1.0
 view: chatbot_intents_and_clicks {
   derived_table: {
     sql: with chatbot_combined AS ( -- link together V1 and V2, filling in NULL for the newly added fields that aren't in V1
@@ -20,6 +21,7 @@ view: chatbot_intents_and_clicks {
           CONVERT_TIMEZONE('UTC', 'America/Vancouver', cb.root_tstamp) AS timestamp,
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
           CASE WHEN action = 'get_answer' THEN 1 ELSE 0 END AS answer_count,
+          CASE WHEN action = 'open' THEN 1 ELSE 0 END AS open_count,
           CASE WHEN action = 'link_click' THEN 1 ELSE 0 END AS link_click_count,
           CASE WHEN action = 'click_chip' THEN 1 ELSE 0 END AS chip_count,
           CASE WHEN action = 'get_answer' THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
@@ -48,7 +50,7 @@ view: chatbot_intents_and_clicks {
           LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
           LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
           LEFT JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
-          WHERE action IN ('get_answer', 'link_click','ask_question','click_chip')
+          WHERE action IN ('get_answer', 'link_click','ask_question','click_chip','open')
               AND {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
 
           ;;
@@ -167,6 +169,10 @@ view: chatbot_intents_and_clicks {
     measure: answer_count {
       type: sum
       sql: ${TABLE}.answer_count ;;
+    }
+    measure: open_count {
+      type: sum
+      sql: ${TABLE}.open_count ;;
     }
     measure: link_click_count {
       type: sum
