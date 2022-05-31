@@ -1,3 +1,4 @@
+# Version: 1.1.0
 view: covid_language_matrix {
   derived_table: {
     sql:  SELECT title, english AS english_url, 'English' AS language, english AS translated_url FROM cmslite.covid_language_matrix WHERE english <> ''
@@ -18,13 +19,17 @@ view: covid_language_matrix {
           UNION
         SELECT title, english AS english_url, 'Korean' AS language, korean AS translated_url FROM cmslite.covid_language_matrix WHERE korean <> ''
           UNION
-        SELECT title, english AS english_url, 'Arabic' AS language, arabicc AS translated_url FROM cmslite.covid_language_matrix WHERE arabicc <> ''
+        SELECT title, english AS english_url, 'Arabic' AS language, arabic AS translated_url FROM cmslite.covid_language_matrix WHERE arabic <> ''
           UNION
         SELECT title, english AS english_url, 'Vietnamese' AS language, vietnamese AS translated_url FROM cmslite.covid_language_matrix WHERE vietnamese <> ''
           UNION
         SELECT title, english AS english_url, 'Japanese' AS language, japanese AS translated_url FROM cmslite.covid_language_matrix WHERE japanese <> ''
           UNION
-        SELECT title, english AS english_url, 'Hindi' AS language, hindi AS translated_url FROM cmslite.covid_language_matrix WHERE hindi <> '';;
+        SELECT title, english AS english_url, 'Hindi' AS language, hindi AS translated_url FROM cmslite.covid_language_matrix WHERE hindi <> ''
+          UNION
+        SELECT title, english AS english_url, 'Russian' AS language, russian AS translated_url FROM cmslite.covid_language_matrix WHERE russian <> ''
+          UNION
+        SELECT title, english AS english_url, 'Ukrainian' AS language, ukrainian AS translated_url FROM cmslite.covid_language_matrix WHERE ukrainian <> '';;
 
       persist_for: "24 hours"
       distribution_style: all
