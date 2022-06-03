@@ -166,7 +166,6 @@ view: date_comparisons_common {
   parameter: summary_granularity {
     type: string
     allowed_value: { value: "Day" }
-    allowed_value: { value: "Week" }
     allowed_value: { value: "Month" }
     # allowed_value: { value: "Quarter" }
     allowed_value: { value: "Year" }
@@ -190,13 +189,8 @@ view: date_comparisons_common {
   dimension: in_summary_period {
     group_label: "Summary"
     type: yesno
-    sql:  CASE WHEN {% parameter summary_granularity %} = 'Week' THEN
-                ${filter_start_raw} >= DATE_TRUNC({% parameter summary_granularity %}, ${summary_start} + interval '1 day') - interval '1 day'
-            AND ${filter_start_raw} < DATE_TRUNC({% parameter summary_granularity %}, ${summary_end} ) + interval '1 '{% parameter summary_granularity %} - interval '1 day'
-          ELSE
-            ${filter_start_raw} >= DATE_TRUNC({% parameter summary_granularity %}, ${summary_start} )
-            AND ${filter_start_raw} < DATE_TRUNC({% parameter summary_granularity %}, ${summary_end} - interval '1 day') + interval '1 '{% parameter summary_granularity %}
-          END
+    sql:  ${filter_start_raw} >= DATE_TRUNC({% parameter summary_granularity %}, ${summary_start} )
+          AND ${filter_start_raw} < DATE_TRUNC({% parameter summary_granularity %}, ${summary_end} - interval '1 day') + interval '1 '{% parameter summary_granularity %}
           ;;
   }
 
@@ -207,8 +201,6 @@ view: date_comparisons_common {
        CASE
          WHEN {% parameter summary_granularity %} = 'Day' THEN
            ${filter_start_date}::VARCHAR
-         WHEN {% parameter summary_granularity %} = 'Week' THEN
-           ${filter_start_week}::VARCHAR
          WHEN {% parameter summary_granularity %} = 'Month' THEN
            ${filter_start_month}::VARCHAR
          WHEN {% parameter summary_granularity %} = 'Quarter' THEN
