@@ -1,3 +1,5 @@
+# Version 2.0.0
+
 view: date_comparisons_common {
 
   # NOTE: currently this code is duplicated in the CFMS Block. Please ensure that the two files are kept in sync.
