@@ -63,7 +63,7 @@ view: csrs_overall {
               AND step6.response IS NOT NULL
               AND step7.response IS NOT NULL
               AND step8.response IS NOT NULL)
-            THEN 'Ineligble'
+            THEN 'Ineligible'
             ELSE 'Incomplete'
         END AS outcome,
         step1.response AS step_1_response,
