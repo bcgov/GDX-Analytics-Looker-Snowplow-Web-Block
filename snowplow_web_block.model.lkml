@@ -1,4 +1,4 @@
-# Version:     2.0.0
+# Version:     2.1.0
 #
 # Copyright (c) 2016 Snowplow Analytics Ltd. All rights reserved.
 #
@@ -997,6 +997,14 @@ explore: wellbeing_resources {
     user_attribute: urlhost
   }
 }
+
+explore: mobile_screen_views {
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
+}
+
 
 explore: csrs_clicks {
   label: "CSRS Clicks"
