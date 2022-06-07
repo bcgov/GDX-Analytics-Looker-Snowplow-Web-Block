@@ -1,3 +1,5 @@
+# Version:     2.0.0
+#
 # Copyright (c) 2016 Snowplow Analytics Ltd. All rights reserved.
 #
 # This program is licensed to you under the Apache License Version 2.0,
@@ -9,7 +11,6 @@
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the Apache License Version 2.0 for the specific language governing permissions and limitations there under.
 #
-# Version:     0.1.0
 #
 # Authors:     Christophe Bogaert, Keane Robinson
 # Copyright:   Copyright (c) 2016 Snowplow Analytics Ltd
@@ -995,6 +996,16 @@ explore: wellbeing_resources {
     field: wellbeing_resources.page_urlhost
     user_attribute: urlhost
   }
+}
+
+explore: csrs_clicks {
+  label: "CSRS Clicks"
+}
+explore: csrs_overall {
+  label: "CSRS Overall"
+}
+explore: csrs_steps {
+  label: "CSRS Steps"
 }
 
 explore: corp_calendar_searches {
