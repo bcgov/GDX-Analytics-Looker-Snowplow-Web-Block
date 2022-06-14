@@ -1,4 +1,4 @@
-# Version:     2.1.0
+# Version:     2.2.0
 #
 # Copyright (c) 2016 Snowplow Analytics Ltd. All rights reserved.
 #
@@ -1004,7 +1004,18 @@ explore: mobile_screen_views {
     user_attribute: app_id
   }
 }
-
+explore: mobile_application_errors {
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
+}
+explore: idim_mobile_errors {
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
+}
 
 explore: csrs_clicks {
   label: "CSRS Clicks"
