@@ -1,3 +1,4 @@
+# Version: 1.0.1
 view: covid19_self_assessment_recommendation {
   sql_table_name: atomic.ca_bc_gov_gateway_recommendation_1 ;;
 

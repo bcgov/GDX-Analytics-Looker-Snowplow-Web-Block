@@ -1,3 +1,4 @@
+# Version: 1.0.1
 view: covid19_self_assessment_action {
   derived_table: {
     sql: SELECT
