@@ -1,4 +1,7 @@
-# Version 1.1.0
+# Version 1.2.0
+
+include: "/Includes/date_comparisons_common.view"
+
 view: chatbot_intents_and_clicks {
   derived_table: {
     sql: with chatbot_combined AS ( -- link together V1 and V2, filling in NULL for the newly added fields that aren't in V1
@@ -61,9 +64,13 @@ view: chatbot_intents_and_clicks {
     increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
     # to reprocess up to 3 hours of results
     increment_offset: 3
-
     }
 
+    extends: [date_comparisons_common]
+
+    dimension_group: filter_start {
+      sql: ${TABLE}.timestamp ;;
+    }
     dimension_group: event {
       type: time
       timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
