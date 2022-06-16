@@ -31,7 +31,6 @@ view: covid19_self_assessment_action {
     distribution_style: all
     persist_for: "2 hours"
   }
-  #sql_table_name: atomic.ca_bc_gov_gateway_covid19_self_assessment_action_1 ;;
 
   dimension: action {
     type: string
