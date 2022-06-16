@@ -1,4 +1,4 @@
-view: ca_bc_gov_gateway_recommendation_1 {
+view: covid19_self_assessment_recommendation {
   sql_table_name: atomic.ca_bc_gov_gateway_recommendation_1 ;;
 
   dimension: recommendation_message {
@@ -62,6 +62,5 @@ view: ca_bc_gov_gateway_recommendation_1 {
 
   measure: count {
     type: count
-    drill_fields: [schema_name]
   }
 }
