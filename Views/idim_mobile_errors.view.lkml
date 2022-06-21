@@ -81,7 +81,9 @@ view: idim_mobile_errors {
       #&filter_config=%7B%22mobile_screen_views.session_id%22%3A%5B%7B%22type%22%3A%22%3D%22%2C%22values%22%3A%5B%7B%22constant%22%3A%22%22%7D%2C%7B%7D%5D%2C%22id%22%3A1%2C%22error%22%3Afalse%7D%5D%7D&dynamic_fields=%5B%5D&origin=share-expanded
       #/explore/snowplow_web_block/mobil?fields=users.city,orders.count,users.count&f[users.city]={{ value }}&sorts=orders.count+desc&limit=500"
     }
-  }  dimension: session_index {}
+  }
+
+  dimension: session_index {}
   dimension: platform {}
 
   dimension: error_code {}
