@@ -6,14 +6,14 @@ view: mobile_application_errors {
   derived_table: {
     sql: SELECT ae.message, ae.exception_name, ae.is_fatal, ae.line_number, ev.app_id, name_tracker, ev.v_tracker AS tracker_version,
        CONVERT_TIMEZONE('UTC', 'America/Vancouver', ae.root_tstamp) AS timestamp,
-      --screen_view_id,
       event_id,
-      user_id,
-      network_userid,
-      platform
-      --ev.*
+      ev.network_userid,
+      ev.platform,
+      mcs.session_id,
+      mcs.session_index
       FROM atomic.com_snowplowanalytics_snowplow_application_error_1 AS ae
       JOIN atomic.events AS ev ON ae.root_id = ev.event_id AND ae.root_tstamp = ev.collector_tstamp AND event_name = 'application_error'
+      JOIN atomic.com_snowplowanalytics_snowplow_client_session_1 AS mcs ON mcs.root_id = ae.root_id AND mcs.root_tstamp = ae.root_tstamp
       WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
       ;;
     distribution_style: all
@@ -60,11 +60,27 @@ view: mobile_application_errors {
   }
 
   dimension: screen_view_id {}
+# Setup for custom drill to an explore
+# See https://help.looker.com/hc/en-us/articles/360023589613--More-powerful-data-drilling and GDXDSD-1186
+  measure: dummy_for_session_drill {
+    type: number
+    sql: 1=1 ;;
+    hidden: yes
+    drill_fields: [session_id]
+  }
+
+  dimension: session_id {
+    link: {
+     label: "Drill into session"
+      url: "https://analytics.gov.bc.ca/explore/snowplow_web_block/mobile_screen_views?fields=mobile_screen_views.session_id,mobile_screen_views.screenview_start_time,mobile_screen_views.screen_view_in_session_index,mobile_screen_views.screen_view_id,mobile_screen_views.screen_view_name,mobile_screen_views.app_id,mobile_screen_views.build,mobile_screen_views.version,mobile_screen_views.device_manufacturer,mobile_screen_views.device_model,mobile_screen_views.dvce_screenheight,mobile_screen_views.dvce_screenwidth,mobile_screen_views.os,mobile_screen_views.os_type,mobile_screen_views.os_version&f[mobile_screen_views.session_id]=&sorts=mobile_screen_views.screenview_start_time&limit=500&f[mobile_screen_views.session_id]={{ value }}"
+      #&filter_config=%7B%22mobile_screen_views.session_id%22%3A%5B%7B%22type%22%3A%22%3D%22%2C%22values%22%3A%5B%7B%22constant%22%3A%22%22%7D%2C%7B%7D%5D%2C%22id%22%3A1%2C%22error%22%3Afalse%7D%5D%7D&dynamic_fields=%5B%5D&origin=share-expanded
+      #/explore/snowplow_web_block/mobil?fields=users.city,orders.count,users.count&f[users.city]={{ value }}&sorts=orders.count+desc&limit=500"
+      }
+    }
   dimension: event_id {}
   dimension: user_id {}
   dimension: device_user_id {}
   dimension: network_userid {}
-  dimension: session_id {}
   dimension: session_index {}
   dimension: platform {}
 
@@ -227,7 +243,6 @@ view: mobile_application_errors {
   dimension: network_type {
     group_label: "Network Info"
   }
-
 
   measure: row_count {
     type: count

@@ -1,39 +1,20 @@
 # Version 1.0.0
 include: "/Includes/date_comparisons_common.view"
 
-view: idim_mobile_errors {
-  label: "IDIM Mobile Errors"
-  derived_table: {
-    sql: SELECT me.error_code, me.body, ev.app_id, name_tracker, ev.v_tracker AS tracker_version,
-         CONVERT_TIMEZONE('UTC', 'America/Vancouver', me.root_tstamp) AS timestamp,
-        event_id,
-        ev.user_id,
-        network_userid,
-        session_id,
-        platform
-      FROM atomic.ca_bc_gov_idim_mobile_error_1 AS me
-      JOIN atomic.events AS ev ON me.root_id = ev.event_id AND me.root_tstamp = ev.collector_tstamp AND event_name = 'mobile_error'
-      JOIN atomic.com_snowplowanalytics_snowplow_client_session_1 AS mcs ON mcs.root_id = me.root_id AND mcs.root_tstamp = me.root_tstamp
-      WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
-      ;;
-    distribution_style: all
-    datagroup_trigger: datagroup_05_35
-    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
-    # to reprocess up to 3 hours of results
-    increment_offset: 3
-  }
+
+view: mobile_sessions {
+  sql_table_name: derived.mobile_sessions ;;
 
   extends: [date_comparisons_common]
   dimension_group: filter_start {
-    sql:  ${TABLE}.timestamp ;;
+    sql: CONVERT_TIMEZONE('UTC', 'America/Vancouver', ${TABLE}.start_tstamp) ;;
   }
 
-  dimension_group: event {
-    sql:  ${TABLE}.timestamp ;;
+  dimension_group: session {
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    sql: CONVERT_TIMEZONE('UTC', 'America/Vancouver', ${TABLE}.start_tstamp) ;;
   }
-
 
   dimension: app_id {
     description: "The application identifier from which the event originated."
@@ -42,12 +23,6 @@ view: idim_mobile_errors {
     group_label: "Application"
   }
 
-  dimension: build {
-    group_label: "Application"
-  }
-  dimension: version {
-    group_label: "Application"
-  }
   dimension: name_tracker { #missing column in table
     group_label: "Application"
     sql: NULL ;;
@@ -59,33 +34,8 @@ view: idim_mobile_errors {
     group_label: "Application"
   }
 
-  dimension: screen_view_id {}
-  dimension: event_id {}
-  dimension: user_id {}
-  dimension: device_user_id {}
-  dimension: network_userid {}
-
-  # Setup for custom drill to an explore
-  # See https://help.looker.com/hc/en-us/articles/360023589613--More-powerful-data-drilling and GDXDSD-1186
-  measure: dummy_for_session_drill {
-    type: number
-    sql: 1=1 ;;
-    hidden: yes
-    drill_fields: [session_id]
-  }
-
-  dimension: session_id {
-    link: {
-      label: "Drill into session"
-      url: "https://analytics.gov.bc.ca/explore/snowplow_web_block/mobile_screen_views?fields=mobile_screen_views.session_id,mobile_screen_views.screenview_start_time,mobile_screen_views.screen_view_in_session_index,mobile_screen_views.screen_view_id,mobile_screen_views.screen_view_name,mobile_screen_views.app_id,mobile_screen_views.build,mobile_screen_views.version,mobile_screen_views.device_manufacturer,mobile_screen_views.device_model,mobile_screen_views.dvce_screenheight,mobile_screen_views.dvce_screenwidth,mobile_screen_views.os,mobile_screen_views.os_type,mobile_screen_views.os_version&f[mobile_screen_views.session_id]=&sorts=mobile_screen_views.screenview_start_time&limit=500&f[mobile_screen_views.session_id]={{ value }}"
-      #&filter_config=%7B%22mobile_screen_views.session_id%22%3A%5B%7B%22type%22%3A%22%3D%22%2C%22values%22%3A%5B%7B%22constant%22%3A%22%22%7D%2C%7B%7D%5D%2C%22id%22%3A1%2C%22error%22%3Afalse%7D%5D%7D&dynamic_fields=%5B%5D&origin=share-expanded
-      #/explore/snowplow_web_block/mobil?fields=users.city,orders.count,users.count&f[users.city]={{ value }}&sorts=orders.count+desc&limit=500"
-    }
-  }  dimension: session_index {}
-  dimension: platform {}
-
-  dimension: error_code {}
-  dimension: body {}
+#  dimension: screen_view_id {}
+#  dimension: event_id {}
 
 
   # A "faked" device type until the real data is populated
@@ -244,6 +194,52 @@ view: idim_mobile_errors {
   }
 
 
+
+
+  dimension: session_id {}
+  dimension: session_index {}
+  dimension: previous_session_id {}
+  dimension: session_first_event_id {}
+  dimension: session_last_event_id {}
+  dimension: start_tstamp {}
+  dimension: end_tstamp {}
+  dimension: model_tstamp {}
+  dimension: user_id {}
+  dimension: device_user_id {}
+  dimension: network_userid {}
+  dimension: session_duration_s {}
+  dimension: has_install {}
+  dimension: screen_views {}
+  dimension: screen_names_viewed {}
+  dimension: app_errors {}
+  dimension: fatal_app_errors {}
+  dimension: first_event_name {}
+  dimension: last_event_name {}
+  dimension: first_screen_view_name {}
+  dimension: first_screen_view_transition_type {}
+  dimension: first_screen_view_type {}
+  dimension: last_screen_view_name {}
+  dimension: last_screen_view_transition_type {}
+  dimension: last_screen_view_type {}
+  dimension: platform {
+    group_label: "Application"
+  }
+  dimension: v_tracker {
+    group_label: "Application"
+  }
+  dimension: first_build {
+    group_label: "Application"
+  }
+  dimension: last_build {
+    group_label: "Application"
+    }
+  dimension: first_version {
+    group_label: "Application"
+    }
+  dimension: last_version {
+    group_label: "Application"
+  }
+
   measure: row_count {
     type: count
     group_label: "Counts"
@@ -254,14 +250,11 @@ view: idim_mobile_errors {
     sql: ${session_id} ;;
     group_label: "Counts"
   }
-  measure: screen_view_count {
-    type: count_distinct
-    sql: ${screen_view_id} ;;
-    group_label: "Counts"
-  }
   measure: user_count {
     type: count_distinct
     sql: ${device_user_id} ;; # or is it network_userid?
     group_label: "Counts"
   }
+
+
 }
