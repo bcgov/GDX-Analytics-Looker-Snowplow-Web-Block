@@ -1004,6 +1004,13 @@ explore: mobile_screen_views {
     user_attribute: app_id
   }
 }
+explore: mobile_sessions {
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
+
+}
 explore: mobile_application_errors {
   access_filter: {
     field: app_id
