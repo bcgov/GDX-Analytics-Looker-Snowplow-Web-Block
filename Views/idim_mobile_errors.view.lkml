@@ -6,14 +6,14 @@ view: idim_mobile_errors {
   derived_table: {
     sql: SELECT me.error_code, me.body, ev.app_id, name_tracker, ev.v_tracker AS tracker_version,
          CONVERT_TIMEZONE('UTC', 'America/Vancouver', me.root_tstamp) AS timestamp,
-        --screen_view_id,
         event_id,
-        user_id,
+        ev.user_id,
         network_userid,
+        session_id,
         platform
-        --ev.*
       FROM atomic.ca_bc_gov_idim_mobile_error_1 AS me
       JOIN atomic.events AS ev ON me.root_id = ev.event_id AND me.root_tstamp = ev.collector_tstamp AND event_name = 'mobile_error'
+      JOIN atomic.com_snowplowanalytics_snowplow_client_session_1 AS mcs ON mcs.root_id = me.root_id AND mcs.root_tstamp = me.root_tstamp
       WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
       ;;
     distribution_style: all
@@ -64,7 +64,13 @@ view: idim_mobile_errors {
   dimension: user_id {}
   dimension: device_user_id {}
   dimension: network_userid {}
-  dimension: session_id {}
+
+  dimension: session_id {
+    link: {
+      label: "Drill into session"
+      url: "/explore/snowplow_web_block/mobile_screen_views?fields=mobile_screen_views.session_id,mobile_screen_views.screenview_start_time,mobile_screen_views.screen_view_in_session_index,mobile_screen_views.screen_view_id,mobile_screen_views.screen_view_name,mobile_screen_views.app_id,mobile_screen_views.build,mobile_screen_views.version,mobile_screen_views.device_manufacturer,mobile_screen_views.device_model,mobile_screen_views.dvce_screenheight,mobile_screen_views.dvce_screenwidth,mobile_screen_views.os,mobile_screen_views.os_type,mobile_screen_views.os_version&f[mobile_screen_views.session_id]=&sorts=mobile_screen_views.screenview_start_time&limit=500&f[mobile_screen_views.session_id]={{ value }}"
+    }
+  }
   dimension: session_index {}
   dimension: platform {}
 
