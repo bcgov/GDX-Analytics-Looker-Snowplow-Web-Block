@@ -14,19 +14,19 @@ view: covid19_self_assessment_action {
           stage_id,
           stage_name,
           symptom_list,
-          CASE when symptom_list like '%Fever%' then 1 else 0 END as fever_count,
-          CASE when symptom_list like '%Cough%' then 1 else 0 END as cough_count,
-          CASE when symptom_list like '%Difficult Breathing%' then 1 else 0 END as difficult_breathing_count,
-          CASE when symptom_list like '%Sore Throat%' then 1 else 0 END as sore_throat_count,
-          CASE when symptom_list like '%Loss of Taste or Smell%' then 1 else 0 END as loss_of_taste_or_smell_count,
-          CASE when symptom_list like '%Headache%' then 1 else 0 END as headache_count,
-          CASE when symptom_list like '%Fatigue%' then 1 else 0 END as fatigue_count,
-          CASE when symptom_list like '%Runny nose%' then 1 else 0 END as runny_nose_count,
-          CASE when symptom_list like '%Sneezing%' then 1 else 0 END as sneezing_count,
-          CASE when symptom_list like '%Diarrhea%' then 1 else 0 END as diarrhea_count,
-          CASE when symptom_list like '%Loss of Appetite%' then 1 else 0 END as loss_of_appetite_count,
-          CASE when symptom_list like '%Nausea Vomiting%' then 1 else 0 END as nausea_vomiting_count,
-          CASE when symptom_list like '%Body Aches%' then 1 else 0 END as body_aches_count
+          CASE WHEN symptom_list like '%Fever%' then 1 ELSE 0 END AS fever_count,
+          CASE WHEN symptom_list like '%Cough%' then 1 ELSE 0 END AS cough_count,
+          CASE WHEN symptom_list like '%Difficult Breathing%' then 1 ELSE 0 END AS difficult_breathing_count,
+          CASE WHEN symptom_list like '%Sore Throat%' then 1 ELSE 0 END AS sore_throat_count,
+          CASE WHEN symptom_list like '%Loss of Taste or Smell%' then 1 ELSE 0 END AS loss_of_taste_or_smell_count,
+          CASE WHEN symptom_list like '%Headache%' then 1 ELSE 0 END AS headache_count,
+          CASE WHEN symptom_list like '%Fatigue%' then 1 ELSE 0 END AS fatigue_count,
+          CASE WHEN symptom_list like '%Runny nose%' then 1 ELSE 0 END AS runny_nose_count,
+          CASE WHEN symptom_list like '%Sneezing%' then 1 ELSE 0 END AS sneezing_count,
+          CASE WHEN symptom_list like '%Diarrhea%' then 1 ELSE 0 END AS diarrhea_count,
+          CASE WHEN symptom_list like '%Loss of Appetite%' then 1 ElSE 0 END AS loss_of_appetite_count,
+          CASE WHEN symptom_list like '%Nausea Vomiting%' then 1 ELSE 0 END AS nausea_vomiting_count,
+          CASE WHEN symptom_list like '%Body Aches%' then 1 ELSE 0 END AS body_aches_count
         FROM atomic.ca_bc_gov_gateway_covid19_self_assessment_action_1 ;;
     distribution_style: all
     persist_for: "2 hours"
@@ -126,6 +126,59 @@ view: covid19_self_assessment_action {
 
   measure: count {
     type: count
+  }
+
+  measure: fever_count {
+    type:  sum
+    sql:${TABLE}.fever_count ;;
+  }
+  measure: cough_count {
+    type:  sum
+    sql:${TABLE}.cough_count ;;
+  }
+  measure: difficult_breathing_count {
+    type:  sum
+    sql:${TABLE}.difficult_breathing_count ;;
+  }
+  measure: sore_throat_count {
+    type:  sum
+    sql:${TABLE}.sore_throat_count ;;
+  }
+  measure: loss_of_taste_or_smell_count {
+    type:  sum
+    sql:${TABLE}.loss_of_taste_or_smell_count ;;
+  }
+  measure: headache_count {
+    type:  sum
+    sql:${TABLE}.headache_count ;;
+  }
+  measure: fatigue_count {
+    type:  sum
+    sql:${TABLE}.fatigue_count ;;
+  }
+  measure: runny_nose_count {
+    type:  sum
+    sql:${TABLE}.runny_nose_count ;;
+  }
+  measure: sneezing_count {
+    type:  sum
+    sql:${TABLE}.sneezing_count ;;
+  }
+  measure: diarrhea_count {
+    type:  sum
+    sql:${TABLE}.diarrhea_count ;;
+  }
+  measure: loss_of_appetite_count {
+    type:  sum
+    sql:${TABLE}.loss_of_appetite_count ;;
+  }
+  measure: nausea_vomiting_count {
+    type:  sum
+    sql:${TABLE}.nausea_vomiting_count ;;
+  }
+  measure: body_aches_count {
+    type:  sum
+    sql:${TABLE}.body_aches_count ;;
   }
 
 }
