@@ -39,20 +39,20 @@ view: csrs_overall {
       SELECT session_stats.*,
         CASE WHEN (step1.response = 'Yes'
               AND step2.response = 'Yes'
-              AND step3.response = 'No'
+              -- step3 is for information only
               AND step4.response = 'No'
               AND step5.response = 'No'
-              AND step6.response = 'Yes'
-              AND step7.response = 'No'
+              -- AND step6 is for information only
+              -- AND step7 is for information only
               AND step8.response = 'No' )
             THEN 'Eligible'
             WHEN (step1.response IN ('Yes','I don''t know')
               AND step2.response IN ('Yes','I don''t know')
-              AND step3.response IN ('No','I don''t know')
+              AND step3.response IN ('Yes','No','I don''t know')
               AND step4.response IN ('No','I don''t know')
               AND step5.response IN ('No','I don''t know')
-              AND step6.response IN ('Yes','I don''t know')
-              AND step7.response IN ('No','I don''t know')
+              AND step6.response IN ('Yes','No','I don''t know')
+              AND step7.response IN ('Yes','No','I don''t know')
               AND step8.response IN ('No','I don''t know'))
             THEN 'Maybe Eligible'
             WHEN (step1.response IS NOT NULL
