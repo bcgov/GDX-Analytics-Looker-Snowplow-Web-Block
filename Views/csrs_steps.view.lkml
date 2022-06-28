@@ -31,14 +31,14 @@ view: csrs_steps {
           CASE WHEN response IS NULL THEN 1 ELSE NULL END AS blank_count,
           CASE WHEN (step = 1 AND response = 'Yes' )
               OR (step = 2 AND response = 'Yes')
-              OR (step = 3 AND response = 'No')
+              -- OR (step = 3 AND response = 'No') is for information only
               OR (step = 4 AND response = 'No')
               OR (step = 5 AND response = 'No')
-              OR (step = 6 AND response = 'Yes')
-              OR (step = 7 AND response = 'No')
+              -- OR (step = 6 AND response = 'Yes') is for information only
+              -- OR (step = 7 AND response = 'No') is for information only
               OR (step = 8 AND response = 'No' )
             THEN 'Eligible'
-            WHEN response = 'I don''t know' THEN 'Maybe Eligible'
+            WHEN response = 'I don''t know' OR step IN (3,6,7) THEN 'Maybe Eligible'
             WHEN response IS NOT NULL THEN 'Ineligible'
           END AS outcome,
           CASE WHEN outcome = 'Eligible' THEN 1 ELSE 0 END AS eligible_count,
