@@ -26,8 +26,10 @@ view: covid19_self_assessment_action {
           CASE WHEN symptom_list like '%Diarrhea%' then 1 ELSE 0 END AS diarrhea_count,
           CASE WHEN symptom_list like '%Loss of Appetite%' then 1 ElSE 0 END AS loss_of_appetite_count,
           CASE WHEN symptom_list like '%Nausea Vomiting%' then 1 ELSE 0 END AS nausea_vomiting_count,
-          CASE WHEN symptom_list like '%Body Aches%' then 1 ELSE 0 END AS body_aches_count
-        FROM atomic.ca_bc_gov_gateway_covid19_self_assessment_action_1 ;;
+          CASE WHEN symptom_list like '%Body Aches%' then 1 ELSE 0 END AS body_aches_count,
+          CASE WHEN symptom_list like '%None%' then 1 ELSE 0 END AS no_symptoms,
+          split_part(action.symptom_list, ',',3) AS symptom
+        FROM atomic.ca_bc_gov_gateway_covid19_self_assessment_action_1 as action ;;
     distribution_style: all
     persist_for: "2 hours"
   }
@@ -107,21 +109,7 @@ view: covid19_self_assessment_action {
   }
 
   dimension: symptom {
-    sql: CASE
-      WHEN symptom_list like '%Fever%' THEN 'Fever'
-      WHEN symptom_list like '%Cough%' THEN 'Cough'
-      WHEN symptom_list like '%Difficult Breathing%' THEN 'Difficult Breathing'
-      WHEN symptom_list like '%Sore Throat%' THEN 'Sore Throat'
-      WHEN symptom_list like '%Loss of Taste or Smell%' THEN 'Loss of Taste or Smell'
-      WHEN symptom_list like '%Headache%' THEN 'Headache'
-      WHEN symptom_list like '%Fatigue%' THEN 'Fatigue'
-      WHEN symptom_list like '%Runny nose%' THEN 'Runny nose'
-      WHEN symptom_list like '%Sneezing%' THEN 'Sneezing'
-      WHEN symptom_list like '%Diarrhea%' THEN 'Diarrhea'
-      WHEN symptom_list like '%Loss of Appetite%' THEN 'Loss of Appetite'
-      WHEN symptom_list like '%Nausea Vomiting%' THEN 'Nausea Vomiting'
-      WHEN symptom_list like '%Body Aches%' THEN 'Body Aches' ELSE NULL END
-    ;;
+    sql:  ${TABLE}.symptom   ;;
   }
 
   measure: count {
@@ -179,6 +167,10 @@ view: covid19_self_assessment_action {
   measure: body_aches_count {
     type:  sum
     sql:${TABLE}.body_aches_count ;;
+  }
+  measure: no_symptoms_count{
+    type:  sum
+    sql:${TABLE}.no_symptoms ;;
   }
 
 }
