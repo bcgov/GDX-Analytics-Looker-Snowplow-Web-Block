@@ -27,8 +27,7 @@ view: covid19_self_assessment_action {
           CASE WHEN symptom_list like '%Loss of Appetite%' then 1 ElSE 0 END AS loss_of_appetite_count,
           CASE WHEN symptom_list like '%Nausea Vomiting%' then 1 ELSE 0 END AS nausea_vomiting_count,
           CASE WHEN symptom_list like '%Body Aches%' then 1 ELSE 0 END AS body_aches_count,
-          CASE WHEN symptom_list like '%None%' then 1 ELSE 0 END AS no_symptoms,
-          split_part(action.symptom_list, ',',3) AS symptom
+          CASE WHEN symptom_list like '%None%' then 1 ELSE 0 END AS no_symptoms
         FROM atomic.ca_bc_gov_gateway_covid19_self_assessment_action_1 as action ;;
     distribution_style: all
     persist_for: "2 hours"
@@ -106,10 +105,6 @@ view: covid19_self_assessment_action {
   dimension: symptom_list {
     type: string
     sql: ${TABLE}.symptom_list ;;
-  }
-
-  dimension: symptom {
-    sql:  ${TABLE}.symptom   ;;
   }
 
   measure: count {
