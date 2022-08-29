@@ -777,6 +777,63 @@ explore: workbc_careereducation_click {
   }
 }
 
+
+
+
+explore: workbc_career_discovery_click{
+  label: "WorkBC Career Discovery Clicks"
+  persist_for: "2 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_career_discovery_click.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: workbc_career_discovery_compare {
+  label: "WorkBC Career Discovery Compare Tool"
+  persist_for: "2 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_career_discovery_compare.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: workbc_career_discovery_quiz {
+  label: "WorkBC Career Discovery Quiz"
+  persist_for: "2 hours"
+}
 explore: forms {
   persist_for: "60 minutes"
   fields: [ALL_FIELDS*,
