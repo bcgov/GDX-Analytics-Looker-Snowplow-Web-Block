@@ -1,3 +1,4 @@
+# Version: 1.1.0
 view: shared_fields_common {
 
   ### Application
@@ -198,6 +199,25 @@ view: shared_fields_common {
     group_label: "Location"
   }
 
+  dimension: geo_bc_or_canada {
+    type: string
+    sql: CASE WHEN ${TABLE}.geo_region = 'BC' THEN 'BC'
+          WHEN ${TABLE}.geo_country = 'CA' THEN 'Rest of Canada'
+          ELSE 'International' END;;
+    group_label: "Location"
+  }
+
+  dimension: met_engagement {
+    type: string
+    sql: CASE WHEN (${TABLE}.page_urlpath = '/engagement/') THEN 'Other'
+              WHEN (${TABLE}.page_urlpath LIKE '/engagement/view/%') THEN SPLIT_PART(${TABLE}.page_urlpath,'/',4)
+              WHEN (${TABLE}.page_urlpath LIKE '/engagement/%') THEN SPLIT_PART(${TABLE}.page_urlpath,'/',3)
+              WHEN (${TABLE}.page_urlpath LIKE '/survey/submit/%') THEN SPLIT_PART(${TABLE}.page_urlpath,'/',4)
+              ELSE 'Other'
+        END;;
+    label: "MET Engagement"
+    group_label: "MET"
+  }
 
   ### Session
 
