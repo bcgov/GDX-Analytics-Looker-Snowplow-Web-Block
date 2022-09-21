@@ -1,4 +1,4 @@
-# Version:     2.2.0
+# Version:     2.3.0
 #
 # Copyright (c) 2016 Snowplow Analytics Ltd. All rights reserved.
 #
@@ -1053,6 +1053,9 @@ explore: wellbeing_resources {
     field: wellbeing_resources.page_urlhost
     user_attribute: urlhost
   }
+}
+explore: cit_userstory {
+  label: "CIT User Story"
 }
 
 explore: mobile_screen_views {
