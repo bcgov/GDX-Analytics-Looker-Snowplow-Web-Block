@@ -1,9 +1,18 @@
+# Version: 1.1.0
 view: chatbot {
   derived_table: {
     sql: with chatbot_combined AS ( -- link together V1 and V2, filling in NULL for the newly added fields that aren't in V1
-          SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree, ref_parent, action, agent, text, NULL AS frontend_id, NULL AS intent_confidence, NULL AS "sentiment.magnitude",   NULL AS "sentiment.score", NULL AS session_id FROM atomic.ca_bc_gov_chatbot_chatbot_1
+          SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree,
+              ref_parent, action, agent, text, NULL AS frontend_id, NULL AS intent_confidence, NULL AS "sentiment.magnitude",
+              NULL AS "sentiment.score", NULL AS session_id
+            FROM atomic.ca_bc_gov_chatbot_chatbot_1
+            WHERE text <> 'BOT_Chatbot_Welcome'
           UNION
-          SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree, ref_parent, action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score", session_id FROM atomic.ca_bc_gov_chatbot_chatbot_2
+          SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree,
+              ref_parent, action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score",
+              session_id
+            FROM atomic.ca_bc_gov_chatbot_chatbot_2
+            WHERE text <> 'BOT_Chatbot_Welcome'
         )
         SELECT wp.id,
           cb.root_id AS chat_event_id,
