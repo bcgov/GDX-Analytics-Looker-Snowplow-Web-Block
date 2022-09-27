@@ -1,4 +1,4 @@
-# Version: 1.1.0
+# Version: 1.2.0
 view: chatbot {
   derived_table: {
     sql: with chatbot_combined AS ( -- link together V1 and V2, filling in NULL for the newly added fields that aren't in V1

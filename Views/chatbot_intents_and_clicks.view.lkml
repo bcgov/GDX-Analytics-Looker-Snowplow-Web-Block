@@ -1,4 +1,4 @@
-# Version 1.3.0
+# Version 1.4.0
 include: "/Includes/date_comparisons_common.view"
 
 view: chatbot_intents_and_clicks {
