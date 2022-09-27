@@ -1,4 +1,4 @@
-# Version 1.3.0
+# Version 1.4.0
 include: "/Includes/date_comparisons_common.view"
 
 view: chatbot_intents_and_clicks {
@@ -8,13 +8,13 @@ view: chatbot_intents_and_clicks {
               ref_parent, action, agent, text, NULL AS frontend_id, NULL AS intent_confidence, NULL AS "sentiment.magnitude",
               NULL AS "sentiment.score", NULL AS session_id
             FROM atomic.ca_bc_gov_chatbot_chatbot_1
-            WHERE text <> 'BOT_Chatbot_Welcome'
+            WHERE text <> 'BOT_Chatbot_Welcome' OR text IS NULL
           UNION
           SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree,
               ref_parent, action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score",
               session_id
             FROM atomic.ca_bc_gov_chatbot_chatbot_2
-            WHERE text <> 'BOT_Chatbot_Welcome'
+            WHERE text <> 'BOT_Chatbot_Welcome' OR text IS NULL
         )
         SELECT wp.id,
           cb.root_id AS chat_event_id,

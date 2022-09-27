@@ -1,4 +1,4 @@
-# Version: 1.0.0
+# Version: 1.0.1
 include: "/Includes/date_comparisons_common.view"
 
 view: cit_userstory {
@@ -45,7 +45,7 @@ view: cit_userstory {
 
   measure: count {
     type: count
-    label: "Click Count"
+    label: "Count"
   }
 
   dimension: i_am {}
