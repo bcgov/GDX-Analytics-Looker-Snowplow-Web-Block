@@ -1,4 +1,4 @@
-# Version:     2.3.0
+# Version:     2.4.0
 #
 # Copyright (c) 2016 Snowplow Analytics Ltd. All rights reserved.
 #
@@ -937,14 +937,14 @@ explore: healthgateway_actions {
   }
 }
 
-explore: health_app_views {
-  label: "Health App Views"
-
-  access_filter: {
-    field: health_app_views.app_type
-    user_attribute: urlhost
-  }
-}
+#explore: health_app_views {
+#  label: "Health App Views"
+#
+#  access_filter: {
+#    field: health_app_views.app_type
+#    user_attribute: urlhost
+#  }
+#}
 
 explore: health_app_actions {
   label: "Health App Actions"
