@@ -31,13 +31,12 @@ view: health_app_views {
             LEFT JOIN atomic.com_snowplowanalytics_snowplow_mobile_context_1 AS smc
               ON msv.root_id = smc.root_id AND msv.root_tstamp = smc.root_tstamp
             LEFT JOIN atomic.events AS ev ON ev.collector_tstamp > '2021-10-14' AND msv.root_tstamp = ev.collector_tstamp AND msv.root_id = ev.event_id
-        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
         ;;
-    distribution_style: all
-    datagroup_trigger: datagroup_healthgateway_updated
-    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
+    #distribution_style: all
+    #datagroup_trigger: datagroup_healthgateway_updated
+    #increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
     # to reprocess up to 3 hours of results
-    increment_offset: 3
+    #increment_offset: 3
   }
 
   dimension_group: event {
