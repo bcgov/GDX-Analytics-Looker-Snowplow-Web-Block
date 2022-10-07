@@ -17,6 +17,13 @@ view: asset_downloads {
     group_label: "Download"
   }
 
+  dimension: bc_bid_download_week {
+    label: "Week"
+    type: date
+    sql: date_trunc('week', ${TABLE}.date_timestamp);;
+    description: "For BC Bid, weeks start on Monday"
+    group_label: "BC Bid Dimensions"
+  }
   dimension: ip_address {
     type: string
     sql: ${TABLE}.ip_address ;;
