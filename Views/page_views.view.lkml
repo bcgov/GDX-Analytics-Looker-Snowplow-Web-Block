@@ -101,6 +101,14 @@ view: page_views {
     #X# group_label:"Page View Time"
   }
 
+  dimension: bc_bid_page_view_start_week {
+    label: "Week"
+    type: date
+    sql: date_trunc('week', ${TABLE}.page_view_start_time);;
+    description: "For BC Bid, weeks start on Monday"
+    group_label: "BC Bid Dimensions"
+  }
+
   dimension_group: page_view_start_marketing_drill {
     description: "The start time of the first page view of a given session."
     type: time
