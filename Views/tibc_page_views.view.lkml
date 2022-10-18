@@ -8,7 +8,7 @@ view: tibc_page_views {
           ;;
 
       distribution_style: all
-      datagroup_trigger: datagroup_tibc_ready
+      #datagroup_trigger: datagroup_tibc_ready
     }
 
   extends: [page_views]
