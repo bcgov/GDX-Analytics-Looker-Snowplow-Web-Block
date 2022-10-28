@@ -1,4 +1,4 @@
-# Version: 1.0.1
+# Version: 2.0.0
 include: "/Includes/date_comparisons_common.view"
 
 view: cit_userstory {
@@ -6,7 +6,7 @@ view: cit_userstory {
   derived_table: {
     sql: SELECT
           cit.root_id AS root_id,
-          --wp.id AS page_view_id,domain_sessionid AS session_id,
+          wp.id AS page_view_id,domain_sessionid AS session_id,
           --COALESCE(events.page_urlhost,'') AS page_urlhost,
           --vents.page_url,
           i_am,
@@ -18,9 +18,9 @@ view: cit_userstory {
       CONVERT_TIMEZONE('UTC', 'America/Vancouver', cit.root_tstamp) AS timestamp
 
       FROM atomic.ca_bc_gov_cit_userstory_1 AS cit
-      --LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
-      --ON cit.root_id = wp.root_id AND cit.root_tstamp = wp.root_tstamp
-      --LEFT JOIN atomic.events ON cit.root_id = events.event_id AND cit.root_tstamp = events.collector_tstamp
+      LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
+      ON cit.root_id = wp.root_id AND cit.root_tstamp = wp.root_tstamp
+      LEFT JOIN atomic.events ON cit.root_id = events.event_id AND cit.root_tstamp = events.collector_tstamp
       --WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
       ;;
     distribution_style: all
@@ -46,6 +46,12 @@ view: cit_userstory {
   measure: count {
     type: count
     label: "Count"
+  }
+  measure: session_count {
+    description: "Count of the outcome over distinct Session IDs"
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.session_id ;;
+    sql: ${TABLE}.session_id  ;;
   }
 
   dimension: i_am {}
