@@ -1,3 +1,5 @@
+# Version: 1.1.0
+
 include: "/Includes/date_comparisons_common.view"
 
 view: asset_downloads {
@@ -318,6 +320,13 @@ view: asset_downloads {
   measure: avg_return_size {
     description: "The average return size"
     type: average
+    sql: ${return_size} ;;
+    value_format: "[<1000000]#,##0.00,\" KB\";[<1000000000]#,##0.00,,\" MB\";#,##0.00,,,\" GB\""
+
+  }
+  measure: max_return_size {
+    description: "The maximum return size"
+    type: max
     sql: ${return_size} ;;
     value_format: "[<1000000]#,##0.00,\" KB\";[<1000000000]#,##0.00,,\" MB\";#,##0.00,,,\" GB\""
 
