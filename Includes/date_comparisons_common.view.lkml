@@ -1,4 +1,4 @@
-# Version 2.0.0
+# Version 2.1.0
 
 view: date_comparisons_common {
 
@@ -58,8 +58,9 @@ view: date_comparisons_common {
   parameter: comparison_period {
     type: string
     allowed_value: { value: "Previous Period" }
-    allowed_value: { value: "Previous Year" }
     allowed_value: { value: "Previous Month" }
+    allowed_value: { value: "Previous Quarter" }
+    allowed_value: { value: "Previous Year" }
     allowed_value: { value: "No Comparison" }
     default_value: "Previous Period"
   }
@@ -72,6 +73,7 @@ view: date_comparisons_common {
     sql:  CASE WHEN {% parameter comparison_period %} = 'No Comparison' THEN 0
           WHEN {% parameter comparison_period %} = 'Previous Year' THEN DATEDIFF(DAY, DATEADD(YEAR, -1, ${date_start}), ${date_start})
           WHEN {% parameter comparison_period %} = 'Previous Month' THEN DATEDIFF(DAY, DATEADD(MONTH, -1, ${date_start}), ${date_start})
+          WHEN {% parameter comparison_period %} = 'Previous Quarter' THEN DATEDIFF(DAY, DATEADD(QUARTER, -1, ${date_start}), ${date_start})
       ELSE DATEDIFF(DAY, ${date_start}, ${date_end})  END ;;
     hidden: yes
   }
