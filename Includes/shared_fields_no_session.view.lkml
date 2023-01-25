@@ -1,3 +1,4 @@
+# Version 1.1.0
 view: shared_fields_no_session {
 
 # browser_view_height is not in Sessions
@@ -411,6 +412,12 @@ view: shared_fields_no_session {
         END;;
     group_label: "WelcomeBC Dimensions"
     drill_fields: [page_views.page_referrer,page_views.page_url]
+  }
+
+  dimension: ldb_sku {
+    type: string
+    sql: CASE WHEN ${TABLE}.page_urlhost = 'www.bcliquorstores.com' AND ${TABLE}.page_section = 'product' THEN ${TABLE}.page_subsection ELSE NULL END;;
+    group_label: "LDB Custom Fields"
   }
 
 }
