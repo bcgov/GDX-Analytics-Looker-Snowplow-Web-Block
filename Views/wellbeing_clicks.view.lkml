@@ -1,9 +1,24 @@
+#Version: 1.1.0
 include: "/Includes/date_comparisons_common.view"
 
 view: wellbeing_clicks {
   label: "wellbeing.gov.bc.ca Clicks"
   derived_table: {
-    sql: SELECT
+    sql: WITH base_table AS (
+      (
+        SELECT root_id, root_tstamp, id, click_type, name, url, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp
+        FROM atomic.ca_bc_gov_wellbeing_wellbeing_click_1
+        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+      )
+        UNION
+      (
+        SELECT root_id, root_tstamp, id, click_type, name, url, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp
+        FROM atomic.ca_bc_gov_wellbeing_wellbeing_click_2
+        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+      )
+    )
+
+      SELECT
           wc.root_id AS root_id,
           wp.id AS page_view_id,domain_sessionid AS session_id,
           COALESCE(events.page_urlhost,'') AS page_urlhost,
@@ -13,19 +28,22 @@ view: wellbeing_clicks {
           name,
           url,
           CASE WHEN click_type LIKE '%listing_learn_more%' THEN 1 ELSE 0 END AS listing_learn_more_count,
+          CASE WHEN click_type LIKE '%map_learn_more%' THEN 1 ELSE 0 END AS map_learn_more_count,
           CASE WHEN click_type LIKE '%card_learn_more%' THEN 1 ELSE 0 END AS card_learn_more_count,
           CASE WHEN click_type LIKE '%website%' THEN 1 ELSE 0 END AS website_count,
           CASE WHEN click_type LIKE '%general_url%' THEN 1 ELSE 0 END AS general_url_count,
           CASE WHEN click_type LIKE '%email%' THEN 1 ELSE 0 END AS email_count,
           CASE WHEN click_type LIKE '%phone%' THEN 1 ELSE 0 END AS phone_count,
+          CASE WHEN click_type LIKE '%switch_to_list_view%' THEN 1 ELSE 0 END AS switch_to_list_view_count,
+          CASE WHEN click_type LIKE '%switch_to_map_view%' THEN 1 ELSE 0 END AS switch_to_map_view_count,
+          CASE WHEN click_type LIKE '%use_my_location%' THEN 1 ELSE 0 END AS use_my_location_count,
+          CASE WHEN click_type LIKE '%map_group_popup%' THEN 1 ELSE 0 END AS map_group_popup_count,
+          timestamp
 
-          CONVERT_TIMEZONE('UTC', 'America/Vancouver', wc.root_tstamp) AS timestamp
-
-        FROM atomic.ca_bc_gov_wellbeing_wellbeing_click_1 AS wc
+        FROM base_table AS wc
           LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON wc.root_id = wp.root_id AND wc.root_tstamp = wp.root_tstamp
           LEFT JOIN atomic.events ON wc.root_id = events.event_id AND wc.root_tstamp = events.collector_tstamp
-        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
         ;;
     distribution_style: all
     datagroup_trigger: datagroup_10_40
@@ -93,6 +111,11 @@ view: wellbeing_clicks {
     label: "listing_learn_more count"
     group_label: "Click Type Counts"
   }
+  measure: map_learn_more_count {
+    type: sum
+    label: "map_learn_more count"
+    group_label: "Click Type Counts"
+  }
   measure: card_learn_more_count {
     type: sum
     label: "card_learn_more count"
@@ -118,6 +141,24 @@ view: wellbeing_clicks {
     label: "phone count"
     group_label: "Click Type Counts"
   }
-
-
+  measure: switch_to_list_view_count {
+    type: sum
+    label: "switch to list view count"
+    group_label: "Click Type Counts"
+  }
+  measure: switch_to_map_view_count {
+    type: sum
+    label: "switch to map view count"
+    group_label: "Click Type Counts"
+  }
+  measure: map_group_popup_count {
+    type: sum
+    label: "map group popup view count"
+    group_label: "Click Type Counts"
+  }
+  measure: use_my_location_count {
+    type: sum
+    label: "use my location count"
+    group_label: "Click Type Counts"
+  }
 }
