@@ -27,7 +27,7 @@ view: page_views_bdp {
   }
 
   dimension: page_display_url {
-    sql: ${page_url} ;;
+    sql:  ${TABLE}.page_urlscheme || '://' || ${TABLE}.page_urlhost || regexp_replace(${TABLE}.page_urlpath, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
   }
 
   dimension: page_section {
@@ -42,6 +42,19 @@ view: page_views_bdp {
     type: yesno
     sql: ${TABLE}.operating_system_class = 'Mobile' ;;
     group_label: "Device"
+  }
+
+
+  dimension: geo_city_and_region { # Note: this should be synced up with the record in geo_cache.view
+    type: string
+    sql: CASE
+       WHEN (${TABLE}.geo_city = '' OR ${TABLE}.geo_city IS NULL) THEN ${TABLE}.geo_country
+       WHEN (${TABLE}.geo_country = 'CA' OR ${TABLE}.geo_country = 'US') THEN ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_region_name
+       ELSE ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_country
+      END;;
+    suggest_explore: geo_cache
+    suggest_dimension: geo_cache.geo_city_and_region
+    group_label: "Location"
   }
 
 
@@ -129,7 +142,7 @@ view: page_views_bdp {
   dimension: bc_bid_page_view_start_week {
     label: "Week"
     type: date
-    sql: date_trunc('week', ${TABLE}.page_view_start_time);;
+    sql: date_trunc('week', ${TABLE}.start_tstamp);;
     description: "For BC Bid, weeks start on Monday"
     group_label: "BC Bid Dimensions"
   }
@@ -138,7 +151,7 @@ view: page_views_bdp {
     description: "The start time of the first page view of a given session."
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
-    sql: ${TABLE}.page_view_start_time ;;
+    sql: ${TABLE}.start_tstamp ;;
     drill_fields: [page_display_url, marketing_drills*]
     label: "Page View Start"
     group_label: "Page View Date (Marketing Drill)"
@@ -587,13 +600,27 @@ view: page_views_bdp {
     group_label: "Engagement"
   }
 
+  dimension: primary_impact {
+    group_label: "IAB"
+  }
+  dimension: category {
+    group_label: "IAB"
+  }
+  dimension: reason {
+    group_label: "IAB"
+  }
+  dimension: spider_or_robot {
+    group_label: "IAB"
+    type: yesno
+  }
+
   measure: desktop_page_views {
     type: sum
-    sql: CASE WHEN page_views.dvce_type = 'Computer' THEN 1 ELSE 0 END;;
+    sql: CASE WHEN page_views_bdp.dvce_type = 'Computer' THEN 1 ELSE 0 END;;
   }
   measure: mobile_page_views {
     type: sum
-    sql: CASE WHEN page_views.dvce_type IN ('Mobile','Tablet') THEN 1 ELSE 0 END;;
+    sql: CASE WHEN page_views_bdp.dvce_type IN ('Mobile','Tablet') THEN 1 ELSE 0 END;;
   }
 }
 

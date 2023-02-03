@@ -222,11 +222,39 @@ explore: page_views_bdp {
     field: app_id
     user_attribute: app_id
   }
-
+  join: sessions_bdp {
+    type: left_outer
+    sql_on: ${sessions_bdp.session_id} = ${page_views_bdp.session_id};;
+    relationship: many_to_many
+  }
   join: ldb_sku {
     type: left_outer
     relationship: one_to_one
     sql_on: ${page_views_bdp.ldb_sku} = ${ldb_sku.sku} ;;
+  }
+}
+
+explore: sessions_bdp {
+  persist_for: "10 minutes"
+
+  # exclude when people are viewing files on locally downloaded or hosted copies of webpages
+  # Note that we are using first_page here instead of page, as there is no "page" for sessions
+  #sql_always_where: (${first_page_urlhost} <> 'localhost' OR ${first_page_urlhost} IS NULL)
+  #    AND ${first_page_url} NOT LIKE '%$/%'
+  #    AND ${first_page_url} NOT LIKE 'file://%' AND ${first_page_url} NOT LIKE '-file://%' AND ${first_page_url} NOT LIKE 'mhtml:file://%';;
+
+  #join: users {
+  #  sql_on: ${sessions_bdp.domain_userid} = ${users.domain_userid} ;;
+  #  relationship: many_to_one
+  #}
+
+  access_filter: {
+    field: first_page_urlhost
+    user_attribute: urlhost
+  }
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
   }
 }
 
