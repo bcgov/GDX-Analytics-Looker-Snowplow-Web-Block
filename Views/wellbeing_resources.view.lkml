@@ -50,6 +50,9 @@ view: wellbeing_resources {
           CASE WHEN topic LIKE '%Understanding wellness%' THEN 1 ELSE 0 END AS wellness_topic_count,
           CASE WHEN topic LIKE '%Grief and loss%' THEN 1 ELSE 0 END AS grief_count,
           CASE WHEN topic LIKE '%In crisis%' THEN 1 ELSE 0 END AS crisis_count,
+          CASE WHEN topic LIKE '%Mental illness%' THEN 1 ELSE 0 END AS mentalillness_count,
+          CASE WHEN topic LIKE '%Support needs%' THEN 1 ELSE 0 END AS supportneeds_count,
+          CASE WHEN topic LIKE '%Victim support%' THEN 1 ELSE 0 END AS victimsupport_count,
           --- Resource Types
           CASE WHEN resource_type LIKE '%Counselling%' THEN 1 ELSE 0 END AS counselling_count,
           CASE WHEN resource_type LIKE '%Translation Services%' THEN 1 ELSE 0 END AS translation_count,
@@ -354,5 +357,19 @@ view: wellbeing_resources {
     label: "In crisis count"
     group_label: "Topic Counts"
   }
-
+  measure: mentalillness_count {
+    type: sum
+    label: "Mental illness count"
+    group_label: "Topic Counts"
+  }
+  measure: supportneeds_count {
+    type: sum
+    label: "Support needs count"
+    group_label: "Topic Counts"
+  }
+  measure: victimsupport_count {
+    type: sum
+    label: "Victim support count"
+    group_label: "Topic Counts"
+  }
 }
