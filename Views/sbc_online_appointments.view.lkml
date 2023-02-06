@@ -1,3 +1,4 @@
+# Version: 1.1.0
 view: sbc_online_appointments {
   label: "SBC Online Appointments"
   derived_table: {
@@ -58,6 +59,17 @@ view: sbc_online_appointments {
   dimension: session_id {}
   dimension: location {}
   dimension: service {}
+
+  dimension_group: max_time {
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    sql: ${TABLE}.max_timestamp ;;
+  }
+  dimension_group: min_time {
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    sql: ${TABLE}.min_timestamp ;;
+  }
   dimension: max_timestamp {}
   dimension: min_timestamp {}
   dimension: duration{
