@@ -680,6 +680,29 @@ explore: workbc_careersearch_click{
     user_attribute: urlhost
   }
 }
+explore: workbc_careersearch_click_test {
+  label: "WorkBC Career Search Tool Clicks Test Incremental"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_careersearch_click_test.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
 explore: workbc_careersearch_find {
   label: "WorkBC Career Search Tool"
   persist_for: "2 hours"
