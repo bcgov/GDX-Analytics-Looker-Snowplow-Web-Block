@@ -72,7 +72,8 @@ view: form_action {
                       (totals.formstage = base.formstage OR (base.formstage IS NULL AND totals.formstage IS NULL)) -- All other fields in the join can't be NULL
           ;;
     datagroup_trigger:datagroup_25_55
-    distribution_style: all
+    distribution: "page_view_id"
+    sortkeys: ["page_view_id","min_timestamp"]
     increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
   }
 

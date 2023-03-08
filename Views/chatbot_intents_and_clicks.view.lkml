@@ -73,10 +73,9 @@ view: chatbot_intents_and_clicks {
           LEFT JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
           WHERE action IN ('get_answer', 'link_click','ask_question','click_chip','open')
               AND {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
-
           ;;
-
-    distribution_style: all
+    distribution: "id"
+    sortkeys: ["id","timestamp"]
     # the incremental build will occur at 5 and 35 past the hour
     datagroup_trigger: datagroup_05_35
     increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
