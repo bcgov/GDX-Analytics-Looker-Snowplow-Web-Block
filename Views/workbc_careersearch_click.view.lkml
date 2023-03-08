@@ -25,7 +25,7 @@ view: workbc_careersearch_click {
 
           ;;
     distribution_style: all
-    datagroup_trigger: datagroup_healthgateway_updated
+    datagroup_trigger: datagroup_05_35
     increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
     # to reprocess up to 3 hours of results
     increment_offset: 3
