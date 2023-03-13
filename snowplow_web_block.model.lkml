@@ -1203,20 +1203,10 @@ datagroup: datagroup_sbc_online_appointments {
 
 datagroup: datagroup_healthgateway_updated {
   label: "Health Gateway Datagroup"
-  description: "Update every 30 minutes to drive the Health Gateway incremental PDT"
+  description: "Update every 30 minutes to drive the Health Gateway incremental PDT on the hour and half hour"
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
             WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 30
-              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
-            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
-}
-
-datagroup: datagroup_25_55 {
-  label: "25 and 55 Minute Datagroup"
-  description: "Update every 30 minutes to drive incrementals PDT at 25 and 55 past the hour"
-  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
-                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
-            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 25 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 55
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
             ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
 }
@@ -1237,6 +1227,36 @@ datagroup: datagroup_10_40 {
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
             WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 10 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 40
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+}
+
+datagroup: datagroup_15_46 {
+  label: "15 and 45 Minute Datagroup"
+  description: "Update every 30 minutes to drive incrementals PDT at 10 and 40 past the hour"
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 15 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 45
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+}
+
+datagroup: datagroup_20_50 {
+  label: "20 and 50 Minute Datagroup"
+  description: "Update every 30 minutes to drive incrementals PDT at 20 and 50 past the hour"
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 20 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 50
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+}
+
+datagroup: datagroup_25_55 {
+  label: "25 and 55 Minute Datagroup"
+  description: "Update every 30 minutes to drive incrementals PDT at 25 and 55 past the hour"
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 25 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 55
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
             ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
 }
