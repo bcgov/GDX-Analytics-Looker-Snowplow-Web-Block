@@ -1231,9 +1231,9 @@ datagroup: datagroup_10_40 {
             ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
 }
 
-datagroup: datagroup_15_46 {
+datagroup: datagroup_15_45 {
   label: "15 and 45 Minute Datagroup"
-  description: "Update every 30 minutes to drive incrementals PDT at 10 and 40 past the hour"
+  description: "Update every 30 minutes to drive incrementals PDT at 15 and 45 past the hour"
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
             WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 15 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 45
