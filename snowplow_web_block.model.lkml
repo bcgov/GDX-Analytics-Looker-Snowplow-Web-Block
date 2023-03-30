@@ -703,6 +703,29 @@ explore: workbc_careersearch_find {
     user_attribute: urlhost
   }
 }
+explore: workbc_careersearch_find_test_incremental {
+  label: "WorkBC Career Search Tool Test Incremental"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_careersearch_find_test_incremental.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
 explore: workbc_careersearch_compare {
   label: "WorkBC Career Search Compare Tool"
   persist_for: "2 hours"
@@ -727,6 +750,29 @@ explore: workbc_careersearch_compare {
     user_attribute: urlhost
   }
 }
+explore: workbc_careersearch_compare_test_incremental {
+  label: "WorkBC Career Search Compare Tool Test Incremental"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_careersearch_compare_test_incremental.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
 explore: workbc_careertoolkit {
   label: "WorkBC Career Transition Toolkit"
   persist_for: "2 hours"
@@ -739,6 +785,29 @@ explore: workbc_careertoolkit {
   join: page_views {
     type: left_outer
     sql_on: ${page_views.page_view_id} = ${workbc_careertoolkit.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: workbc_careertoolkit_test_incremental {
+  label: "WorkBC Career Transition Toolkit Test Incremental"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_careertoolkit_test_incremental.page_view_id} ;;
     relationship: many_to_one
   }
   join: cmslite_themes {
@@ -776,6 +845,29 @@ explore: workbc_careereducation_find {
     user_attribute: urlhost
   }
 }
+explore: workbc_careereducation_find_test_incremental {
+  label: "WorkBC Career Education Tool Test Incremental"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_careereducation_find_test_incremental.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
 
 explore: workbc_careereducation_click {
   label: "WorkBC Career Education Tool Clicks"
@@ -801,7 +893,29 @@ explore: workbc_careereducation_click {
     user_attribute: urlhost
   }
 }
+explore: workbc_careereducation_click_test_incremental {
+  label: "WorkBC Career Education Tool Clicks Test Incremental"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
 
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${workbc_careereducation_click_test_incremental.page_view_id} ;;
+    relationship: many_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+}
 
 
 
@@ -1237,6 +1351,24 @@ datagroup: datagroup_10_40 {
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
             WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 10 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 40
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+}
+datagroup: datagroup_15_45 {
+  label: "15 and 45 Minute Datagroup"
+  description: "Update every 30 minutes to drive incrementals PDT at 15 and 45 past the hour"
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 15 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 45
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+}
+datagroup: datagroup_20_50 {
+  label: "20 and 50 Minute Datagroup"
+  description: "Update every 30 minutes to drive incrementals PDT at 20 and 50 past the hour"
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 20 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 50
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
             ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
 }
