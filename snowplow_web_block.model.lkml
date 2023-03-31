@@ -680,7 +680,7 @@ explore: workbc_careersearch_click{
   }
 }
 explore: workbc_careersearch_find {
-  label: "WorkBC Career Search Tool"
+  label: "WorkBC Career Search Find"
   persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
@@ -704,7 +704,7 @@ explore: workbc_careersearch_find {
   }
 }
 explore: workbc_careersearch_find_test_incremental {
-  label: "WorkBC Career Search Tool Test Incremental"
+  label: "WorkBC Career Search Find Test Incremental"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
