@@ -1,4 +1,4 @@
-# Version 1.5.0
+# Version 1.6.0
 include: "/Includes/date_comparisons_common.view"
 
 view: chatbot_intents_and_clicks {
@@ -44,6 +44,17 @@ view: chatbot_intents_and_clicks {
           CASE WHEN timestamp < '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '-',1),'^',1)
                WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',1),'^',1)
           ELSE NULL END AS intent_category,
+          -- Intent Category counts
+          CASE WHEN intent_category = 'Vaccines' THEN 1 ELSE 0 END AS vaccines_category_count,
+          CASE WHEN intent_category = 'Health and Care' THEN 1 ELSE 0 END AS health_and_care_category_count,
+          CASE WHEN intent_category = 'Travel' THEN 1 ELSE 0 END AS travel_category_count,
+          CASE WHEN intent_category = 'Government Services' THEN 1 ELSE 0 END AS government_services_category_count,
+          CASE WHEN intent_category = 'SELFASSESS' THEN 1 ELSE 0 END AS selfassess_category_count,
+          CASE WHEN intent_category = 'PHO Orders and Enforcement' THEN 1 ELSE 0 END AS pho_orders_and_enforcement_category_count,
+          CASE WHEN intent_category = 'About COVID-19' THEN 1 ELSE 0 END AS about_covid_19_category_count,
+          CASE WHEN intent_category = 'Social Interactions' THEN 1 ELSE 0 END AS social_interactions_category_count,
+
+          -- End Category counts
           CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '_',1),'^',1)
             ELSE NULL END AS agency,
           CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',2),'^',1)
@@ -62,10 +73,9 @@ view: chatbot_intents_and_clicks {
           LEFT JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
           WHERE action IN ('get_answer', 'link_click','ask_question','click_chip','open')
               AND {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
-
           ;;
-
-    distribution_style: all
+    distribution: "id"
+    sortkeys: ["id","timestamp"]
     # the incremental build will occur at 5 and 35 past the hour
     datagroup_trigger: datagroup_05_35
     increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
@@ -207,6 +217,39 @@ view: chatbot_intents_and_clicks {
     measure: average_sentiment_score {
       type: average
       sql: ${TABLE}.sentiment_score;;
+    }
+
+    measure: vaccines_category_count {
+      type: sum
+      group_label: "Category Counts"
+    }
+    measure: health_and_care_category_count {
+      type: sum
+      group_label: "Category Counts"
+    }
+    measure: travel_category_count {
+      type: sum
+      group_label: "Category Counts"
+    }
+    measure: government_services_category_count {
+      type: sum
+      group_label: "Category Counts"
+    }
+    measure: selfassess_category_count {
+      type: sum
+      group_label: "Category Counts"
+    }
+    measure: pho_orders_and_enforcement_category_count {
+      type: sum
+      group_label: "Category Counts"
+    }
+    measure: about_covid_19_category_count {
+      type: sum
+      group_label: "Category Counts"
+    }
+    measure: social_interactions_category_count {
+      type: sum
+      group_label: "Category Counts"
     }
 
 
