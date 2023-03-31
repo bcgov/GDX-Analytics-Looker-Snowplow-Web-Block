@@ -11,8 +11,10 @@ view: chatbot_errors {
           code,
           frontend_id,
           message,
-          session_id,
-          status
+          ce.session_id AS chat_session_id,
+          domain_sessionid AS session_id,
+          status,
+          CONVERT_TIMEZONE('UTC', 'America/Vancouver', ce.root_tstamp) AS timestamp
 
       FROM atomic.ca_bc_gov_chatbot_error_2 AS ce
       LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON ce.root_id = wp.root_id AND ce.root_tstamp = wp.root_tstamp
@@ -32,6 +34,11 @@ view: chatbot_errors {
     type: string
     label: "Page View ID"
     sql: ${TABLE}.id ;;
+  }
+  dimension_group: event {
+    sql: ${TABLE}.timestamp ;;
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
   }
   dimension: page_urlhost {
     type: string
@@ -66,5 +73,19 @@ view: chatbot_errors {
     sql: ${TABLE}.status ;;
   }
 
-
+  measure: count {
+    type: count
+  }
+  measure: session_count {
+    description: "Count of the outcome over distinct Browser Session IDs"
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.session_id ;;
+    sql: ${TABLE}.session_id  ;;
+  }
+  measure: chat_session_count {
+    description: "Count of the outcome over distinct Chat Session IDs"
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.chat_session_id ;;
+    sql: ${TABLE}.chat_session_id  ;;
+  }
 }
