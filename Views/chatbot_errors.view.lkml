@@ -10,11 +10,13 @@ view: chatbot_errors {
           agent,
           code,
           frontend_id,
-          message,
           ce.session_id AS chat_session_id,
           domain_sessionid AS session_id,
           status,
-          CONVERT_TIMEZONE('UTC', 'America/Vancouver', ce.root_tstamp) AS timestamp
+          CONVERT_TIMEZONE('UTC', 'America/Vancouver', ce.root_tstamp) AS timestamp,
+          SPLIT_PART(message, ':', 1) AS message_header,
+          SPLIT_PART(message, ':', 2) AS message_body,
+          message
 
       FROM atomic.ca_bc_gov_chatbot_error_2 AS ce
       LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON ce.root_id = wp.root_id AND ce.root_tstamp = wp.root_tstamp
@@ -63,6 +65,14 @@ view: chatbot_errors {
   dimension: message {
     type: string
     sql: ${TABLE}.message ;;
+  }
+  dimension: message_header {
+    type: string
+    sql: ${TABLE}.message_header ;;
+  }
+  dimension: message_body {
+    type: string
+    sql: ${TABLE}.message_body ;;
   }
   dimension: session_id {
     type: string
