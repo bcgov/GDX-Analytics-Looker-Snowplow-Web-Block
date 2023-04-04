@@ -7,7 +7,7 @@ view: ldb_summary {
         DATE(ldb_actions.timestamp) AS action_date,
         SUM(add_to_cellar_count) AS add_to_cellar_count,
         SUM(where_to_buy_count) AS where_to_buy_count
-        FROM looker.LR$BMK191664409345117_ldb_clicks AS ldb_actions
+        FROM ${ldb_clicks.SQL_TABLE_NAME} AS ldb_actions
         WHERE {% incrementcondition %} action_date {% endincrementcondition %} -- this matches the table column used by increment_key
         GROUP BY 1,2
     ),
