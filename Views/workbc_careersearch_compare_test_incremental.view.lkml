@@ -1,6 +1,8 @@
 view: workbc_careersearch_compare_test_incremental {
   derived_table: {
-    sql: SELECT wp.id AS page_view_id, action,
+    sql:
+    (
+    SELECT wp.id AS page_view_id, action,
           noc_1 AS noc, noc1.description AS description,
           1 AS position,
           --noc_2, noc2.description AS description_2,
@@ -17,7 +19,10 @@ view: workbc_careersearch_compare_test_incremental {
 --              ON noc2.noc = cc.noc_2 OR cc.noc_2 = '0' || noc2.noc OR cc.noc_2 = '00' || noc2.noc OR cc.noc_2 = '00' || noc2.noc
 --          LEFT JOIN microservice.careertoolkit_workbc AS noc3 -- the "00" trick is temporarily needed until the lookup table gets fixed
 --              ON noc3.noc = cc.noc_3 OR cc.noc_3 = '0' || noc3.noc OR cc.noc_3 = '00' || noc3.noc OR cc.noc_3 = '00' || noc3.noc
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
+      )
       UNION
+      (
         SELECT wp.id AS page_view_id, action,
           noc_2 AS noc, noc2.description AS description,
           2 AS position,
@@ -29,7 +34,10 @@ view: workbc_careersearch_compare_test_incremental {
               ON cc.root_id = wp.root_id AND cc.root_tstamp = wp.root_tstamp
           LEFT JOIN microservice.careertoolkit_workbc AS noc2 -- the "00" trick is temporarily needed until the lookup table gets fixed
               ON noc2.noc = cc.noc_2 OR cc.noc_2 = '0' || noc2.noc OR cc.noc_2 = '00' || noc2.noc OR cc.noc_2 = '00' || noc2.noc
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
+      )
       UNION
+      (
         SELECT wp.id AS page_view_id, action,
           noc_3 AS noc, noc3.description AS description,
           3 AS position,
@@ -42,6 +50,7 @@ view: workbc_careersearch_compare_test_incremental {
           LEFT JOIN microservice.careertoolkit_workbc AS noc3 -- the "00" trick is temporarily needed until the lookup table gets fixed
               ON noc3.noc = cc.noc_3 OR cc.noc_3 = '0' || noc3.noc OR cc.noc_3 = '00' || noc3.noc OR cc.noc_3 = '00' || noc3.noc
         WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
+      )
                     ;;
     distribution_style: all
     datagroup_trigger: datagroup_15_45
