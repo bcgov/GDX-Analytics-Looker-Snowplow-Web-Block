@@ -23,6 +23,11 @@ view: workbc_careertoolkit {
     persist_for: "2 hours"
   }
 
+  dimension_group: event {
+    sql: ${TABLE}.timestamp ;;
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+  }
   dimension: page_view_id {
     description: "Unique page view ID"
     type: string
