@@ -1,3 +1,4 @@
+
 view: workbc_careereducation_click {
   derived_table: {
     sql: SELECT wp.id AS page_view_id,
@@ -9,20 +10,24 @@ view: workbc_careereducation_click {
           CASE WHEN click_type = 'download_worksheets' THEN 1 ELSE 0 END AS download_worksheets_count,
           CASE WHEN click_type = 'external_link' THEN 1 ELSE 0 END AS external_link_count,
 
-          CASE WHEN click_type = 'related_resource' THEN 1 ELSE 0 END AS related_resource_count,
-          CASE WHEN click_type = 'social' THEN 1 ELSE 0 END AS social_count,
+      CASE WHEN click_type = 'related_resource' THEN 1 ELSE 0 END AS related_resource_count,
+      CASE WHEN click_type = 'social' THEN 1 ELSE 0 END AS social_count,
 
-          CASE WHEN click_type LIKE 'nav_%' THEN 1 ELSE 0 END AS nav_count,
-          CASE WHEN click_type LIKE 'nav_Activities_%' THEN 1 ELSE 0 END AS nav_activities_count,
-          CASE WHEN click_type LIKE 'nav_Curriculum_%' THEN 1 ELSE 0 END AS nav_curriculum_count,
-          CASE WHEN click_type LIKE 'nav_Lesson_Plan_%' THEN 1 ELSE 0 END AS nav_lesson_plan_count,
+      CASE WHEN click_type LIKE 'nav_%' THEN 1 ELSE 0 END AS nav_count,
+      CASE WHEN click_type LIKE 'nav_Activities_%' THEN 1 ELSE 0 END AS nav_activities_count,
+      CASE WHEN click_type LIKE 'nav_Curriculum_%' THEN 1 ELSE 0 END AS nav_curriculum_count,
+      CASE WHEN click_type LIKE 'nav_Lesson_Plan_%' THEN 1 ELSE 0 END AS nav_lesson_plan_count,
 
-          CONVERT_TIMEZONE('UTC', 'America/Vancouver', rc.root_tstamp) AS timestamp
-        FROM atomic.ca_bc_gov_workbc_resource_click_1  AS rc
-          JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
-              ON rc.root_id = wp.root_id AND rc.root_tstamp = wp.root_tstamp;;
+      CONVERT_TIMEZONE('UTC', 'America/Vancouver', rc.root_tstamp) AS timestamp
+      FROM atomic.ca_bc_gov_workbc_resource_click_1  AS rc
+      JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
+      ON rc.root_id = wp.root_id AND rc.root_tstamp = wp.root_tstamp
+      WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
+      ;;
     distribution_style: all
-    persist_for: "2 hours"
+    datagroup_trigger: datagroup_20_50
+    increment_key: "event_hour"
+    increment_offset: 3
   }
 
   dimension: page_view_id {
