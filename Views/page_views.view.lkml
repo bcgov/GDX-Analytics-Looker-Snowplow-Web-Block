@@ -430,7 +430,6 @@ dimension: chatbot_page_display_url {
     description: "The timestamp for the event that was recorded by the collector."
   }
 
-
   # MEASURES
 
   measure: row_count {
