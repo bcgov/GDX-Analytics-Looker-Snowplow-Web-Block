@@ -24,7 +24,7 @@ view: chatbot_errors {
             WHEN message LIKE 'RpcException: Intent with%not found among intents in environment%' THEN 'Intent not found among intents in environment'
             WHEN message LIKE 'Bot has stopped%' THEN 'Bot has stopped'
             ELSE message
-          END AS message_catagory
+          END AS message_category
 
 
       FROM atomic.ca_bc_gov_chatbot_error_2 AS ce
@@ -75,9 +75,9 @@ view: chatbot_errors {
     type: string
     sql: ${TABLE}.message ;;
   }
-  dimension: message_catagory{
+  dimension: message_category{
     type:  string
-    sql: ${TABLE}.message_catagory;;
+    sql: ${TABLE}.message_category;;
     drill_fields: [message]
   }
   dimension: session_id {
