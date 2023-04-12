@@ -430,41 +430,6 @@ dimension: chatbot_page_display_url {
     description: "The timestamp for the event that was recorded by the collector."
   }
 
-  parameter: dimension_selectors {
-    description: "Used only with the HQ report group"
-    required_fields: [HQ_report_group]
-    type: string
-    allowed_value: { value: "url" }
-    allowed_value: { value: "Theme" }
-    allowed_value: { value: "SubTheme" }
-  }
-
-
-  dimension: HQ_report_group{
-    group_label: "Flexible Filter"
-    description: "Used for the GDX HQ Report dashboard to allow for an easy way to change the dimension when needed."
-    label_from_parameter: dimension_selectors
-    sql:
-    -- When user selects a dimension from the dimension_selectors from the filter, it will change the reporting dimension
-       CASE
-         WHEN {% parameter dimension_selectors %} = 'url' THEN
-           ${page_display_url}
-         WHEN {% parameter dimension_selectors %} = 'Theme' THEN
-          ${cmslite_themes.theme}
-
-         WHEN {% parameter dimension_selectors %} = 'SubTheme' THEN
-          ${cmslite_themes.subtheme}
-
-         ELSE
-           NULL
-       END
-      ;;
-  }
-
-
-  # Page performance
-    # these fields have been removed from the new web model
-
   # MEASURES
 
   measure: row_count {
