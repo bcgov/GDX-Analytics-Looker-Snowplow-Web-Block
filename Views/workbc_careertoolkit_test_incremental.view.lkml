@@ -1,4 +1,4 @@
-view: workbc_careertoolkit {
+view: workbc_careertoolkit_test_incremental {
   derived_table: {
     sql: SELECT wp.id AS page_view_id, action, current, option,
           cnoc.description AS current_description,
@@ -18,9 +18,12 @@ view: workbc_careertoolkit {
               ON cnoc.noc = ct.current OR ct.current = '0' || cnoc.noc OR ct.current = '00' || cnoc.noc OR ct.current = '00' || cnoc.noc
           LEFT JOIN microservice.careertoolkit_workbc AS onoc
               ON onoc.noc = ct.option OR ct.option = '0' || onoc.noc OR ct.option = '00' || onoc.noc OR ct.option = '00' || onoc.noc
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
           ;;
     distribution_style: all
-    persist_for: "2 hours"
+    datagroup_trigger: datagroup_15_45
+    increment_key: "event_hour"
+    increment_offset: 3
   }
 
   dimension_group: event {

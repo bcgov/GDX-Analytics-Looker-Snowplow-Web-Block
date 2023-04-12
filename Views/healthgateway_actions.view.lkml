@@ -3,7 +3,8 @@ view: healthgateway_actions {
   derived_table: {
     sql: SELECT
           ga.root_id AS root_id,
-          wp.id AS page_view_id,domain_sessionid AS session_id,
+          wp.id AS page_view_id,
+          domain_sessionid AS session_id,
           COALESCE(events.page_urlhost,'') AS page_urlhost,
           events.page_url,
           action,
@@ -19,7 +20,8 @@ view: healthgateway_actions {
           LEFT JOIN atomic.events ON ga.root_id = events.event_id AND ga.root_tstamp = events.collector_tstamp
         WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
         ;;
-    distribution_style: all
+    distribution: "page_view_id"
+    sortkeys: ["page_view_id","timestamp"]
     datagroup_trigger: datagroup_healthgateway_updated
     increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
                 # to reprocess up to 3 hours of results

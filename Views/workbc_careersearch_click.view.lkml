@@ -21,11 +21,14 @@ view: workbc_careersearch_click {
               ON sc.root_id = wp.root_id AND sc.root_tstamp = wp.root_tstamp
           LEFT JOIN microservice.careertoolkit_workbc AS noc -- the "00" trick is temporarily needed until the lookup table gets fixed
               ON sc.click_type IN ('preview','find_jobs','job_profile') AND (noc.noc = sc.text OR sc.text = '0' || noc.noc OR sc.text = '00' || noc.noc OR sc.text = '00' || noc.noc)
-
+        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
 
           ;;
     distribution_style: all
-    persist_for: "2 hours"
+    datagroup_trigger: datagroup_05_35
+    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
+    # to reprocess up to 3 hours of results
+    increment_offset: 3
   }
 
   dimension: page_view_id {
