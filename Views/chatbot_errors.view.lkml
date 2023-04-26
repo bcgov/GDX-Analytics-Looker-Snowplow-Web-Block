@@ -80,6 +80,10 @@ view: chatbot_errors {
     sql: ${TABLE}.message_category;;
     drill_fields: [message]
   }
+  dimension: chat_session_id {
+    type: string
+    sql: ${TABLE}.chat_session_id ;;
+  }
   dimension: session_id {
     type: string
     sql: ${TABLE}.session_id ;;
