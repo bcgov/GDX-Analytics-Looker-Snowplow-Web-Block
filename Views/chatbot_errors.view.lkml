@@ -55,6 +55,10 @@ view: chatbot_errors {
     type: string
     sql: ${TABLE}.page_urlhost ;;
   }
+  dimension: page_url {
+    type: string
+    sql:  ${TABLE}.page_url ;;
+  }
   dimension: chat_event_id {
     type: string
     sql: ${TABLE}.chat_event_id ;;
