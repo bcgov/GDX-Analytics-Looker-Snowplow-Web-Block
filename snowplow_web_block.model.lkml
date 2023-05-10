@@ -1346,9 +1346,11 @@ datagroup: datagroup_sbc_online_appointments {
 ##        After the second time cut it will report the next hour (and
 ##            stay that way until it passes the first time cut in the next hour)
 
+
 datagroup: datagroup_healthgateway_updated {
   label: "Health Gateway Datagroup"
   description: "Update every 30 minutes to drive the Health Gateway incremental PDT on the hour and half hour"
+# Note that for the 0 minute and 30 minute trigger, there is one fewer CASE to deal with
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
             WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 30
