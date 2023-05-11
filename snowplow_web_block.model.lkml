@@ -331,6 +331,28 @@ explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes
   }
 }
 
+explore: chatbot_errors {
+  label: "Chatbot Errors"
+  persist_for: "2 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme
+    ]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${chatbot_errors.id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: chatbot_errors.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
 explore: sessions {
   persist_for: "10 minutes"
 
