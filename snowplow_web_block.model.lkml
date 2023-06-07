@@ -353,6 +353,29 @@ explore: chatbot_errors {
   }
 }
 
+explore: feedbc_search {
+  label: "FeedBC Search"
+  persist_for: "1 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme
+  ]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${feedbc_search.page_view_id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: feedbc_search.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+
 explore: sessions {
   persist_for: "10 minutes"
 
