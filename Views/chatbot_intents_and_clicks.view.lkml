@@ -34,6 +34,7 @@ view: chatbot_intents_and_clicks {
           CASE WHEN action = 'open' THEN 1 ELSE 0 END AS open_count,
           CASE WHEN action = 'link_click' THEN 1 ELSE 0 END AS link_click_count,
           CASE WHEN action = 'click_chip' THEN 1 ELSE 0 END AS chip_count,
+          CASE WHEN action = 'click_footer' THEN 1 ELSE 0 END AS click_footer,
           CASE WHEN action = 'get_answer' THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
           CASE WHEN action = 'get_answer' THEN text ELSE NULL END AS intent_raw,
           CASE
@@ -71,7 +72,7 @@ view: chatbot_intents_and_clicks {
           LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
           LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
           LEFT JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
-          WHERE action IN ('get_answer', 'link_click','ask_question','click_chip','open')
+          WHERE action IN ('get_answer', 'link_click','ask_question','click_chip','open', 'click_footer')
               AND {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
           ;;
     distribution: "id"
@@ -204,6 +205,9 @@ view: chatbot_intents_and_clicks {
     }
     measure: chatbot_event_count {
       type: count
+    }
+    measure: click_footer {
+      type: sum
     }
     measure: extra_answer_count {
       type: sum
