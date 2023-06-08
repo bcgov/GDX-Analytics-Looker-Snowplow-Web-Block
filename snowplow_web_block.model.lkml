@@ -353,6 +353,29 @@ explore: chatbot_errors {
   }
 }
 
+explore: feedbc_search {
+  label: "FeedBC Search"
+  persist_for: "1 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme
+  ]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${feedbc_search.page_view_id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: feedbc_search.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+
 explore: sessions {
   persist_for: "10 minutes"
 
@@ -703,7 +726,6 @@ explore: workbc_careersearch_click{
 }
 explore: workbc_careersearch_find {
   label: "WorkBC Career Search Find"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -725,32 +747,8 @@ explore: workbc_careersearch_find {
     user_attribute: urlhost
   }
 }
-explore: workbc_careersearch_find_test_incremental {
-  label: "WorkBC Career Search Find Test Incremental"
-  fields: [ALL_FIELDS*,
-    -page_views.is_external_referrer_theme,
-    -page_views.is_external_referrer_subtheme,
-    -page_views.refr_theme,
-    -page_views.refr_subtheme]
-
-  join: page_views {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${workbc_careersearch_find_test_incremental.page_view_id} ;;
-    relationship: many_to_one
-  }
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
-  }
-  access_filter: {
-    field: page_views.page_urlhost
-    user_attribute: urlhost
-  }
-}
 explore: workbc_careersearch_compare {
   label: "WorkBC Career Search Compare Tool"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -772,32 +770,8 @@ explore: workbc_careersearch_compare {
     user_attribute: urlhost
   }
 }
-explore: workbc_careersearch_compare_test_incremental {
-  label: "WorkBC Career Search Compare Tool Test Incremental"
-  fields: [ALL_FIELDS*,
-    -page_views.is_external_referrer_theme,
-    -page_views.is_external_referrer_subtheme,
-    -page_views.refr_theme,
-    -page_views.refr_subtheme]
-
-  join: page_views {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${workbc_careersearch_compare_test_incremental.page_view_id} ;;
-    relationship: many_to_one
-  }
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
-  }
-  access_filter: {
-    field: page_views.page_urlhost
-    user_attribute: urlhost
-  }
-}
 explore: workbc_careertoolkit {
   label: "WorkBC Career Transition Toolkit"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -819,33 +793,9 @@ explore: workbc_careertoolkit {
     user_attribute: urlhost
   }
 }
-explore: workbc_careertoolkit_test_incremental {
-  label: "WorkBC Career Transition Toolkit Test Incremental"
-  fields: [ALL_FIELDS*,
-    -page_views.is_external_referrer_theme,
-    -page_views.is_external_referrer_subtheme,
-    -page_views.refr_theme,
-    -page_views.refr_subtheme]
-
-  join: page_views {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${workbc_careertoolkit_test_incremental.page_view_id} ;;
-    relationship: many_to_one
-  }
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
-  }
-  access_filter: {
-    field: page_views.page_urlhost
-    user_attribute: urlhost
-  }
-}
 
 explore: workbc_careereducation_find {
   label: "WorkBC Career Education Tool"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -867,33 +817,9 @@ explore: workbc_careereducation_find {
     user_attribute: urlhost
   }
 }
-explore: workbc_careereducation_find_test_incremental {
-  label: "WorkBC Career Education Tool Test Incremental"
-  fields: [ALL_FIELDS*,
-    -page_views.is_external_referrer_theme,
-    -page_views.is_external_referrer_subtheme,
-    -page_views.refr_theme,
-    -page_views.refr_subtheme]
-
-  join: page_views {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${workbc_careereducation_find_test_incremental.page_view_id} ;;
-    relationship: many_to_one
-  }
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
-  }
-  access_filter: {
-    field: page_views.page_urlhost
-    user_attribute: urlhost
-  }
-}
 
 explore: workbc_careereducation_click {
   label: "WorkBC Career Education Tool Clicks"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -915,30 +841,6 @@ explore: workbc_careereducation_click {
     user_attribute: urlhost
   }
 }
-explore: workbc_careereducation_click_test_incremental {
-  label: "WorkBC Career Education Tool Clicks Test Incremental"
-  fields: [ALL_FIELDS*,
-    -page_views.is_external_referrer_theme,
-    -page_views.is_external_referrer_subtheme,
-    -page_views.refr_theme,
-    -page_views.refr_subtheme]
-
-  join: page_views {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${workbc_careereducation_click_test_incremental.page_view_id} ;;
-    relationship: many_to_one
-  }
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
-  }
-  access_filter: {
-    field: page_views.page_urlhost
-    user_attribute: urlhost
-  }
-}
-
 
 
 explore: workbc_career_discovery_click{
@@ -1334,27 +1236,29 @@ datagroup: datagroup_sbc_online_appointments {
 ##    of the last run before 3:15am so these are "paused" during that window
 ##    The common code looks like:
 ##        SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
-##                 THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
-##    This is because the triggers return either the hour or the half hour depending on when they are in their window.
+##                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+##            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 25
+##              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+##            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) >= 25 AND DATE_PART('minute',timezone('America/Vancouver', now())) < 55
+##              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+##            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+##            END ;;
+##    When it is before the first time cut, it will report the current hour.
+##        Between time cuts, it will report 30 minutes past the hour.
+##        After the second time cut it will report the next hour (and
+##            stay that way until it passes the first time cut in the next hour)
+
 
 datagroup: datagroup_healthgateway_updated {
   label: "Health Gateway Datagroup"
-  description: "Update every 30 minutes to drive the Health Gateway incremental PDT"
+  description: "Update every 30 minutes to drive the Health Gateway incremental PDT on the hour and half hour"
+# Note that for the 0 minute and 30 minute trigger, there is one fewer CASE to deal with
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
             WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 30
-              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
-            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
-}
-
-datagroup: datagroup_25_55 {
-  label: "25 and 55 Minute Datagroup"
-  description: "Update every 30 minutes to drive incrementals PDT at 25 and 55 past the hour"
-  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
-                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
-            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 25 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 55
-              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
-            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+            END ;;
 }
 
 datagroup: datagroup_05_35 {
@@ -1362,9 +1266,12 @@ datagroup: datagroup_05_35 {
   description: "Update every 30 minutes to drive incrementals PDT at 05 and 35 past the hour"
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
-            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 05 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 35
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 5
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
-            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) >= 5 AND DATE_PART('minute',timezone('America/Vancouver', now())) < 35
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+            END ;;
 }
 
 datagroup: datagroup_10_40 {
@@ -1372,25 +1279,49 @@ datagroup: datagroup_10_40 {
   description: "Update every 30 minutes to drive incrementals PDT at 10 and 40 past the hour"
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
-            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 10 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 40
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 10
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
-            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) >= 10 AND DATE_PART('minute',timezone('America/Vancouver', now())) < 40
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+            END ;;
 }
+
 datagroup: datagroup_15_45 {
   label: "15 and 45 Minute Datagroup"
   description: "Update every 30 minutes to drive incrementals PDT at 15 and 45 past the hour"
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
-            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 15 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 45
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 15
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
-            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) >= 15 AND DATE_PART('minute',timezone('America/Vancouver', now())) < 45
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+            END ;;
 }
+
 datagroup: datagroup_20_50 {
   label: "20 and 50 Minute Datagroup"
   description: "Update every 30 minutes to drive incrementals PDT at 20 and 50 past the hour"
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
-            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 20 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 50
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 20
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
-            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) >= 20 AND DATE_PART('minute',timezone('America/Vancouver', now())) < 50
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+            END ;;
+}
+
+datagroup: datagroup_25_55 {
+  label: "25 and 55 Minute Datagroup"
+  description: "Update every 30 minutes to drive incrementals PDT at 25 and 55 past the hour"
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 25
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) >= 25 AND DATE_PART('minute',timezone('America/Vancouver', now())) < 55
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+            END ;;
 }

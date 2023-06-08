@@ -1,3 +1,4 @@
+
 view: workbc_careereducation_click {
   derived_table: {
     sql: SELECT wp.id AS page_view_id,
@@ -20,9 +21,13 @@ view: workbc_careereducation_click {
           CONVERT_TIMEZONE('UTC', 'America/Vancouver', rc.root_tstamp) AS timestamp
         FROM atomic.ca_bc_gov_workbc_resource_click_1  AS rc
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
-              ON rc.root_id = wp.root_id AND rc.root_tstamp = wp.root_tstamp;;
+          ON rc.root_id = wp.root_id AND rc.root_tstamp = wp.root_tstamp
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
+        ;;
     distribution_style: all
-    persist_for: "2 hours"
+    datagroup_trigger: datagroup_20_50
+    increment_key: "event_hour"
+    increment_offset: 3
   }
 
   dimension: page_view_id {

@@ -121,7 +121,8 @@ view: shared_fields_no_session {
     description: "The identifier for an engagement on engage.gov.bc.ca."
     type: string
     sql: CASE WHEN ${TABLE}.page_urlpath LIKE '/govtogetherbc/consultation/%'
-      THEN SPLIT_PART(${TABLE}.page_urlpath,'/',4)
+            OR ${TABLE}.page_urlpath LIKE '/govtogetherbc/engagement/%'
+          THEN SPLIT_PART(${TABLE}.page_urlpath,'/',4)
       ELSE SPLIT_PART(${TABLE}.page_urlpath,'/',2) END ;;
     group_label: "Page"
   }
