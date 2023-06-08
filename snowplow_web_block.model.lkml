@@ -726,7 +726,6 @@ explore: workbc_careersearch_click{
 }
 explore: workbc_careersearch_find {
   label: "WorkBC Career Search Find"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -750,7 +749,6 @@ explore: workbc_careersearch_find {
 }
 explore: workbc_careersearch_compare {
   label: "WorkBC Career Search Compare Tool"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -774,7 +772,6 @@ explore: workbc_careersearch_compare {
 }
 explore: workbc_careertoolkit {
   label: "WorkBC Career Transition Toolkit"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -799,7 +796,6 @@ explore: workbc_careertoolkit {
 
 explore: workbc_careereducation_find {
   label: "WorkBC Career Education Tool"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -824,7 +820,6 @@ explore: workbc_careereducation_find {
 
 explore: workbc_careereducation_click {
   label: "WorkBC Career Education Tool Clicks"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
