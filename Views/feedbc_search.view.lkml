@@ -82,7 +82,21 @@ view: feedbc_search {
           CASE WHEN "filters.food_safety_certifications" IS NOT NULL THEN 1 ELSE 0 END AS food_safety_certifications_count,
           CASE WHEN "filters.producer_operations" IS NOT NULL THEN 1 ELSE 0 END AS producer_operations_count,
           CASE WHEN "filters.region" IS NOT NULL THEN 1 ELSE 0 END AS region_count,
-          CASE WHEN "filters.producer_market_channels" IS NOT NULL THEN 1 ELSE 0 END AS producer_market_channels_count
+          CASE WHEN "filters.producer_market_channels" IS NOT NULL THEN 1 ELSE 0 END AS producer_market_channels_count,
+          -- measures for session counts
+          CASE WHEN search_type = 'product search' THEN session_id ELSE NULL END AS product_search_count_by_session,
+          CASE WHEN search_type = 'buyers search' THEN session_id ELSE NULL END AS buyers_search_count_by_session,
+          CASE WHEN search_type = 'producer search' THEN session_id ELSE NULL END AS producer_search_count_by_session,
+          CASE WHEN query IS NOT NULL THEN session_id ELSE NULL END AS query_count_by_session,
+          CASE WHEN "filters.availability" IS NOT NULL THEN session_id ELSE NULL END AS availability_count_by_session,
+          CASE WHEN "filters.certifications" IS NOT NULL THEN session_id ELSE NULL END AS certifications_count_by_session,
+          CASE WHEN "filters.delivery_options" IS NOT NULL THEN session_id ELSE NULL END AS delivery_options_count_by_session,
+          CASE WHEN "filters.dietary" IS NOT NULL THEN session_id ELSE NULL END AS dietary_count_by_session,
+          CASE WHEN "filters.food_safety_certifications" IS NOT NULL THEN session_id ELSE NULL END AS food_safety_certifications_count_by_session,
+          CASE WHEN "filters.producer_operations" IS NOT NULL THEN session_id ELSE NULL END AS producer_operations_count_by_session,
+          CASE WHEN "filters.region" IS NOT NULL THEN session_id ELSE NULL END AS region_count_by_session,
+          CASE WHEN "filters.producer_market_channels" IS NOT NULL THEN session_id ELSE NULL END AS producer_market_channels_count_by_session
+
         FROM base_table
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON base_table.root_id = wp.root_id AND base_table.root_tstamp = wp.root_tstamp
@@ -94,14 +108,14 @@ view: feedbc_search {
   dimension: page_view_id {
     description: "Unique page view ID"
     type: string
-    sql: ${TABLE}.page_view_id ;;
+    sql: ${TABLE}.page_view_id;;
   }
 
   dimension: page_urlhost {}
   dimension_group: event {
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
-    sql: ${TABLE}.timestamp ;;
+    sql: ${TABLE}.timestamp;;
   }
 
   dimension: search_type {}
@@ -135,60 +149,131 @@ view: feedbc_search {
     type: sum
     sql: ${TABLE}.query_count;;
   }
+  measure: query_count_by_session {
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.product_search_count_by_session;;
+    sql: ${TABLE}.query_count_by_session;;
+  }
   measure: availability_count {
     type: sum
     group_label: "Filter Counts"
     sql: ${TABLE}.availability_count;;
+  }
+  measure: availability_count_by_session {
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.product_search_count_by_session;;
+    group_label: "Filter Counts"
+    sql: ${TABLE}.availability_count_by_session;;
   }
   measure: certifications_count {
     type: sum
     group_label: "Filter Counts"
     sql: ${TABLE}.certifications_count;;
   }
+  measure: certifications_count_by_session {
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.product_search_count_by_session;;
+    group_label: "Filter Counts"
+    sql: ${TABLE}.certifications_count_by_session;;
+  }
   measure: delivery_options_count {
     type: sum
     group_label: "Filter Counts"
     sql: ${TABLE}.delivery_options_count;;
+  }
+  measure: delivery_options_count_by_session {
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.product_search_count_by_session;;
+    group_label: "Filter Counts"
+    sql: ${TABLE}.delivery_options_count_by_session;;
   }
   measure: dietary_count {
     type: sum
     group_label: "Filter Counts"
     sql: ${TABLE}.dietary_count;;
   }
+  measure: dietary_count_by_session {
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.product_search_count_by_session;;
+    group_label: "Filter Counts"
+    sql: ${TABLE}.dietary_count_by_session;;
+  }
   measure: food_safety_certifications_count {
     type: sum
     group_label: "Filter Counts"
     sql: ${TABLE}.food_safety_certifications_count;;
+  }
+  measure: food_safety_certifications_count_by_session {
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.product_search_count_by_session;;
+    group_label: "Filter Counts"
+    sql: ${TABLE}.food_safety_certifications_count_by_session;;
   }
   measure: producer_operations_count {
     type: sum
     group_label: "Filter Counts"
     sql: ${TABLE}.producer_operations_count;;
   }
+  measure: producer_operations_count_by_session {
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.product_search_count_by_session;;
+    group_label: "Filter Counts"
+    sql: ${TABLE}.producer_operations_count_by_session;;
+  }
   measure: region_count {
     type: sum
     group_label: "Filter Counts"
     sql: ${TABLE}.region_count;;
   }
+  measure: region_count_by_session {
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.product_search_count_by_session;;
+    group_label: "Filter Counts"
+    sql: ${TABLE}.region_count_by_session;;
+  }
   measure: producer_market_channels_count {
     type: sum
     group_label: "Filter Counts"
-    sql:  ${TABLE}.producer_market_channels_count ;;
+    sql:  ${TABLE}.producer_market_channels_count;;
+  }
+  measure: producer_market_channels_count_by_session {
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.product_search_count_by_session;;
+    group_label: "Filter Counts"
+    sql:  ${TABLE}.producer_market_channels_count_by_session;;
   }
   measure: product_search_count {
     type: sum
     group_label: "Search Type Counts"
-    sql:  ${TABLE}.product_search_count ;;
+    sql:  ${TABLE}.product_search_count;;
+  }
+  measure: product_search_count_by_session{
+    type: count_distinct
+    group_label: "Search Type Counts"
+    sql_distinct_key: ${TABLE}.product_search_count_by_session;;
+    sql:  ${TABLE}.product_search_count_by_session;;
   }
   measure: buyers_search_count {
     type: sum
     group_label: "Search Type Counts"
-    sql:  ${TABLE}.buyers_search_count ;;
+    sql:  ${TABLE}.buyers_search_count;;
+  }
+  measure: buyers_search_count_by_session {
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.product_search_count_by_session;;
+    group_label: "Search Type Counts"
+    sql:  ${TABLE}.buyers_search_count_by_session;;
   }
   measure: producer_search_count {
     type: sum
     group_label: "Search Type Counts"
-    sql:  ${TABLE}.producer_search_count ;;
+    sql:  ${TABLE}.producer_search_count;;
+  }
+  measure: producer_search_count_by_session {
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.product_search_count_by_session;;
+    group_label: "Search Type Counts"
+    sql:  ${TABLE}.producer_search_count_by_session;;
   }
   measure: row_count {
     type: count
@@ -196,8 +281,8 @@ view: feedbc_search {
   measure: session_count {
     description: "Count of the outcome over distinct Browser Session IDs"
     type: count_distinct
-    sql_distinct_key: ${TABLE}.session_id ;;
-    sql: ${TABLE}.session_id  ;;
+    sql_distinct_key: ${TABLE}.session_id;;
+    sql: ${TABLE}.session_id;;
   }
 
 }
