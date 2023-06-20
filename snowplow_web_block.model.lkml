@@ -726,7 +726,6 @@ explore: workbc_careersearch_click{
 }
 explore: workbc_careersearch_find {
   label: "WorkBC Career Search Find"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -748,32 +747,8 @@ explore: workbc_careersearch_find {
     user_attribute: urlhost
   }
 }
-explore: workbc_careersearch_find_test_incremental {
-  label: "WorkBC Career Search Find Test Incremental"
-  fields: [ALL_FIELDS*,
-    -page_views.is_external_referrer_theme,
-    -page_views.is_external_referrer_subtheme,
-    -page_views.refr_theme,
-    -page_views.refr_subtheme]
-
-  join: page_views {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${workbc_careersearch_find_test_incremental.page_view_id} ;;
-    relationship: many_to_one
-  }
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
-  }
-  access_filter: {
-    field: page_views.page_urlhost
-    user_attribute: urlhost
-  }
-}
 explore: workbc_careersearch_compare {
   label: "WorkBC Career Search Compare Tool"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -795,32 +770,8 @@ explore: workbc_careersearch_compare {
     user_attribute: urlhost
   }
 }
-explore: workbc_careersearch_compare_test_incremental {
-  label: "WorkBC Career Search Compare Tool Test Incremental"
-  fields: [ALL_FIELDS*,
-    -page_views.is_external_referrer_theme,
-    -page_views.is_external_referrer_subtheme,
-    -page_views.refr_theme,
-    -page_views.refr_subtheme]
-
-  join: page_views {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${workbc_careersearch_compare_test_incremental.page_view_id} ;;
-    relationship: many_to_one
-  }
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
-  }
-  access_filter: {
-    field: page_views.page_urlhost
-    user_attribute: urlhost
-  }
-}
 explore: workbc_careertoolkit {
   label: "WorkBC Career Transition Toolkit"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -842,33 +793,9 @@ explore: workbc_careertoolkit {
     user_attribute: urlhost
   }
 }
-explore: workbc_careertoolkit_test_incremental {
-  label: "WorkBC Career Transition Toolkit Test Incremental"
-  fields: [ALL_FIELDS*,
-    -page_views.is_external_referrer_theme,
-    -page_views.is_external_referrer_subtheme,
-    -page_views.refr_theme,
-    -page_views.refr_subtheme]
-
-  join: page_views {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${workbc_careertoolkit_test_incremental.page_view_id} ;;
-    relationship: many_to_one
-  }
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
-  }
-  access_filter: {
-    field: page_views.page_urlhost
-    user_attribute: urlhost
-  }
-}
 
 explore: workbc_careereducation_find {
   label: "WorkBC Career Education Tool"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -890,33 +817,9 @@ explore: workbc_careereducation_find {
     user_attribute: urlhost
   }
 }
-explore: workbc_careereducation_find_test_incremental {
-  label: "WorkBC Career Education Tool Test Incremental"
-  fields: [ALL_FIELDS*,
-    -page_views.is_external_referrer_theme,
-    -page_views.is_external_referrer_subtheme,
-    -page_views.refr_theme,
-    -page_views.refr_subtheme]
-
-  join: page_views {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${workbc_careereducation_find_test_incremental.page_view_id} ;;
-    relationship: many_to_one
-  }
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
-  }
-  access_filter: {
-    field: page_views.page_urlhost
-    user_attribute: urlhost
-  }
-}
 
 explore: workbc_careereducation_click {
   label: "WorkBC Career Education Tool Clicks"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -938,30 +841,6 @@ explore: workbc_careereducation_click {
     user_attribute: urlhost
   }
 }
-explore: workbc_careereducation_click_test_incremental {
-  label: "WorkBC Career Education Tool Clicks Test Incremental"
-  fields: [ALL_FIELDS*,
-    -page_views.is_external_referrer_theme,
-    -page_views.is_external_referrer_subtheme,
-    -page_views.refr_theme,
-    -page_views.refr_subtheme]
-
-  join: page_views {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${workbc_careereducation_click_test_incremental.page_view_id} ;;
-    relationship: many_to_one
-  }
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
-  }
-  access_filter: {
-    field: page_views.page_urlhost
-    user_attribute: urlhost
-  }
-}
-
 
 
 explore: workbc_career_discovery_click{
