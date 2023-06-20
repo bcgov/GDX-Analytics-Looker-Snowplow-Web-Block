@@ -1242,6 +1242,11 @@ explore: cit_userstory {
   label: "CIT User Story"
 }
 
+explore: cit_userstory_test {
+  label: "CIT User Story Test"
+  persist_with:datagroup_10_40
+}
+
 explore: mobile_screen_views {
   access_filter: {
     field: app_id
