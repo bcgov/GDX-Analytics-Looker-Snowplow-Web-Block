@@ -1216,7 +1216,7 @@ explore: wfnews_actions {
     -page_views.refr_subtheme]
 
   access_filter: {
-    field: page_views.page_urlhost
+    field: wfnews_actions.page_urlhost
     user_attribute: urlhost
   }
 

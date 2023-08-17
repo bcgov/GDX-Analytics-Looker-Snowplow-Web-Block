@@ -64,8 +64,12 @@ view: wfnews_actions {
   dimension: page_url {}
 
 
-  dimension: action {}
-  dimension: area {}
+  dimension: action {
+    drill_fields: [area,id]
+  }
+  dimension: area {
+    drill_fields: [action,id]
+  }
   dimension: id {}
   dimension: text {}
 
