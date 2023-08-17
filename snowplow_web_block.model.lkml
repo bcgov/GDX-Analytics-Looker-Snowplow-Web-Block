@@ -1207,6 +1207,77 @@ explore: google_translate {
   }
 }
 
+explore: pims_listing_clicks {
+  label: "PIMS Listing Clicks"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${pims_listing_clicks.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: pims_listing_clicks.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: pims_errors {
+  label: "PIMS Errors"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${pims_errors.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: pims_errors.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: pims_searches {
+  label: "PIMS Searches"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${pims_searches.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: pims_searches.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
 explore: covid19_self_assessment_action {}
 explore: covid19_self_assessment_recommendation {}
 
