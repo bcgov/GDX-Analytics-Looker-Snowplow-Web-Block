@@ -1207,7 +1207,7 @@ explore: google_translate {
   }
 }
 
-explore: wfnews_action {
+explore: wfnews_actions {
   label: "Wildfire News Actions"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
@@ -1222,7 +1222,7 @@ explore: wfnews_action {
 
   join: page_views {
     type: left_outer
-    sql_on: ${page_views.page_view_id} = ${wfnews_action.page_view_id} ;;
+    sql_on: ${page_views.page_view_id} = ${wfnews_actions.page_view_id} ;;
     relationship: many_to_one
   }
 

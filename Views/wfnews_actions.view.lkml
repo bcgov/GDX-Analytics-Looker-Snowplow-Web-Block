@@ -1,4 +1,4 @@
-view: wfnews_action {
+view: wfnews_actions {
   label: "Wildfire News Actions"
   derived_table: {
     sql: SELECT
