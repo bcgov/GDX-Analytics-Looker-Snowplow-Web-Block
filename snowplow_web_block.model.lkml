@@ -1207,6 +1207,33 @@ explore: google_translate {
   }
 }
 
+explore: wfnews_action {
+  label: "Wildfire News Actions"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  access_filter: {
+    field: page_views.page_urlhost
+    user_attribute: urlhost
+  }
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${wfnews_action.page_view_id} ;;
+    relationship: many_to_one
+  }
+
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+}
+
+
 explore: covid19_self_assessment_action {}
 explore: covid19_self_assessment_recommendation {}
 
