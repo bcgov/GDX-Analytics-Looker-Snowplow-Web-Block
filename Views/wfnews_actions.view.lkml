@@ -1,3 +1,5 @@
+include: "/Includes/date_comparisons_common.view"
+
 view: wfnews_actions {
   label: "Wildfire News Actions"
   derived_table: {
@@ -11,6 +13,7 @@ view: wfnews_actions {
           area,
           wfa.id,
           text,
+          CASE WHEN action IN ('area_restriction_outbound_click','orders_outbound_click') THEN text ELSE NULL END AS url,
           -- action counts
           CASE WHEN action = 'feature_layer_navigation' THEN 1 ELSE 0 END AS feature_layer_navigation_count,
           CASE WHEN action = 'location_search' THEN 1 ELSE 0 END AS location_search_count,
@@ -51,6 +54,11 @@ view: wfnews_actions {
     #increment_offset: 3
   }
 
+  extends: [date_comparisons_common]
+
+  dimension_group: filter_start {
+    sql: ${TABLE}.timestamp ;;
+  }
 
   dimension: page_view_id {
     description: "Unique page view ID"
@@ -72,6 +80,12 @@ view: wfnews_actions {
   }
   dimension: id {}
   dimension: text {}
+  dimension: url {
+    link: {
+      label: "Visit Page"
+      url: "{{ value }}"
+    }
+  }
 
   dimension_group: event {
     sql: ${TABLE}.timestamp ;;
@@ -81,6 +95,7 @@ view: wfnews_actions {
 
   measure: count {
     type: count
+    label: "Count"
   }
   measure: feature_layer_navigation_count {
     type: sum
