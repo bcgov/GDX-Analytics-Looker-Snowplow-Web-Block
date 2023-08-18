@@ -1,19 +1,52 @@
 # Version 1.0.0
 include: "/Includes/date_comparisons_common.view"
 
+# ----------------------------------------
+# NOTE: We have moved away from using the derived.mobile_screen_views table
+#       directly, as the Timezone Conversion was causing unacceptable performance
+#       problems. We will resolve this in
+#           "GDXDSD-4640 - Analytics - Coordinate with Snowplow on plan for BDP "
 
 view: mobile_screen_views {
-  sql_table_name: derived.mobile_screen_views ;;
+  derived_table: {
+    sql: SELECT CONVERT_TIMEZONE('UTC', 'America/Vancouver', dvce_created_tstamp) AS dvce_created_tstamp,
+         screen_view_name,
+        screen_view_id,
+        app_id,
+        session_id,
+        geo_latitude,
+        geo_longitude,
+        build,
+        version,
+        useragent,
+        screen_view_previous_id,
+        screen_view_previous_name,
+        previous_session_id,
+        session_index,
+        user_id,
+        os_type,
+        os_version,
+        device_manufacturer,
+        device_model
+      FROM derived.mobile_screen_views ;;
+
+    datagroup_trigger:datagroup_25_55
+    distribution: "screen_view_id"
+    sortkeys: ["screen_view_id","dvce_created_tstamp"]
+    increment_key: "screenview_start_hour"
+    increment_offset: 6
+
+  }
 
   extends: [date_comparisons_common]
   dimension_group: filter_start {
-    sql: CONVERT_TIMEZONE('UTC', 'America/Vancouver', ${TABLE}.dvce_created_tstamp) ;;
+    sql: ${TABLE}.dvce_created_tstamp ;;
   }
 
   dimension_group: screenview_start {
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
-    sql: CONVERT_TIMEZONE('UTC', 'America/Vancouver', ${TABLE}.dvce_created_tstamp) ;;
+    sql: ${TABLE}.dvce_created_tstamp ;;
   }
 
   #dimension_group: dvce_created_tstamp {
@@ -93,7 +126,7 @@ view: mobile_screen_views {
   }
   dimension: dvce_screenheight {
     group_label: "Device and OS"
-    }
+  }
   dimension: device_manufacturer {
     group_label: "Device and OS"
   }
