@@ -42,12 +42,12 @@ view: idim_mobile_errors {
     group_label: "Application"
   }
 
-  dimension: build {
-    group_label: "Application"
-  }
-  dimension: version {
-    group_label: "Application"
-  }
+  #dimension: build {
+  #  group_label: "Application"
+  #}
+  #dimension: version {
+  #  group_label: "Application"
+  #}
   dimension: name_tracker { #missing column in table
     group_label: "Application"
     sql: NULL ;;
