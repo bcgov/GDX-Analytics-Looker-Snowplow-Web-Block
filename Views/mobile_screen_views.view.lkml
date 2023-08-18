@@ -1,6 +1,12 @@
 # Version 1.0.0
 include: "/Includes/date_comparisons_common.view"
 
+# ----------------------------------------
+# NOTE: We have moved away from using the derived.mobile_screen_views table
+#       directly, as the Timezone Conversion was causing unacceptable performance
+#       problems. We will resolve this in
+#           "GDXDSD-4640 - Analytics - Coordinate with Snowplow on plan for BDP "
+
 view: mobile_screen_views {
   derived_table: {
     sql: SELECT CONVERT_TIMEZONE('UTC', 'America/Vancouver', dvce_created_tstamp) AS dvce_created_tstamp,
