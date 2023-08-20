@@ -9,7 +9,7 @@ include: "/Includes/date_comparisons_common.view"
 
 view: mobile_screen_views {
   derived_table: {
-    sql: SELECT CONVERT_TIMEZONE('UTC', 'America/Vancouver', dvce_created_tstamp) AS dvce_created_tstamp,
+    sql: SELECT CONVERT_TIMEZONE('UTC', 'America/Vancouver', dvce_created_tstamp) AS derived_dvce_created_tstamp,
          screen_view_name,
         screen_view_id,
         app_id,
@@ -32,7 +32,7 @@ view: mobile_screen_views {
 
     datagroup_trigger:datagroup_25_55
     distribution: "screen_view_id"
-    sortkeys: ["screen_view_id","dvce_created_tstamp"]
+    sortkeys: ["screen_view_id","derived_dvce_created_tstamp"]
     increment_key: "screenview_start_hour"
     increment_offset: 6
 
@@ -40,32 +40,14 @@ view: mobile_screen_views {
 
   extends: [date_comparisons_common]
   dimension_group: filter_start {
-    sql: ${TABLE}.dvce_created_tstamp ;;
+    sql: ${TABLE}.derived_dvce_created_tstamp ;;
   }
 
   dimension_group: screenview_start {
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
-    sql: ${TABLE}.dvce_created_tstamp ;;
+    sql: ${TABLE}.derived_dvce_created_tstamp ;;
   }
-
-  #dimension_group: dvce_created_tstamp {
-  #  type: time
-  #  timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
-  #}
-  #dimension_group: collector_tstamp {
-  #  type: time
-  #  timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
-  #}
-  #dimension_group: derived_tstamp {
-  #  type: time
-  #  timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
-  #}
-  #dimension_group: model_tstamp {
-  #  type: time
-  #  timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
-  #}
-
 
   dimension: app_id {
     description: "The application identifier from which the event originated."
