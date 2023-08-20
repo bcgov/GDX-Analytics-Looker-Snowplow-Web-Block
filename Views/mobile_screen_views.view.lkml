@@ -28,7 +28,9 @@ view: mobile_screen_views {
         os_version,
         device_manufacturer,
         device_model
-      FROM derived.mobile_screen_views ;;
+      FROM derived.mobile_screen_views
+      WHERE {% incrementcondition %} derived_dvce_created_tstamp {% endincrementcondition %} -- this matches the table column used by increment_key
+;;
 
     datagroup_trigger:datagroup_25_55
     distribution: "screen_view_id"
