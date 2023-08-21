@@ -36,7 +36,7 @@ view: mobile_screen_views {
     distribution: "screen_view_id"
     sortkeys: ["screen_view_id","derived_dvce_created_tstamp"]
     increment_key: "screenview_start_hour"
-    increment_offset: 6
+    increment_offset: 8
 
   }
 
