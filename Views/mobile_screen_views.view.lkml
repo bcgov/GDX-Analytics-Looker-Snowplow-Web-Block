@@ -29,14 +29,18 @@ view: mobile_screen_views {
         device_manufacturer,
         device_model
       FROM derived.mobile_screen_views
-      WHERE {% incrementcondition %} derived_dvce_created_tstamp {% endincrementcondition %} -- this matches the table column used by increment_key
+      -- Compare the dvce_created_tstamp (in UTC) to the current time to ensure that no calls
+      --    from "the future" are included. Otherwise incremental PDTs won't work cleanly
+      WHERE dvce_created_tstamp < CONVERT_TIMEZONE('America/Vancouver', 'UTC', GETDATE())
+        AND {% incrementcondition %} dvce_created_tstamp {% endincrementcondition %} -- this matches the table column used by increment_key
 ;;
 
     datagroup_trigger:datagroup_25_55
     distribution: "screen_view_id"
     sortkeys: ["screen_view_id","derived_dvce_created_tstamp"]
-    increment_key: "screenview_start_hour"
-    increment_offset: 8
+    increment_key: "screenview_start_utc_date" # For optimized performance, do the comparison against the "raw" timestamp,
+                                               # to avoid a WHERE clause with a calculation in it
+    increment_offset: 7 # go back 7 days, as mobile data more often comes later
 
   }
 
@@ -45,6 +49,11 @@ view: mobile_screen_views {
     sql: ${TABLE}.derived_dvce_created_tstamp ;;
   }
 
+  dimension_group: screenview_start_utc {
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+    sql: ${TABLE}.dvce_created_tstamp ;;
+  }
   dimension_group: screenview_start {
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
