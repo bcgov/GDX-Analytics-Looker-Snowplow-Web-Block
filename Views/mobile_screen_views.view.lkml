@@ -10,7 +10,8 @@ include: "/Includes/date_comparisons_common.view"
 view: mobile_screen_views {
   derived_table: {
     sql: SELECT CONVERT_TIMEZONE('UTC', 'America/Vancouver', dvce_created_tstamp) AS derived_dvce_created_tstamp,
-         screen_view_name,
+        dvce_created_tstamp,
+        screen_view_name,
         screen_view_id,
         app_id,
         session_id,
