@@ -16,8 +16,7 @@ view: idim_mobile_errors {
       JOIN atomic.events AS ev ON me.root_id = ev.event_id AND me.root_tstamp = ev.collector_tstamp AND event_name = 'mobile_error'
       JOIN atomic.com_snowplowanalytics_mobile_screen_1 AS mcv ON mcv.root_id = me.root_id AND mcv.root_tstamp = me.root_tstamp
       JOIN atomic.com_snowplowanalytics_snowplow_client_session_1 AS mcs ON mcs.root_id = me.root_id AND mcs.root_tstamp = me.root_tstamp
-      WHERE timestamp > '2023-10-10'
-      --WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+      WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
       ;;
     distribution_style: all
     datagroup_trigger: datagroup_05_35
