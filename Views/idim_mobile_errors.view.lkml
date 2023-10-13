@@ -10,11 +10,14 @@ view: idim_mobile_errors {
         ev.user_id,
         network_userid,
         session_id,
+        mcv.id AS screen_view_id,
         platform
       FROM atomic.ca_bc_gov_idim_mobile_error_1 AS me
       JOIN atomic.events AS ev ON me.root_id = ev.event_id AND me.root_tstamp = ev.collector_tstamp AND event_name = 'mobile_error'
+      JOIN atomic.com_snowplowanalytics_mobile_screen_1 AS mcv ON mcv.root_id = me.root_id AND mcv.root_tstamp = me.root_tstamp
       JOIN atomic.com_snowplowanalytics_snowplow_client_session_1 AS mcs ON mcs.root_id = me.root_id AND mcs.root_tstamp = me.root_tstamp
-      WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+      WHERE timestamp > '2023-10-10'
+      --WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
       ;;
     distribution_style: all
     datagroup_trigger: datagroup_05_35
@@ -42,27 +45,9 @@ view: idim_mobile_errors {
     group_label: "Application"
   }
 
-  #dimension: build {
-  #  group_label: "Application"
-  #}
-  #dimension: version {
-  #  group_label: "Application"
-  #}
-  dimension: name_tracker { #missing column in table
-    group_label: "Application"
-    sql: NULL ;;
-  }
-  dimension: tracker_version { #missing column in table
-    description: "The tracker version."
-    type: string
-    sql: NULL ;;
-    group_label: "Application"
-  }
-
   dimension: screen_view_id {}
   dimension: event_id {}
   dimension: user_id {}
-  dimension: device_user_id {}
   dimension: network_userid {}
 
   dimension: session_id {
@@ -71,168 +56,10 @@ view: idim_mobile_errors {
       url: "/explore/snowplow_web_block/mobile_screen_views?fields=mobile_screen_views.session_id,mobile_screen_views.screenview_start_time,mobile_screen_views.screen_view_in_session_index,mobile_screen_views.screen_view_id,mobile_screen_views.screen_view_name,mobile_screen_views.app_id,mobile_screen_views.build,mobile_screen_views.version,mobile_screen_views.device_manufacturer,mobile_screen_views.device_model,mobile_screen_views.dvce_screenheight,mobile_screen_views.dvce_screenwidth,mobile_screen_views.os,mobile_screen_views.os_type,mobile_screen_views.os_version&f[mobile_screen_views.session_id]=&sorts=mobile_screen_views.screenview_start_time&limit=500&f[mobile_screen_views.session_id]={{ value }}"
     }
   }
-  dimension: session_index {}
   dimension: platform {}
 
   dimension: error_code {}
   dimension: body {}
-
-
-  # A "faked" device type until the real data is populated
-  dimension: os {
-    sql: CASE WHEN ${useragent} LIKE '%android%' THEN 'Android'
-            WHEN ${useragent} LIKE '%Darwin%' THEN 'iOS'
-            END;;
-    group_label: "Device and OS"
-  }
-  dimension: dvce_screenwidth {
-    group_label: "Device and OS"
-  }
-  dimension: dvce_screenheight {
-    group_label: "Device and OS"
-  }
-  dimension: device_manufacturer {
-    group_label: "Device and OS"
-  }
-  dimension: device_model {
-    group_label: "Device and OS"
-  }
-  dimension: os_type {
-    group_label: "Device and OS"
-  }
-  dimension: os_version {
-    group_label: "Device and OS"
-  }
-  dimension: android_idfa {
-    group_label: "IDFA"
-  }
-  dimension: apple_idfa {
-    group_label: "IDFA"
-  }
-  dimension: apple_idfv {
-    group_label: "IDFA"
-  }
-  dimension: open_idfa {
-    group_label: "IDFA"
-  }
-  dimension: device_latitude {
-    group_label: "Device Geo Information"
-  }
-  dimension: device_longitude {
-    group_label: "Device Geo Information"
-  }
-  dimension: device_latitude_longitude_accuracy {
-    group_label: "Device Geo Information"
-  }
-  dimension: device_altitude {
-    group_label: "Device Geo Information"
-  }
-  dimension: device_altitude_accuracy {
-    group_label: "Device Geo Information"
-  }
-  dimension: device_bearing {
-    group_label: "Device Geo Information"
-  }
-  dimension: device_speed {
-    group_label: "Device Geo Information"
-  }
-
-  dimension: geo_country {
-    type: string
-    sql: ${TABLE}.geo_country ;;
-    group_label: "Location"
-    suggest_explore: geo_cache
-    suggest_dimension: geo_cache.geo_country
-  }
-
-  dimension: geo_region {
-    type: string
-    sql: ${TABLE}.geo_region ;;
-    group_label: "Location"
-  }
-  dimension: geo_region_or_country {
-    type: string
-    description: "The Geo Region or Country when the Region is blank."
-    sql: COALESCE(${TABLE}.geo_region_name,${TABLE}.geo_country)  ;;
-    group_label: "Location"
-  }
-
-  dimension: geo_region_name {
-    type: string
-    sql: ${TABLE}.geo_region_name ;;
-    group_label: "Location"
-    suggest_explore: geo_cache
-    suggest_dimension: geo_cache.geo_region_name
-  }
-
-  dimension: geo_city {
-    type: string
-    sql: ${TABLE}.geo_city ;;
-    group_label: "Location"
-    suggest_explore: geo_cache
-    suggest_dimension: geo_cache.geo_city
-  }
-
-  dimension: geo_zipcode {
-    type: zipcode
-    sql: ${TABLE}.geo_zipcode ;;
-    group_label: "Location"
-  }
-
-  dimension: geo_latitude {
-    type: number
-    sql: ${TABLE}.geo_latitude ;;
-    group_label: "Location"
-    # use geo_location instead
-    hidden: yes
-  }
-
-  dimension: geo_longitude {
-    type: number
-    sql: ${TABLE}.geo_longitude ;;
-    group_label: "Location"
-    # use geo_location instead
-    hidden: yes
-  }
-
-  dimension: geo_timezone {
-    type: string
-    sql: ${TABLE}.geo_timezone ;;
-    group_label: "Location"
-    # use os_timezone instead
-    hidden: yes
-  }
-
-  dimension: geo_location {
-    type: location
-    sql_latitude: ${geo_latitude} ;;
-    sql_longitude: ${geo_longitude} ;;
-    group_label: "Location"
-  }
-
-  dimension: geo_bc {
-    type: string
-    sql: CASE WHEN ${TABLE}.geo_region = 'BC' THEN 'BC' ELSE 'Outside BC' END;;
-    group_label: "Location"
-  }
-
-
-  dimension: user_ipaddress {
-    group_label: "Network Info"
-  }
-  dimension: useragent {
-    group_label: "Network Info"
-  }
-  dimension: carrier {
-    group_label: "Network Info"
-  }
-  dimension: network_technology {
-    group_label: "Network Info"
-  }
-  dimension: network_type {
-    group_label: "Network Info"
-  }
-
 
   measure: row_count {
     type: count
@@ -249,9 +76,5 @@ view: idim_mobile_errors {
     sql: ${screen_view_id} ;;
     group_label: "Counts"
   }
-  measure: user_count {
-    type: count_distinct
-    sql: ${device_user_id} ;; # or is it network_userid?
-    group_label: "Counts"
-  }
+
 }
