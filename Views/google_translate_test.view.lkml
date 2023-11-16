@@ -4,7 +4,7 @@ view: google_translate_test {
           google_translate.root_id,
           google_translate.translation_data,
           google_translate.root_tstamp,
-          CONVERT_TIMEZONE('UTC', 'America/Vancouver', google_translate.root_tstamp) AS timestamp
+          CONVERT_TIMEZONE('UTC', 'America/Vancouver', google_translate.root_tstamp) AS timestamp,
           language_lookup.language_name,
           SPLIT_PART(google_translate.translation_data,'/',2) AS source_language,
           SPLIT_PART(google_translate.translation_data,'/',3) AS target_language_code,
