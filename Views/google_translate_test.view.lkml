@@ -76,7 +76,7 @@ view: google_translate_test {
   }
 
   dimension_group: event {
-    sql: ${TABLE}.timestamp ;;
+    sql: ${TABLE}.root_tstamp ;;
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
   }
