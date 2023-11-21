@@ -3,8 +3,7 @@ view: google_translate_test {
     sql:SELECT
           google_translate.root_id,
           google_translate.translation_data,
-          google_translate.root_tstamp,
-          CONVERT_TIMEZONE('UTC', 'America/Vancouver', google_translate.root_tstamp) AS timestamp,
+          CONVERT_TIMEZONE('UTC', 'America/Vancouver', google_translate.root_tstamp) AS root_tstamp,
           language_lookup.language_name,
           SPLIT_PART(google_translate.translation_data,'/',2) AS source_language,
           SPLIT_PART(google_translate.translation_data,'/',3) AS target_language_code,
@@ -58,30 +57,6 @@ view: google_translate_test {
     description: "The timestamp of the translation event."
     type: string
     sql: ${TABLE}.root_tstamp ;;
-  }
-
-  dimension: schema_vendor {
-    description: "The schema vendor."
-    type: string
-    sql: ${TABLE}.schema_vendor ;;
-  }
-
-  dimension: schema_name {
-    description: "The schema name."
-    type: string
-    sql: ${TABLE}.schema_name ;;
-  }
-
-  dimension: schema_format {
-    description: "The schema format."
-    type: string
-    sql: ${TABLE}.schema_format ;;
-  }
-
-  dimension: schema_version {
-    description: "The schema version."
-    type: string
-    sql: ${TABLE}.schema_version ;;
   }
 
   dimension: ref_root {
