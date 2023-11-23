@@ -178,12 +178,6 @@ explore: page_views {
     relationship: many_to_one
   }
 
-  join: google_translate_test {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${google_translate_test.page_view_id} ;;
-    relationship: many_to_one
-  }
-
   join: language_cohorts_sessions {
     type: left_outer
     relationship: one_to_one
