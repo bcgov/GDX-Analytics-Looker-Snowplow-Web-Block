@@ -1219,32 +1219,6 @@ explore: google_translate {
   }
 }
 
-explore: google_translate_test {
-  persist_for: "60 minutes"
-  fields: [ALL_FIELDS*,
-    -page_views.is_external_referrer_theme,
-    -page_views.is_external_referrer_subtheme,
-    -page_views.refr_theme,
-    -page_views.refr_subtheme]
-
-  access_filter: {
-    field: page_views.page_urlhost
-    user_attribute: urlhost
-  }
-
-  join: page_views {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${google_translate_test.page_view_id} ;;
-    relationship: many_to_one
-  }
-
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
-  }
-}
-
 explore: wfnews_actions {
   label: "Wildfire News Actions"
   fields: [ALL_FIELDS*,
