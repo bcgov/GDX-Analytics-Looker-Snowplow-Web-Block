@@ -12,7 +12,9 @@ view: google_translate_test {
         FROM atomic.ca_bc_gov_googtrans_google_translate_1 AS google_translate
         LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON google_translate.root_id = wp.root_id
         AND google_translate.root_tstamp = wp.root_tstamp
-        LEFT JOIN google.google_translate_languages AS language_lookup ON SPLIT_PART(google_translate.translation_data,'/',3) = language_lookup.language_code ;;
+        LEFT JOIN google.google_translate_languages AS language_lookup ON SPLIT_PART(google_translate.translation_data,'/',3) = language_lookup.language_code
+        WHERE {% incrementcondition %} root_tstamp {% endincrementcondition %} -- this matches the table column used by increment_key
+        ;;
     distribution_style: all
     datagroup_trigger: datagroup_20_50
     increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
