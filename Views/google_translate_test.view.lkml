@@ -13,7 +13,7 @@ view: google_translate_test {
         LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON google_translate.root_id = wp.root_id
         AND google_translate.root_tstamp = wp.root_tstamp
         LEFT JOIN google.google_translate_languages AS language_lookup ON SPLIT_PART(google_translate.translation_data,'/',3) = language_lookup.language_code
-        WHERE {% incrementcondition %} root_tstamp {% endincrementcondition %} -- this matches the table column used by increment_key
+        WHERE {% incrementcondition %} CONVERT_TIMEZONE('UTC', 'America/Vancouver', google_translate.root_tstamp) {% endincrementcondition %} -- this matches the table column used by increment_key
         ;;
     distribution_style: all
     datagroup_trigger: datagroup_20_50
