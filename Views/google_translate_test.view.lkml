@@ -3,7 +3,7 @@ view: google_translate_test {
     sql:SELECT
           google_translate.root_id,
           google_translate.translation_data,
-          CONVERT_TIMEZONE('UTC', 'America/Vancouver', google_translate.root_tstamp) AS root_tstamp,
+          CONVERT_TIMEZONE('UTC', 'America/Vancouver', google_translate.root_tstamp) AS timestamp,
           language_lookup.language_name,
           SPLIT_PART(google_translate.translation_data,'/',2) AS source_language,
           SPLIT_PART(google_translate.translation_data,'/',3) AS target_language_code,
@@ -13,7 +13,7 @@ view: google_translate_test {
         LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON google_translate.root_id = wp.root_id
         AND google_translate.root_tstamp = wp.root_tstamp
         LEFT JOIN google.google_translate_languages AS language_lookup ON SPLIT_PART(google_translate.translation_data,'/',3) = language_lookup.language_code
-        WHERE {% incrementcondition %} CONVERT_TIMEZONE('UTC', 'America/Vancouver', google_translate.root_tstamp) {% endincrementcondition %} -- this matches the table column used by increment_key
+        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
         ;;
     distribution_style: all
     datagroup_trigger: datagroup_20_50
@@ -78,7 +78,7 @@ view: google_translate_test {
   }
 
   dimension_group: event {
-    sql: ${TABLE}.root_tstamp ;;
+    sql: ${TABLE}.timestamp ;;
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
   }
