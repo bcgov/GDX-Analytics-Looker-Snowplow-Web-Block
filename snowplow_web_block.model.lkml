@@ -1220,7 +1220,6 @@ explore: google_translate {
 }
 
 explore: google_translate_test {
-  persist_for: "60 minutes"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
