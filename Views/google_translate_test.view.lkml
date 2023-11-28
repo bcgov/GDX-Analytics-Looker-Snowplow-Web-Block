@@ -55,10 +55,10 @@ view: google_translate_test {
     sql: ${TABLE}.page_view_id ;;
   }
 
-  dimension: root_tstamp {
+  dimension: timestamp {
     description: "The timestamp of the translation event."
     type: string
-    sql: ${TABLE}.root_tstamp ;;
+    sql: ${TABLE}.timestamp ;;
   }
 
   dimension: ref_root {
