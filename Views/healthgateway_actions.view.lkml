@@ -23,6 +23,7 @@ view: healthgateway_actions {
     distribution: "page_view_id"
     sortkeys: ["page_view_id","timestamp"]
     datagroup_trigger: datagroup_healthgateway_updated
+    publish_as_db_view: yes
     increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
                 # to reprocess up to 3 hours of results
     increment_offset: 3
