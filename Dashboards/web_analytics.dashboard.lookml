@@ -1,5 +1,5 @@
 - dashboard: web_analytics_dashboard__content
-  title: Web Analytics Dashboard - Content
+  title: Web Analytics Dashboard Snowflake - Content
   layout: newspaper
   preferred_viewer: dashboards-next
   description: ''
@@ -7,7 +7,7 @@
   elements:
   - name: Top Downloaded Clicks
     title: Top Downloaded Clicks
-    model: snowplow_web_block
+    model: snowplow_snowflake
     explore: clicks
     type: looker_grid
     fields: [clicks.target_url, clicks.row_count]
@@ -89,19 +89,19 @@
     height: 8
   - name: Top Landing Page
     title: Top Landing Page
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     type: looker_grid
-    fields: [page_views.page_title, page_views.page_display_url, page_views.row_count]
+    fields: [page_views_snowflake.page_title, page_views_snowflake.page_display_url, page_views_snowflake.row_count]
     filters:
-      page_views.page_view_in_session_index: '1'
-    sorts: [page_views.row_count desc]
+      page_views_snowflake.page_view_in_session_index: '1'
+    sorts: [page_views_snowflake.row_count desc]
     limit: 15
     total: true
     dynamic_fields:
-    - table_calculation: of_landing_page_views
+    - table_calculation: of_landing_page_views_snowflake
       label: "% of Landing Page Views"
-      expression: "${page_views.row_count}/${page_views.row_count:total}"
+      expression: "${page_views_snowflake.row_count}/${page_views_snowflake.row_count:total}"
       value_format:
       value_format_name: percent_1
       _kind_hint: measure
@@ -125,18 +125,18 @@
     show_totals: true
     show_row_totals: true
     series_labels:
-      page_views.page_display_url: URL
-      page_views.row_count: Landing Page View Count
-      page_views.page_title: Page Title
+      page_views_snowflake.page_display_url: URL
+      page_views_snowflake.row_count: Landing Page View Count
+      page_views_snowflake.page_title: Page Title
     series_column_widths:
-      page_views.row_count: 113
-      of_landing_page_views: 95
-      page_views.page_title: 122.5
+      page_views_snowflake.row_count: 113
+      of_landing_page_views_snowflake: 95
+      page_views_snowflake.page_title: 122.5
     series_cell_visualizations:
-      page_views.row_count:
+      page_views_snowflake.row_count:
         is_active: false
     series_text_format:
-      of_landing_page_views:
+      of_landing_page_views_snowflake:
         align: right
     truncate_column_names: false
     subtotals_at_bottom: false
@@ -169,24 +169,24 @@
     note_display: hover
     note_text: The web page on the website that a user first visits during a session.
     listen:
-      Date Range: page_views.page_view_start_date
-      Site: page_views.page_urlhost
-      City: page_views.geo_city_and_region
-      Internal Gov Traffic: page_views.is_government
-      ISP: page_views.ip_isp
-      Is Mobile: page_views.device_is_mobile
-      URL: page_views.page_display_url
-      Title: page_views.page_title
-      Section: page_views.page_section
-      2-letter Country Code: page_views.geo_country
-      Sub Section: page_views.page_sub_section
+      Date Range: page_views_snowflake.page_view_start_date
+      Site: page_views_snowflake.page_urlhost
+      City: page_views_snowflake.geo_city_and_region
+      Internal Gov Traffic: page_views_snowflake.is_government
+      ISP: page_views_snowflake.ip_isp
+      Is Mobile: page_views_snowflake.device_is_mobile
+      URL: page_views_snowflake.page_display_url
+      Title: page_views_snowflake.page_title
+      Section: page_views_snowflake.page_section
+      2-letter Country Code: page_views_snowflake.geo_country
+      Sub Section: page_views_snowflake.page_sub_section
     row: 2
     col: 0
     width: 12
     height: 10
   - name: Top Offsite Links
     title: Top Offsite Links
-    model: snowplow_web_block
+    model: snowplow_snowflake
     explore: clicks
     type: looker_grid
     fields: [clicks.target_url, clicks.row_count]
@@ -267,7 +267,7 @@
     height: 8
   - name: Top Site Search Terms
     title: Top Site Search Terms
-    model: snowplow_web_block
+    model: snowplow_snowflake
     explore: searches
     type: looker_grid
     fields: [searches.search_terms, searches.row_count]
@@ -351,13 +351,13 @@
     height: 10
   - name: Page Views by Traffic Channel
     title: Page Views by Traffic Channel
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     type: looker_column
-    fields: [page_views.referrer_medium, page_views.row_count, page_views.page_view_start_date]
-    pivots: [page_views.referrer_medium]
-    fill_fields: [page_views.page_view_start_date]
-    sorts: [page_views.page_view_start_date desc, page_views.referrer_medium]
+    fields: [page_views_snowflake.referrer_medium, page_views_snowflake.row_count, page_views_snowflake.page_view_start_date]
+    pivots: [page_views_snowflake.referrer_medium]
+    fill_fields: [page_views_snowflake.page_view_start_date]
+    sorts: [page_views_snowflake.page_view_start_date desc, page_views_snowflake.referrer_medium]
     limit: 500
     column_limit: 50
     x_axis_gridlines: false
@@ -388,29 +388,29 @@
     show_silhouette: false
     totals_color: "#808080"
     y_axes: [{label: Page View Count, orientation: left, series: [{axisId: direct
-              - page_views.row_count, id: direct - page_views.row_count, name: direct},
-          {axisId: email - page_views.row_count, id: email - page_views.row_count,
-            name: email}, {axisId: internal - page_views.row_count, id: internal -
-              page_views.row_count, name: internal}, {axisId: other - page_views.row_count,
-            id: other - page_views.row_count, name: other}, {axisId: paid - page_views.row_count,
-            id: paid - page_views.row_count, name: paid}, {axisId: search - page_views.row_count,
-            id: search - page_views.row_count, name: search}, {axisId: social - page_views.row_count,
-            id: social - page_views.row_count, name: social}], showLabels: true, showValues: true,
+              - page_views_snowflake.row_count, id: direct - page_views_snowflake.row_count, name: direct},
+          {axisId: email - page_views_snowflake.row_count, id: email - page_views_snowflake.row_count,
+            name: email}, {axisId: internal - page_views_snowflake.row_count, id: internal -
+              page_views_snowflake.row_count, name: internal}, {axisId: other - page_views_snowflake.row_count,
+            id: other - page_views_snowflake.row_count, name: other}, {axisId: paid - page_views_snowflake.row_count,
+            id: paid - page_views_snowflake.row_count, name: paid}, {axisId: search - page_views_snowflake.row_count,
+            id: search - page_views_snowflake.row_count, name: search}, {axisId: social - page_views_snowflake.row_count,
+            id: social - page_views_snowflake.row_count, name: social}], showLabels: true, showValues: true,
         unpinAxis: false, tickDensity: default, type: linear}]
     x_axis_label: Date
     colors: ["#5245ed", "#ed6168", "#1ea8df", "#353b49", "#49cec1", "#b3a0dd", "#db7f2a",
       "#706080", "#a2dcf3", "#776fdf", "#e9b404", "#635189"]
     font_size: '12'
     series_colors:
-      direct - page_views.row_count: "#bae6ff"
-      email - page_views.row_count: "#82cfff"
-      internal - page_views.row_count: "#33b1ff"
-      other - page_views.row_count: "#1192e8"
-      paid - page_views.row_count: "#0072c3"
-      search - page_views.row_count: "#00539a"
-      social - page_views.row_count: "#003a6d"
+      direct - page_views_snowflake.row_count: "#bae6ff"
+      email - page_views_snowflake.row_count: "#82cfff"
+      internal - page_views_snowflake.row_count: "#33b1ff"
+      other - page_views_snowflake.row_count: "#1192e8"
+      paid - page_views_snowflake.row_count: "#0072c3"
+      search - page_views_snowflake.row_count: "#00539a"
+      social - page_views_snowflake.row_count: "#003a6d"
     series_labels:
-      page_views.row_count: Page View Count
+      page_views_snowflake.row_count: Page View Count
     hidden_fields: []
     defaults_version: 1
     note_state: collapsed
@@ -419,35 +419,35 @@
       channels are separated into a number of groups. For details about the different
       traffic channels, please visit the Glossary.
     listen:
-      Date Range: page_views.page_view_start_date
-      Site: page_views.page_urlhost
-      City: page_views.geo_city_and_region
-      Internal Gov Traffic: page_views.is_government
-      ISP: page_views.ip_isp
-      Is Mobile: page_views.device_is_mobile
-      URL: page_views.page_display_url
-      Title: page_views.page_title
-      Section: page_views.page_section
-      2-letter Country Code: page_views.geo_country
-      Sub Section: page_views.page_sub_section
+      Date Range: page_views_snowflake.page_view_start_date
+      Site: page_views_snowflake.page_urlhost
+      City: page_views_snowflake.geo_city_and_region
+      Internal Gov Traffic: page_views_snowflake.is_government
+      ISP: page_views_snowflake.ip_isp
+      Is Mobile: page_views_snowflake.device_is_mobile
+      URL: page_views_snowflake.page_display_url
+      Title: page_views_snowflake.page_title
+      Section: page_views_snowflake.page_section
+      2-letter Country Code: page_views_snowflake.geo_country
+      Sub Section: page_views_snowflake.page_sub_section
     row: 2
     col: 12
     width: 12
     height: 10
   - name: Top Pages
     title: Top Pages
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     type: looker_grid
-    fields: [page_views.page_title, page_views.page_display_url, page_views.row_count]
-    sorts: [page_views.row_count desc]
+    fields: [page_views_snowflake.page_title, page_views_snowflake.page_display_url, page_views_snowflake.row_count]
+    sorts: [page_views_snowflake.row_count desc]
     limit: 20
     column_limit: 50
     total: true
     dynamic_fields:
-    - table_calculation: of_page_views
+    - table_calculation: of_page_views_snowflake
       label: "% of Page Views"
-      expression: "${page_views.row_count}/${page_views.row_count:total}"
+      expression: "${page_views_snowflake.row_count}/${page_views_snowflake.row_count:total}"
       value_format:
       value_format_name: percent_1
       _kind_hint: measure
@@ -472,20 +472,20 @@
     show_row_totals: true
     truncate_header: false
     series_labels:
-      page_views.page_display_url: URL
-      page_views.page_title: Page Title
-      page_views.row_count: Page View Count
+      page_views_snowflake.page_display_url: URL
+      page_views_snowflake.page_title: Page Title
+      page_views_snowflake.row_count: Page View Count
     series_column_widths:
-      page_views.page_title: 140.5
-      page_views.row_count: 97
-      of_page_views: 104
+      page_views_snowflake.page_title: 140.5
+      page_views_snowflake.row_count: 97
+      of_page_views_snowflake: 104
     series_cell_visualizations:
-      page_views.row_count:
+      page_views_snowflake.row_count:
         is_active: false
     series_text_format:
-      page_views.row_count:
+      page_views_snowflake.row_count:
         align: right
-      of_page_views:
+      of_page_views_snowflake:
         align: right
     truncate_column_names: false
     subtotals_at_bottom: false
@@ -518,34 +518,34 @@
     note_display: hover
     note_text: Displays the top performing pages based on page view count.
     listen:
-      Date Range: page_views.page_view_start_date
-      Site: page_views.page_urlhost
-      City: page_views.geo_city_and_region
-      Internal Gov Traffic: page_views.is_government
-      ISP: page_views.ip_isp
-      Is Mobile: page_views.device_is_mobile
-      URL: page_views.page_display_url
-      Title: page_views.page_title
-      Section: page_views.page_section
-      2-letter Country Code: page_views.geo_country
-      Sub Section: page_views.page_sub_section
+      Date Range: page_views_snowflake.page_view_start_date
+      Site: page_views_snowflake.page_urlhost
+      City: page_views_snowflake.geo_city_and_region
+      Internal Gov Traffic: page_views_snowflake.is_government
+      ISP: page_views_snowflake.ip_isp
+      Is Mobile: page_views_snowflake.device_is_mobile
+      URL: page_views_snowflake.page_display_url
+      Title: page_views_snowflake.page_title
+      Section: page_views_snowflake.page_section
+      2-letter Country Code: page_views_snowflake.geo_country
+      Sub Section: page_views_snowflake.page_sub_section
     row: 12
     col: 0
     width: 12
     height: 10
   - name: Top Referrer URL Hosts
     title: Top Referrer URL Hosts
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     type: looker_grid
-    fields: [page_views.referrer_urlhost, page_views.row_count]
-    sorts: [page_views.row_count desc]
+    fields: [page_views_snowflake.referrer_urlhost, page_views_snowflake.row_count]
+    sorts: [page_views_snowflake.row_count desc]
     limit: 20
     total: true
     dynamic_fields:
     - table_calculation: of_referrals
       label: "% of Referrals"
-      expression: "${page_views.row_count} / sum(${page_views.row_count})"
+      expression: "${page_views_snowflake.row_count} / sum(${page_views_snowflake.row_count})"
       value_format:
       value_format_name: percent_1
       _kind_hint: measure
@@ -570,12 +570,12 @@
     show_totals: true
     show_row_totals: true
     series_labels:
-      page_views.row_count: Referral Count
+      page_views_snowflake.row_count: Referral Count
     series_column_widths:
-      page_views.row_count: 149
+      page_views_snowflake.row_count: 149
       of_referrals: 122
     series_cell_visualizations:
-      page_views.row_count:
+      page_views_snowflake.row_count:
         is_active: false
     series_text_format:
       of_referrals:
@@ -589,8 +589,8 @@
     x_axis_gridlines: false
     y_axis_gridlines: true
     point_style: none
-    y_axes: [{label: '', orientation: left, series: [{id: page_views.session_count,
-            name: Session Count, axisId: page_views.session_count}], showLabels: true,
+    y_axes: [{label: '', orientation: left, series: [{id: page_views_snowflake.session_count,
+            name: Session Count, axisId: page_views_snowflake.session_count}], showLabels: true,
         showValues: true, unpinAxis: false, tickDensity: default, tickDensityCustom: 5,
         type: linear}, {label: !!null '', orientation: right, series: [{id: of_all_referrals,
             name: "% of all referrals", axisId: of_all_referrals}], showLabels: true,
@@ -624,34 +624,34 @@
 
       For example, you shared the website link in a Teams chat, and folks are clicking on that link.
     listen:
-      Date Range: page_views.page_view_start_date
-      Site: page_views.page_urlhost
-      City: page_views.geo_city_and_region
-      Internal Gov Traffic: page_views.is_government
-      ISP: page_views.ip_isp
-      Is Mobile: page_views.device_is_mobile
-      URL: page_views.page_display_url
-      Title: page_views.page_title
-      Section: page_views.page_section
-      2-letter Country Code: page_views.geo_country
-      Sub Section: page_views.page_sub_section
+      Date Range: page_views_snowflake.page_view_start_date
+      Site: page_views_snowflake.page_urlhost
+      City: page_views_snowflake.geo_city_and_region
+      Internal Gov Traffic: page_views_snowflake.is_government
+      ISP: page_views_snowflake.ip_isp
+      Is Mobile: page_views_snowflake.device_is_mobile
+      URL: page_views_snowflake.page_display_url
+      Title: page_views_snowflake.page_title
+      Section: page_views_snowflake.page_section
+      2-letter Country Code: page_views_snowflake.geo_country
+      Sub Section: page_views_snowflake.page_sub_section
     row: 12
     col: 12
     width: 12
     height: 10
   - name: Top Referral URLs
     title: Top Referral URLs
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     type: looker_grid
-    fields: [page_views.page_referrer, page_views.row_count]
-    sorts: [page_views.row_count desc]
+    fields: [page_views_snowflake.page_referrer, page_views_snowflake.row_count]
+    sorts: [page_views_snowflake.row_count desc]
     limit: 20
     total: true
     dynamic_fields:
-    - table_calculation: of_all_page_views
+    - table_calculation: of_all_page_views_snowflake
       label: "% of all Page Views"
-      expression: "${page_views.row_count}/${page_views.row_count:total}"
+      expression: "${page_views_snowflake.row_count}/${page_views_snowflake.row_count:total}"
       value_format:
       value_format_name: percent_2
       _kind_hint: measure
@@ -675,16 +675,16 @@
     show_totals: true
     show_row_totals: true
     series_labels:
-      page_views.page_referrer: Referral URL
-      page_views.row_count: Page Views
+      page_views_snowflake.page_referrer: Referral URL
+      page_views_snowflake.row_count: Page Views
     series_column_widths:
-      page_views.row_count: 124
-      of_all_page_views: 143
+      page_views_snowflake.row_count: 124
+      of_all_page_views_snowflake: 143
     series_cell_visualizations:
-      page_views.row_count:
+      page_views_snowflake.row_count:
         is_active: false
     series_text_format:
-      of_all_page_views:
+      of_all_page_views_snowflake:
         align: right
     truncate_column_names: false
     subtotals_at_bottom: false
@@ -698,17 +698,17 @@
       , the referrer is coming from a Microsoft Teams environment.\nFor example, you\
       \ shared the website link in a Teams chat, and folks are clicking on that link."
     listen:
-      Date Range: page_views.page_view_start_date
-      Site: page_views.page_urlhost
-      City: page_views.geo_city_and_region
-      Internal Gov Traffic: page_views.is_government
-      ISP: page_views.ip_isp
-      Is Mobile: page_views.device_is_mobile
-      URL: page_views.page_display_url
-      Title: page_views.page_title
-      Section: page_views.page_section
-      2-letter Country Code: page_views.geo_country
-      Sub Section: page_views.page_sub_section
+      Date Range: page_views_snowflake.page_view_start_date
+      Site: page_views_snowflake.page_urlhost
+      City: page_views_snowflake.geo_city_and_region
+      Internal Gov Traffic: page_views_snowflake.is_government
+      ISP: page_views_snowflake.ip_isp
+      Is Mobile: page_views_snowflake.device_is_mobile
+      URL: page_views_snowflake.page_display_url
+      Title: page_views_snowflake.page_title
+      Section: page_views_snowflake.page_section
+      2-letter Country Code: page_views_snowflake.geo_country
+      Sub Section: page_views_snowflake.page_sub_section
     row: 22
     col: 12
     width: 12
@@ -735,30 +735,30 @@
     default_value: 7 days ago for 7 days
     allow_multiple_values: true
     required: true
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: page_views.page_view_start_date
+    field: page_views_snowflake.page_view_start_date
   - name: Site
     title: Site
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: page_views.page_urlhost
+    field: page_views_snowflake.page_urlhost
   - name: City
     title: City
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: page_views.geo_city_and_region
+    field: page_views_snowflake.geo_city_and_region
   - name: 2-letter Country Code
     title: 2-letter Country Code
     type: field_filter
@@ -768,70 +768,70 @@
     ui_config:
       type: advanced
       display: popover
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: page_views.geo_country
+    field: page_views_snowflake.geo_country
   - name: Internal Gov Traffic
     title: Internal Gov Traffic
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: page_views.is_government
+    field: page_views_snowflake.is_government
   - name: ISP
     title: ISP
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: page_views.ip_isp
+    field: page_views_snowflake.ip_isp
   - name: Is Mobile
     title: Is Mobile
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: page_views.device_is_mobile
+    field: page_views_snowflake.device_is_mobile
   - name: URL
     title: URL
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: page_views.page_display_url
+    field: page_views_snowflake.page_display_url
   - name: Title
     title: Title
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: page_views.page_title
+    field: page_views_snowflake.page_title
   - name: Section
     title: Section
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: page_views.page_section
+    field: page_views_snowflake.page_section
   - name: Sub Section
     title: Sub Section
     type: field_filter
@@ -842,7 +842,7 @@
       type: advanced
       display: popover
       options: []
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: page_views.page_sub_section
+    field: page_views_snowflake.page_sub_section

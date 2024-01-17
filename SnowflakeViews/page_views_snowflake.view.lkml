@@ -1,6 +1,6 @@
 include: "/Includes/shared_fields_common.view"
 include: "/Includes/shared_fields_no_session.view"
-include: "/Includes/date_comparisons_common.view"
+include: "/SnowflakeViews/date_comparisons_common.view"
 
 
 
@@ -85,7 +85,8 @@ view: page_views_snowflake {
   }
 
   dimension_group: filter_start {
-    sql: CONVERT_TIMEZONE('UTC', 'America/Vancouver',${TABLE}.start_tstamp) ;;
+    sql: ${TABLE}.start_tstamp ;;
+    #--CONVERT_TIMEZONE('UTC', 'America/Vancouver',${TABLE}.start_tstamp) ;;
   }
 
   # Modifying extended fields

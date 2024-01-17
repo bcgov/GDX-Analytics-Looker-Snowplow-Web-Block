@@ -1,25 +1,25 @@
 - dashboard: bc_gov_analytics_dashboard_1
-  title: BC Gov Analytics Dashboard 1
+  title: Web Analytics Dashboard Snowflake - Traffic
   layout: newspaper
   refresh: 30 minutes
   elements:
   - name: Average Session Duration this Period and Percent Change Since Last Period
     title: Average Session Duration this Period and Percent Change Since Last Period
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     type: single_value
     fields:
-    - sessions.date_window
-    - sessions.average_session_length
+    - sessions_snowflake.date_window
+    - sessions_snowflake.average_session_length
     filters:
-      sessions.is_in_current_period_or_last_period: 'Yes'
+      sessions_snowflake.is_in_current_period_or_last_period: 'Yes'
     sorts:
-    - sessions.date_window
+    - sessions_snowflake.date_window
     limit: 500
     dynamic_fields:
     - table_calculation: last_period
       label: last period
-      expression: "(${sessions.average_session_length} / offset(${sessions.average_session_length},\
+      expression: "(${sessions_snowflake.average_session_length} / offset(${sessions_snowflake.average_session_length},\
         \ 1)) - 1"
       value_format:
       value_format_name: percent_1
@@ -63,37 +63,37 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Date Range: sessions.flexible_filter_date_range
-      Site: sessions.first_page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: sessions.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.flexible_filter_date_range
+      Site: sessions_snowflake.first_page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: sessions_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     row: 0
     col: 6
     width: 6
     height: 2
   - name: Unique Visits this Period and Percent Change Since Last Period
     title: Unique Visits this Period and Percent Change Since Last Period
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     type: single_value
     fields:
-    - sessions.date_window
-    - sessions.user_count
+    - sessions_snowflake.date_window
+    - sessions_snowflake.user_count
     filters:
-      sessions.is_in_current_period_or_last_period: 'Yes'
+      sessions_snowflake.is_in_current_period_or_last_period: 'Yes'
     sorts:
-    - sessions.date_window
+    - sessions_snowflake.date_window
     limit: 500
     dynamic_fields:
     - table_calculation: last_period
       label: last period
-      expression: "(${sessions.user_count} / offset(${sessions.user_count}, 1)) -\
+      expression: "(${sessions_snowflake.user_count} / offset(${sessions_snowflake.user_count}, 1)) -\
         \ 1"
       value_format:
       value_format_name: percent_1
@@ -137,37 +137,37 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Date Range: sessions.flexible_filter_date_range
-      Site: sessions.first_page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: sessions.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.flexible_filter_date_range
+      Site: sessions_snowflake.first_page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: sessions_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     row: 0
     col: 0
     width: 6
     height: 2
   - name: Page Views Comparison
     title: Page Views Comparison
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     type: looker_line
     fields:
-    - sessions.date_window
-    - sessions.comparison_date
-    - sessions.page_view_count
+    - sessions_snowflake.date_window
+    - sessions_snowflake.comparison_date
+    - sessions_snowflake.page_view_count
     pivots:
-    - sessions.date_window
+    - sessions_snowflake.date_window
     filters:
-      sessions.user_count: NOT NULL
-      sessions.is_in_current_period_or_last_period: 'Yes'
+      sessions_snowflake.user_count: NOT NULL
+      sessions_snowflake.is_in_current_period_or_last_period: 'Yes'
     sorts:
-    - sessions.date_window 0
-    - sessions.comparison_date desc
+    - sessions_snowflake.date_window 0
+    - sessions_snowflake.comparison_date desc
     limit: 500
     query_timezone: America/Vancouver
     stacking: ''
@@ -179,8 +179,8 @@
     show_view_names: false
     point_style: none
     series_labels:
-      current_period - Yes|FIELD|0 - sessions.page_view_count: Current Period
-      last_period - Yes|FIELD|1 - sessions.page_view_count: Last Period
+      current_period - Yes|FIELD|0 - sessions_snowflake.page_view_count: Current Period
+      last_period - Yes|FIELD|1 - sessions_snowflake.page_view_count: Last Period
     series_types: {}
     limit_displayed_rows: false
     y_axes: []
@@ -200,37 +200,37 @@
     interpolation: linear
     hidden_fields: []
     listen:
-      Date Range: sessions.flexible_filter_date_range
-      Site: sessions.first_page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: sessions.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.flexible_filter_date_range
+      Site: sessions_snowflake.first_page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: sessions_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     row: 2
     col: 12
     width: 12
     height: 7
   - name: Page Views this Period and Percent Change Since Last Period
     title: Page Views this Period and Percent Change Since Last Period
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     type: single_value
     fields:
-    - sessions.date_window
-    - sessions.page_view_count
+    - sessions_snowflake.date_window
+    - sessions_snowflake.page_view_count
     filters:
-      sessions.is_in_current_period_or_last_period: 'Yes'
+      sessions_snowflake.is_in_current_period_or_last_period: 'Yes'
     sorts:
-    - sessions.date_window
+    - sessions_snowflake.date_window
     limit: 500
     dynamic_fields:
     - table_calculation: last_period
       label: last period
-      expression: "(${sessions.page_view_count} / offset(${sessions.page_view_count},\
+      expression: "(${sessions_snowflake.page_view_count} / offset(${sessions_snowflake.page_view_count},\
         \ 1)) - 1"
       value_format:
       value_format_name: percent_1
@@ -274,38 +274,38 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Date Range: sessions.flexible_filter_date_range
-      Site: sessions.first_page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: sessions.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.flexible_filter_date_range
+      Site: sessions_snowflake.first_page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: sessions_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     row: 0
     col: 12
     width: 6
     height: 2
   - name: Bounce Rate this Period and Percent Change Since Last Period
     title: Bounce Rate this Period and Percent Change Since Last Period
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     type: single_value
     fields:
-    - sessions.date_window
-    - sessions.bounced_user_count
-    - sessions.user_count
+    - sessions_snowflake.date_window
+    - sessions_snowflake.bounced_user_count
+    - sessions_snowflake.user_count
     filters:
-      sessions.is_in_current_period_or_last_period: 'Yes'
+      sessions_snowflake.is_in_current_period_or_last_period: 'Yes'
     sorts:
-    - sessions.date_window
+    - sessions_snowflake.date_window
     limit: 500
     dynamic_fields:
     - table_calculation: bounce_rate
       label: Bounce Rate
-      expression: "${sessions.bounced_user_count}/${sessions.user_count}"
+      expression: "${sessions_snowflake.bounced_user_count}/${sessions_snowflake.user_count}"
       value_format:
       value_format_name: percent_1
       _kind_hint: measure
@@ -353,38 +353,38 @@
     totals_color: "#808080"
     series_types: {}
     hidden_fields:
-    - sessions.user_count
-    - sessions.bounced_user_count
+    - sessions_snowflake.user_count
+    - sessions_snowflake.bounced_user_count
     y_axes: []
     listen:
-      Date Range: sessions.flexible_filter_date_range
-      Site: sessions.first_page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: sessions.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.flexible_filter_date_range
+      Site: sessions_snowflake.first_page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: sessions_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     row: 0
     col: 18
     width: 6
     height: 2
   - name: Traffic Summary
     title: Traffic Summary
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     type: looker_column
     fields:
-    - sessions.summary_date
-    - sessions.user_count
-    - sessions.session_count
-    - sessions.page_view_count
+    - sessions_snowflake.summary_date
+    - sessions_snowflake.user_count
+    - sessions_snowflake.session_count
+    - sessions_snowflake.page_view_count
     filters:
-      sessions.in_summary_period: 'Yes'
+      sessions_snowflake.in_summary_period: 'Yes'
     sorts:
-    - sessions.summary_date
+    - sessions_snowflake.summary_date
     limit: 500
     query_timezone: America/Vancouver
     stacking: ''
@@ -416,20 +416,20 @@
     show_silhouette: false
     totals_color: "#808080"
     listen:
-      Date Range: sessions.flexible_filter_date_range
-      Site: sessions.first_page_urlhost
-      Time Period for Traffic Summary: sessions.summary_granularity
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: sessions.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.flexible_filter_date_range
+      Site: sessions_snowflake.first_page_urlhost
+      Time Period for Traffic Summary: sessions_snowflake.summary_granularity
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: sessions_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     note_state: collapsed
     note_display: below
-    note_text: "This report summarizes page views, sessions, and users over the date\
+    note_text: "This report summarizes page views, sessions_snowflake, and users over the date\
       \ range. Use the \"Time Period\" filter to determine whether this report is\
       \ summarized by day, month, or year. \n\nWhen summarizing by month or year,\
       \ it will include all dates in any month or year that overlaps the date range."
@@ -439,14 +439,14 @@
     height: 8
   - name: Traffic Map
     title: Traffic Map
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     type: looker_map
     fields:
-    - sessions.geo_location
-    - sessions.session_count
+    - sessions_snowflake.geo_location
+    - sessions_snowflake.session_count
     sorts:
-    - sessions.session_count desc
+    - sessions_snowflake.session_count desc
     limit: 5000
     column_limit: 50
     query_timezone: America/Vancouver
@@ -507,36 +507,36 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Date Range: sessions.session_start_date
-      Site: sessions.first_page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: sessions.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.session_start_date
+      Site: sessions_snowflake.first_page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: sessions_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     row: 9
     col: 12
     width: 12
     height: 11
   - name: Traffic Channels
     title: Traffic Channels
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     type: looker_column
     fields:
-    - sessions.referrer_medium
-    - sessions.session_start_date
-    - sessions.session_count
+    - sessions_snowflake.referrer_medium
+    - sessions_snowflake.session_start_date
+    - sessions_snowflake.session_count
     pivots:
-    - sessions.referrer_medium
+    - sessions_snowflake.referrer_medium
     fill_fields:
-    - sessions.session_start_date
+    - sessions_snowflake.session_start_date
     sorts:
-    - sessions.referrer_medium 0
-    - sessions.session_start_date
+    - sessions_snowflake.referrer_medium 0
+    - sessions_snowflake.session_start_date
     limit: 1000
     column_limit: 50
     query_timezone: America/Vancouver
@@ -585,31 +585,31 @@
     totals_color: "#808080"
     hidden_fields: []
     listen:
-      Date Range: sessions.session_start_date
-      Site: sessions.first_page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: sessions.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.session_start_date
+      Site: sessions_snowflake.first_page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: sessions_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     row: 10
     col: 0
     width: 12
     height: 9
   - name: Top Pages
     title: Top Pages
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     type: table
     fields:
-    - page_views.page_title
-    - page_views.page_view_count
-    - page_views.page_display_url
+    - page_views_snowflake.page_title
+    - page_views_snowflake.page_view_count
+    - page_views_snowflake.page_display_url
     sorts:
-    - page_views.page_view_count desc
+    - page_views_snowflake.page_view_count desc
     limit: 20
     column_limit: 50
     show_view_names: false
@@ -619,8 +619,8 @@
     hide_totals: false
     hide_row_totals: false
     series_labels:
-      page_views.page_display_url: URL
-      page_views.page_title: Title
+      page_views_snowflake.page_display_url: URL
+      page_views_snowflake.page_title: Title
     table_theme: editable
     limit_displayed_rows: false
     enable_conditional_formatting: false
@@ -652,44 +652,44 @@
     series_types: {}
     y_axes: []
     listen:
-      Date Range: page_views.page_view_start_date
-      Site: page_views.page_urlhost
-      City: page_views.geo_city_and_region
-      Region: page_views.geo_region_name
-      Internal Gov Traffic: page_views.is_government
-      Is Mobile: page_views.device_is_mobile
+      Date Range: page_views_snowflake.page_view_start_date
+      Site: page_views_snowflake.page_urlhost
+      City: page_views_snowflake.geo_city_and_region
+      Region: page_views_snowflake.geo_region_name
+      Internal Gov Traffic: page_views_snowflake.is_government
+      Is Mobile: page_views_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: page_views.page_title
-      URL: page_views.page_url
+      Title: page_views_snowflake.page_title
+      URL: page_views_snowflake.page_url
     row: 19
     col: 0
     width: 12
     height: 16
   - name: Time of Day and Day of Week Heatmap
     title: Time of Day and Day of Week Heatmap
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     type: table
     fields:
-    - sessions.session_start_hour_of_day
-    - sessions.session_count
-    - sessions.session_start_day_of_week
+    - sessions_snowflake.session_start_hour_of_day
+    - sessions_snowflake.session_count
+    - sessions_snowflake.session_start_day_of_week
     pivots:
-    - sessions.session_start_day_of_week
+    - sessions_snowflake.session_start_day_of_week
     fill_fields:
-    - sessions.session_start_hour_of_day
-    - sessions.session_start_day_of_week
+    - sessions_snowflake.session_start_hour_of_day
+    - sessions_snowflake.session_start_day_of_week
     sorts:
-    - sessions.session_start_day_of_week 0
-    - sessions.session_start_hour_of_day
+    - sessions_snowflake.session_start_day_of_week 0
+    - sessions_snowflake.session_start_hour_of_day
     limit: 500
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
       label: Calculation 1
-      expression: if(${sessions.session_start_hour_of_day} > 12, concat(to_string(${sessions.session_start_hour_of_day}
-        - 12), " pm") , concat(to_string(${sessions.session_start_hour_of_day}), "
+      expression: if(${sessions_snowflake.session_start_hour_of_day} > 12, concat(to_string(${sessions_snowflake.session_start_hour_of_day}
+        - 12), " pm") , concat(to_string(${sessions_snowflake.session_start_hour_of_day}), "
         am") )
       value_format:
       value_format_name:
@@ -697,7 +697,7 @@
       _type_hint: string
     - table_calculation: calculation_2
       label: Calculation 2
-      expression: concat(to_string(${sessions.session_start_hour_of_day}),":00")
+      expression: concat(to_string(${sessions_snowflake.session_start_hour_of_day}),":00")
       value_format:
       value_format_name:
       _kind_hint: dimension
@@ -710,8 +710,8 @@
     hide_totals: false
     hide_row_totals: false
     series_labels:
-      sessions.session_start_hour_of_day: Hour of Day
-      sessions.session_start_day_of_week: Day of Week
+      sessions_snowflake.session_start_hour_of_day: Hour of Day
+      sessions_snowflake.session_start_day_of_week: Day of Week
     table_theme: white
     limit_displayed_rows: false
     enable_conditional_formatting: true
@@ -730,7 +730,7 @@
       italic: false
       strikethrough: false
       fields:
-      - sessions.session_count
+      - sessions_snowflake.session_count
       color_application:
         collection_id: legacy
         custom:
@@ -754,30 +754,30 @@
     - calculation_2
     y_axes: []
     listen:
-      Date Range: sessions.session_start_date
-      Site: sessions.first_page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: sessions.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.session_start_date
+      Site: sessions_snowflake.first_page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: sessions_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     row: 20
     col: 12
     width: 12
     height: 13
   - name: Top Landing Page
     title: Top Landing Page
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     type: looker_column
     fields:
-    - page_views.landing_page_count
-    - page_views.page_title
+    - page_views_snowflake.landing_page_count
+    - page_views_snowflake.page_title
     sorts:
-    - page_views.landing_page_count desc
+    - page_views_snowflake.landing_page_count desc
     limit: 10
     stacking: ''
     show_value_labels: false
@@ -806,36 +806,36 @@
     hidden_fields: []
     y_axes: []
     listen:
-      Date Range: page_views.page_view_start_date
-      Site: page_views.page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: page_views.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: page_views_snowflake.page_view_start_date
+      Site: page_views_snowflake.page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: page_views_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: page_views.page_title
-      URL: sessions.first_page_url
+      Title: page_views_snowflake.page_title
+      URL: sessions_snowflake.first_page_url
     row: 33
     col: 12
     width: 12
     height: 9
   - name: Top Referer URL Hosts
     title: Top Referer URL Hosts
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     type: looker_column
     fields:
-    - sessions.session_count
-    - sessions.referrer_urlhost
+    - sessions_snowflake.session_count
+    - sessions_snowflake.referrer_urlhost
     sorts:
-    - sessions.session_count desc
+    - sessions_snowflake.session_count desc
     limit: 20
     column_limit: 50
     dynamic_fields:
     - table_calculation: of_all_referrals
       label: "% of all referrals"
-      expression: "${sessions.session_count} / sum(${sessions.session_count})"
+      expression: "${sessions_snowflake.session_count} / sum(${sessions_snowflake.session_count})"
       value_format:
       value_format_name: percent_1
       _kind_hint: measure
@@ -854,9 +854,9 @@
     - label: ''
       orientation: left
       series:
-      - id: sessions.session_count
+      - id: sessions_snowflake.session_count
         name: Session Count
-        axisId: sessions.session_count
+        axisId: sessions_snowflake.session_count
       showLabels: true
       showValues: true
       unpinAxis: false
@@ -895,44 +895,44 @@
     totals_color: "#808080"
     hidden_fields: []
     listen:
-      Date Range: sessions.session_start_date
-      Site: sessions.first_page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: sessions.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.session_start_date
+      Site: sessions_snowflake.first_page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: sessions_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     row: 35
     col: 0
     width: 12
     height: 9
   - name: Top Browsers
     title: Top Browsers
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     type: table
     fields:
-    - sessions.browser_name
-    - sessions.session_count
-    - sessions.user_count
+    - sessions_snowflake.browser_name
+    - sessions_snowflake.session_count
+    - sessions_snowflake.user_count
     sorts:
-    - sessions.session_count desc
+    - sessions_snowflake.session_count desc
     limit: 20
     total: true
     dynamic_fields:
-    - table_calculation: of_sessions
-      label: "% of Sessions"
-      expression: "${sessions.session_count}/${sessions.session_count:total}"
+    - table_calculation: of_sessions_snowflake
+      label: "% of sessions_snowflake"
+      expression: "${sessions_snowflake.session_count}/${sessions_snowflake.session_count:total}"
       value_format:
       value_format_name: percent_2
       _kind_hint: measure
       _type_hint: number
     - table_calculation: of_visitors
       label: "% of Visitors"
-      expression: "${sessions.user_count}/${sessions.user_count:total}"
+      expression: "${sessions_snowflake.user_count}/${sessions_snowflake.user_count:total}"
       value_format:
       value_format_name: percent_2
       _kind_hint: measure
@@ -945,9 +945,9 @@
     hide_totals: false
     hide_row_totals: false
     series_labels:
-      sessions.browser_name: Browser
-      sessions.session_count: Sessions
-      sessions.user_count: Visitors
+      sessions_snowflake.browser_name: Browser
+      sessions_snowflake.session_count: sessions_snowflake
+      sessions_snowflake.user_count: Visitors
     table_theme: editable
     limit_displayed_rows: false
     enable_conditional_formatting: false
@@ -956,23 +956,23 @@
     hidden_fields:
     series_types: {}
     listen:
-      Date Range: sessions.session_start_date
-      Site: sessions.first_page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: sessions.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.session_start_date
+      Site: sessions_snowflake.first_page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: sessions_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     row: 42
     col: 12
     width: 12
     height: 10
   - name: Top Offsite Links
     title: Top Offsite Links
-    model: snowplow_web_block
+    model: snowplow_snowflake
     explore: clicks
     type: table
     fields:
@@ -996,7 +996,7 @@
     series_labels:
       clicks.target_url: Offsite Links
       clicks.click_count: Exits
-      clicks.session_count: Sessions
+      clicks.session_count: sessions_snowflake
       clicks.target_url_nopar: Offsite Link
     table_theme: editable
     limit_displayed_rows: false
@@ -1037,7 +1037,7 @@
     height: 10
   - name: Top Site Search Terms
     title: Top Site Search Terms
-    model: snowplow_web_block
+    model: snowplow_snowflake
     explore: searches
     type: table
     fields:
@@ -1111,7 +1111,7 @@
     height: 10
   - name: Top Downloaded Files
     title: Top Downloaded Files
-    model: snowplow_web_block
+    model: snowplow_snowflake
     explore: clicks
     type: table
     fields:
@@ -1141,7 +1141,7 @@
     series_labels:
       clicks.download_click_count: Downloads
       clicks.target_url: Downloaded File
-      clicks.session_count: Sessions
+      clicks.session_count: sessions_snowflake
     table_theme: editable
     limit_displayed_rows: false
     limit_displayed_rows_values:
@@ -1186,28 +1186,28 @@
     height: 7
   - name: Top Platforms
     title: Top Platforms
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     type: table
     fields:
-    - sessions.os_family
-    - sessions.session_count
-    - sessions.user_count
+    - sessions_snowflake.os_family
+    - sessions_snowflake.session_count
+    - sessions_snowflake.user_count
     sorts:
-    - sessions.session_count desc
+    - sessions_snowflake.session_count desc
     limit: 10
     total: true
     dynamic_fields:
-    - table_calculation: of_sessions
-      label: "% of Sessions"
-      expression: "${sessions.session_count}/${sessions.session_count:total}\n  "
+    - table_calculation: of_sessions_snowflake
+      label: "% of sessions_snowflake"
+      expression: "${sessions_snowflake.session_count}/${sessions_snowflake.session_count:total}\n  "
       value_format:
       value_format_name: percent_1
       _kind_hint: measure
       _type_hint: number
     - table_calculation: of_visitors
       label: "% of Visitors"
-      expression: "${sessions.user_count}/${sessions.user_count:total}\n  "
+      expression: "${sessions_snowflake.user_count}/${sessions_snowflake.user_count:total}\n  "
       value_format:
       value_format_name: percent_2
       _kind_hint: measure
@@ -1220,9 +1220,9 @@
     hide_totals: false
     hide_row_totals: false
     series_labels:
-      sessions.os_family: Operating System
-      sessions.session_count: Sessions
-      sessions.user_count: Visitors
+      sessions_snowflake.os_family: Operating System
+      sessions_snowflake.session_count: sessions_snowflake
+      sessions_snowflake.user_count: Visitors
     table_theme: editable
     limit_displayed_rows: false
     enable_conditional_formatting: false
@@ -1232,34 +1232,34 @@
     - operating_system
     series_types: {}
     listen:
-      Date Range: sessions.session_start_date
-      Site: sessions.first_page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: sessions.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.session_start_date
+      Site: sessions_snowflake.first_page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: sessions_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     row: 62
     col: 12
     width: 12
     height: 6
   - name: Marketing Campaigns
     title: Marketing Campaigns
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     type: looker_column
     fields:
-    - page_views.marketing_campaign
-    - page_views.session_count
-    - page_views.page_view_count
+    - page_views_snowflake.marketing_campaign
+    - page_views_snowflake.session_count
+    - page_views_snowflake.page_view_count
     filters:
-      page_views.marketing_campaign: "-EMPTY"
+      page_views_snowflake.marketing_campaign: "-EMPTY"
     sorts:
-    - page_views.page_view_count desc
-    - page_views.marketing_campaign
+    - page_views_snowflake.page_view_count desc
+    - page_views_snowflake.marketing_campaign
     limit: 20
     column_limit: 50
     query_timezone: America/Vancouver
@@ -1282,12 +1282,12 @@
     - label: ''
       orientation: left
       series:
-      - id: page_views.session_count
+      - id: page_views_snowflake.session_count
         name: Session Count
-        axisId: page_views.session_count
-      - id: page_views.page_view_count
+        axisId: page_views_snowflake.session_count
+      - id: page_views_snowflake.page_view_count
         name: Page View Count
-        axisId: page_views.page_view_count
+        axisId: page_views_snowflake.page_view_count
       showLabels: true
       showValues: true
       unpinAxis: false
@@ -1312,16 +1312,16 @@
     show_silhouette: false
     totals_color: "#808080"
     listen:
-      Date Range: sessions.session_start_date
-      Site: sessions.first_page_urlhost
-      City: sessions.geo_city_and_region
-      Region: sessions.geo_region_name
-      Internal Gov Traffic: page_views.is_government
-      Is Mobile: sessions.device_is_mobile
+      Date Range: sessions_snowflake.session_start_date
+      Site: sessions_snowflake.first_page_urlhost
+      City: sessions_snowflake.geo_city_and_region
+      Region: sessions_snowflake.geo_region_name
+      Internal Gov Traffic: page_views_snowflake.is_government
+      Is Mobile: sessions_snowflake.device_is_mobile
       Theme: cmslite_themes.theme
       Sub Theme: cmslite_themes.subtheme
-      Title: sessions.first_page_title
-      URL: sessions.first_page_url
+      Title: sessions_snowflake.first_page_title
+      URL: sessions_snowflake.first_page_url
     row: 61
     col: 0
     width: 12
@@ -1339,68 +1339,68 @@
     default_value: www2.gov.bc.ca
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     listens_to_filters: []
-    field: sessions.first_page_urlhost
+    field: sessions_snowflake.first_page_urlhost
   - name: Time Period for Traffic Summary
     title: Time Period for Traffic Summary
     type: field_filter
     default_value: Day
     allow_multiple_values: true
     required: true
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     listens_to_filters: []
-    field: sessions.summary_granularity
+    field: sessions_snowflake.summary_granularity
   - name: City
     title: City
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     listens_to_filters: []
-    field: sessions.geo_city_and_region
+    field: sessions_snowflake.geo_city_and_region
   - name: Region
     title: Region
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     listens_to_filters: []
-    field: sessions.geo_region_name
+    field: sessions_snowflake.geo_region_name
   - name: Internal Gov Traffic
     title: Internal Gov Traffic
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: page_views.is_government
+    field: page_views_snowflake.is_government
   - name: Is Mobile
     title: Is Mobile
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
-    field: sessions.device_is_mobile
+    field: sessions_snowflake.device_is_mobile
   - name: Theme
     title: Theme
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
     field: cmslite_themes.theme
   - name: Sub Theme
@@ -1409,8 +1409,8 @@
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: page_views
+    model: snowplow_snowflake
+    explore: page_views_snowflake
     listens_to_filters: []
     field: cmslite_themes.subtheme
   - name: Title
@@ -1419,17 +1419,17 @@
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     listens_to_filters: []
-    field: sessions.first_page_title
+    field: sessions_snowflake.first_page_title
   - name: URL
     title: URL
     type: field_filter
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: snowplow_web_block
-    explore: sessions
+    model: snowplow_snowflake
+    explore: sessions_snowflake
     listens_to_filters: []
-    field: sessions.first_page_url
+    field: sessions_snowflake.first_page_url
