@@ -40,7 +40,7 @@ view: shared_fields_common {
   dimension: browser_name {
     description: "The browser name. Depending on the browser, name often matches the family, but can also include major version numbers."
     type: string
-    sql: ${TABLE}.br_name ;;
+    sql: ${TABLE}.agent_name ;;
     drill_fields: [os_family,browser_name,browser_version,useragent]
     group_label: "Browser"
   }
@@ -63,7 +63,7 @@ view: shared_fields_common {
   dimension: browser_type {
     description: "Browser types can be mobile or non-mobile."
     type: string
-    sql: ${TABLE}.br_type ;;
+    sql: ${TABLE}.device_class ;;
     group_label: "Browser"
   }
 
@@ -668,7 +668,7 @@ view: shared_fields_common {
 
   dimension: page_referrer {
     type: string
-    sql: ${TABLE}.page_referrer ;;
+    sql: ${TABLE}.referrer ;;
     group_label: "Referrer"
     link: {
       label: "Visit Page"
@@ -679,7 +679,7 @@ view: shared_fields_common {
 
   dimension: page_referrer_display_url {
     type: string
-    sql: ${TABLE}.page_referrer_display_url;;
+    sql:  ${TABLE}.refr_urlscheme || '://' || ${TABLE}.refr_urlhost || regexp_replace(${TABLE}.refr_urlpath, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
     group_label: "Referrer"
     drill_fields: [page_referrer]
     link: {

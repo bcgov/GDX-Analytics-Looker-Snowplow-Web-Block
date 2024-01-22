@@ -18,12 +18,24 @@ view: page_views_bdp {
     group_label: "Session"
   }
 
+  dimension: browser_name {
+    sql: ${TABLE}.agent_name ;;
+  }
+
   dimension: browser_family {
     description: "The major family of browser, regardless of name or version. e.g., Chrome, Safari, Internet Explorer, etc."
     type: string
     sql: ${TABLE}.useragent_family ;;
     drill_fields: [os_family,browser_name,browser_version,useragent]
     group_label: "Browser"
+  }
+
+  dimension: device_type {
+    description: "A label that describes the viewing device type as Mobile or Computer."
+    type: string
+    sql: ${TABLE}.operating_system_class ;;
+    drill_fields: [browser_family]
+    group_label: "Device"
   }
 
   dimension: page_display_url {
