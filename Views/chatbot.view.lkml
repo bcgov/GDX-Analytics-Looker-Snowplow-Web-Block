@@ -1,18 +1,24 @@
 # Version: 1.3.0
 view: chatbot {
   derived_table: {
-    sql: with chatbot_combined AS ( -- link together V1 and V2, filling in NULL for the newly added fields that aren't in V1
-          SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree,
-              ref_parent, action, agent, text, NULL AS frontend_id, NULL AS intent_confidence, NULL AS "sentiment.magnitude",
-              NULL AS "sentiment.score", NULL AS session_id
+    sql: with chatbot_combined AS ( -- link together V1, V2, and V3, filling in NULL for the newly added fields that aren't in V1 or V2
+         SELECT root_id, root_tstamp, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp,
+              action, agent, text, NULL AS frontend_id, NULL AS intent_confidence, NULL AS "sentiment.magnitude",
+              NULL AS "sentiment.score", NULL AS session_id, NULL AS source_intent
             FROM atomic.ca_bc_gov_chatbot_chatbot_1
-            -- WHERE text <> 'BOT_Chatbot_Welcome' OR text IS NULL
+            WHERE {% incrementcondition %} timestamp {% endincrementcondition %}-- this matches the table column used by increment_key
           UNION
-          SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree,
-              ref_parent, action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score",
-              session_id
+          SELECT root_id, root_tstamp, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp,
+              action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score",
+              session_id, NULL AS source_intent
             FROM atomic.ca_bc_gov_chatbot_chatbot_2
-            -- WHERE text <> 'BOT_Chatbot_Welcome' OR text IS NULL
+            WHERE {% incrementcondition %} timestamp {% endincrementcondition %}-- this matches the table column used by increment_key
+         UNION
+          SELECT root_id, root_tstamp, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp,
+              action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score",
+              session_id, source_intent
+            FROM atomic.ca_bc_gov_chatbot_chatbot_3
+            WHERE {% incrementcondition %} timestamp {% endincrementcondition %}-- this matches the table column used by increment_key
         )
         SELECT wp.id,
           cb.root_id AS chat_event_id,
@@ -24,7 +30,9 @@ view: chatbot {
           "sentiment.magnitude" AS sentiment_magnitude,
           "sentiment.score" AS sentiment_score,
           session_id,
-          CONVERT_TIMEZONE('UTC', 'America/Vancouver', cb.root_tstamp) AS timestamp,
+          SPLIT_PART(session_id,'_',1) AS which_bot,
+          source_intent,
+          "timestamp",
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
           CASE WHEN action = 'get_answer' THEN 1 ELSE 0 END AS answer_count,
           CASE WHEN action = 'open' THEN 1 ELSE 0 END AS open_count,
@@ -54,8 +62,6 @@ view: chatbot {
           --  ELSE text END AS link_click_url
           FROM chatbot_combined AS cb
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
-          -- set to run incrementally
-          WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
           ;;
     distribution: "id"
     sortkeys: ["id","timestamp"]
@@ -75,6 +81,7 @@ view: chatbot {
       label: "Page View ID"
       sql: ${TABLE}.id ;;
     }
+    dimension: which_bot {}
     dimension: chat_event_id {
       type: string
       sql: ${TABLE}.chat_event_id ;;
@@ -127,7 +134,10 @@ view: chatbot {
     dimension: chat_session_id {
       sql: ${TABLE}.session_id ;;
     }
-
+    dimension: source_intent {
+      type: string
+      sql: ${TABLE}.source_intent ;;
+    }
     dimension: text {
       type: string
       sql: ${TABLE}.text ;;

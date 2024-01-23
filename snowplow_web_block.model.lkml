@@ -303,6 +303,10 @@ explore: chatbot {
     field: page_views.page_urlhost
     user_attribute: urlhost
   }
+  access_filter: {
+    field: chatbot.which_bot
+    user_attribute: which_bot
+  }
 }
 
 explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes of making it faster
@@ -328,6 +332,10 @@ explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes
   access_filter: {
     field: chatbot_intents_and_clicks.page_urlhost
     user_attribute: urlhost
+  }
+  access_filter: {
+    field: chatbot_intents_and_clicks.which_bot
+    user_attribute: which_bot
   }
 }
 

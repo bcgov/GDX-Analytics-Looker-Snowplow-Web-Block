@@ -3,18 +3,30 @@ include: "/Includes/date_comparisons_common.view"
 
 view: chatbot_intents_and_clicks {
   derived_table: {
-    sql: with chatbot_combined AS ( -- link together V1 and V2, filling in NULL for the newly added fields that aren't in V1
-          SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree,
-              ref_parent, action, agent, text, NULL AS frontend_id, NULL AS intent_confidence, NULL AS "sentiment.magnitude",
-              NULL AS "sentiment.score", NULL AS session_id
+    sql: with chatbot_combined AS ( -- link together V1, V2, and V3, filling in NULL for the newly added fields that aren't in V1 or V2
+          (
+          SELECT root_id, root_tstamp, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp,
+              action, agent, text, NULL AS frontend_id, NULL AS intent_confidence, NULL AS "sentiment.magnitude",
+              NULL AS "sentiment.score", NULL AS session_id, NULL AS source_intent
             FROM atomic.ca_bc_gov_chatbot_chatbot_1
-            -- WHERE text <> 'BOT_Chatbot_Welcome' OR text IS NULL
+            WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+          )
           UNION
-          SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree,
-              ref_parent, action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score",
-              session_id
+          (
+          SELECT root_id, root_tstamp, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp,
+              action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score",
+              session_id, NULL AS source_intent
             FROM atomic.ca_bc_gov_chatbot_chatbot_2
-            --WHERE text <> 'BOT_Chatbot_Welcome' OR text IS NULL
+            WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+          )
+         UNION
+          (
+          SELECT root_id, root_tstamp, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp,
+              action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score",
+              session_id, source_intent
+            FROM atomic.ca_bc_gov_chatbot_chatbot_3
+            WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+          )
         )
         SELECT wp.id,
           cb.root_id AS chat_event_id,
@@ -28,7 +40,9 @@ view: chatbot_intents_and_clicks {
           "sentiment.magnitude" AS sentiment_magnitude,
           "sentiment.score" AS sentiment_score,
           session_id,
-          CONVERT_TIMEZONE('UTC', 'America/Vancouver', cb.root_tstamp) AS timestamp,
+          SPLIT_PART(session_id,'_',1) AS which_bot,
+          source_intent,
+          "timestamp",
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
           CASE WHEN action = 'get_answer' THEN 1 ELSE 0 END AS answer_count,
           CASE WHEN action = 'open' THEN 1 ELSE 0 END AS open_count,
@@ -73,7 +87,6 @@ view: chatbot_intents_and_clicks {
           LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
           LEFT JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
           WHERE action IN ('get_answer', 'link_click','ask_question','click_chip','open', 'click_footer')
-              AND {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
           ;;
     distribution: "id"
     sortkeys: ["id","timestamp"]
@@ -103,6 +116,10 @@ view: chatbot_intents_and_clicks {
       type: string
       sql: ${TABLE}.page_urlhost ;;
     }
+    dimension: which_bot {
+      type: string
+      sql: ${TABLE}.which_bot ;;
+    }
     dimension: chat_event_id {
       type: string
       sql: ${TABLE}.chat_event_id ;;
@@ -110,6 +127,10 @@ view: chatbot_intents_and_clicks {
     dimension: action {
       type: string
       sql: ${TABLE}.action ;;
+    }
+    dimension: source_intent {
+      type: string
+      sql: ${TABLE}.source_intent ;;
     }
     dimension: link_click_url {
       type: string
