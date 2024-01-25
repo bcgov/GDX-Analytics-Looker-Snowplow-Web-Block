@@ -40,7 +40,7 @@ view: chatbot_intents_and_clicks {
           "sentiment.magnitude" AS sentiment_magnitude,
           "sentiment.score" AS sentiment_score,
           session_id,
-          SPLIT_PART(session_id,'_',1) AS which_bot,
+          COALESCE(SPLIT_PART(session_id,'_',1),'') AS which_bot,
           source_intent,
           "timestamp",
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
