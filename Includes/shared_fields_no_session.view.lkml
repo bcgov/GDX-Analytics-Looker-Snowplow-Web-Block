@@ -421,4 +421,8 @@ view: shared_fields_no_session {
     group_label: "LDB Custom Fields"
   }
 
+
+  dimension: foi_recorduid { # Used for reporting on FOI record requests from the Open Info Portal
+    sql: REGEXP_SUBSTR(page_urlquery, 'recorduid=([A-Z]*-[0-9]*-[0-9]*)', 1,1,'pe');;
+  }
 }
