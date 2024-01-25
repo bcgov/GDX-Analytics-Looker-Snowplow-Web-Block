@@ -98,10 +98,12 @@ view: pims_listing_clicks{
 
   measure: map_click_count {
     label: "Map Click Count"
+    sql: ${TABLE}.map_count ;;
     type: sum
   }
   measure: property_inventory_click_count {
     label: "Property Inventory Click Count"
+    sql: ${TABLE}.property_inventory_count ;;
     type: sum
   }
 
@@ -113,7 +115,7 @@ view: pims_listing_clicks{
   }
 
   measure: property_inventory_session_count {
-    label: "Property Inventory Click Count"
+    label: "Property Inventory Session Count"
     type: count_distinct
     sql: ${TABLE}.property_inventory_session_count;;
     sql_distinct_key: ${TABLE}.property_inventory_session_count;;

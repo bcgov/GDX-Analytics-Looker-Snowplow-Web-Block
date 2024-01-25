@@ -303,6 +303,10 @@ explore: chatbot {
     field: page_views.page_urlhost
     user_attribute: urlhost
   }
+  access_filter: {
+    field: chatbot.which_bot
+    user_attribute: which_bot
+  }
 }
 
 explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes of making it faster
@@ -328,6 +332,10 @@ explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes
   access_filter: {
     field: chatbot_intents_and_clicks.page_urlhost
     user_attribute: urlhost
+  }
+  access_filter: {
+    field: chatbot_intents_and_clicks.which_bot
+    user_attribute: which_bot
   }
 }
 
@@ -1145,6 +1153,18 @@ explore: idim_mobile_errors {
     field: app_id
     user_attribute: app_id
   }
+  join: mobile_screen_views {
+    type:  left_outer
+    sql_on: ${mobile_screen_views.screen_view_id} = ${idim_mobile_errors.screen_view_id} ;;
+    relationship: many_to_one
+  }
+  join: mobile_sessions {
+    type:  left_outer
+    sql_on: ${mobile_sessions.session_id} = ${idim_mobile_errors.session_id} ;;
+    relationship: many_to_one
+  }
+
+
 }
 
 explore: csrs_clicks {
@@ -1182,7 +1202,6 @@ explore: corp_calendar_searches {
 }
 
 explore: google_translate {
-  persist_for: "60 minutes"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -1300,6 +1319,53 @@ explore: pims_searches {
   }
   access_filter: {
     field: pims_searches.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: drivebc_actions {
+  label: "DriveBC Actions"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${drivebc_actions.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: drivebc_actions.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: tenancy_dispute_clicks {
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${tenancy_dispute_clicks.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: tenancy_dispute_clicks.page_urlhost
     user_attribute: urlhost
   }
 }
