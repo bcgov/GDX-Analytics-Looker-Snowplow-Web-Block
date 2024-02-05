@@ -40,7 +40,7 @@ view: shared_fields_common {
   dimension: browser_name {
     description: "The browser name. Depending on the browser, name often matches the family, but can also include major version numbers."
     type: string
-    sql: ${TABLE}.agent_name ;;
+    sql: ${TABLE}.br_name ;;
     drill_fields: [os_family,browser_name,browser_version,useragent]
     group_label: "Browser"
   }
@@ -668,7 +668,7 @@ view: shared_fields_common {
 
   dimension: page_referrer {
     type: string
-    sql: ${TABLE}.referrer ;;
+    sql: ${TABLE}.page_referrer ;;
     group_label: "Referrer"
     link: {
       label: "Visit Page"

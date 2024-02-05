@@ -21,6 +21,20 @@ view: sessions_bdp {
     group_label: "Device"
   }
 
+  dimension: browser_name {
+    sql: ${TABLE}.agent_name ;;
+  }
+  dimension: browser_family {
+    sql: ${TABLE}.useragent_family ;;
+  }
+  dimension: browser_type {
+    sql: ${TABLE}.br_type ;;
+  }
+  dimension: page_referrer {
+    sql: ${TABLE}.referrer ;;
+  }
+
+
   # NECESSARY for date_comparisons_common
   dimension_group: filter_start {
     sql: ${TABLE}.start_tstamp ;;

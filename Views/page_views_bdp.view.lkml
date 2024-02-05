@@ -21,14 +21,17 @@ view: page_views_bdp {
   dimension: browser_name {
     sql: ${TABLE}.agent_name ;;
   }
-
   dimension: browser_family {
-    description: "The major family of browser, regardless of name or version. e.g., Chrome, Safari, Internet Explorer, etc."
-    type: string
     sql: ${TABLE}.useragent_family ;;
-    drill_fields: [os_family,browser_name,browser_version,useragent]
-    group_label: "Browser"
   }
+  dimension: browser_type {
+    sql: ${TABLE}.br_type ;;
+  }
+  dimension: page_referrer {
+    sql: ${TABLE}.referrer ;;
+  }
+
+
 
   dimension: device_type {
     description: "A label that describes the viewing device type as Mobile or Computer."
