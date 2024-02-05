@@ -679,7 +679,7 @@ view: shared_fields_common {
 
   dimension: page_referrer_display_url {
     type: string
-    sql:  ${TABLE}.page_referrer_display_url;;
+    sql: ${TABLE}.page_referrer_display_url;;
     group_label: "Referrer"
     drill_fields: [page_referrer]
     link: {
