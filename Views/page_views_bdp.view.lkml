@@ -31,6 +31,9 @@ view: page_views_bdp {
     sql: ${TABLE}.referrer ;;
   }
 
+  dimension: page_referrer_display_url {
+    sql:  ${TABLE}.refr_urlscheme || '://' || ${TABLE}.refr_urlhost || regexp_replace(${TABLE}.refr_urlpath, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
+  }
 
 
   dimension: device_type {
