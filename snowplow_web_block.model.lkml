@@ -303,6 +303,10 @@ explore: chatbot {
     field: page_views.page_urlhost
     user_attribute: urlhost
   }
+  access_filter: {
+    field: chatbot.which_bot
+    user_attribute: which_bot
+  }
 }
 
 explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes of making it faster
@@ -328,6 +332,10 @@ explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes
   access_filter: {
     field: chatbot_intents_and_clicks.page_urlhost
     user_attribute: urlhost
+  }
+  access_filter: {
+    field: chatbot_intents_and_clicks.which_bot
+    user_attribute: which_bot
   }
 }
 
@@ -937,13 +945,13 @@ explore: asset_downloads {
 
   join: cmslite_metadata {
     type: left_outer
-    sql_on: ${asset_downloads.asset_display_url} = ${cmslite_metadata.hr_url} ;;
+    sql_on: ${asset_downloads.asset_url_nopar_case_insensitive} = ${cmslite_metadata.hr_url} ;;
     relationship: one_to_one
   }
 
   join: asset_themes {
     type: left_outer
-    sql_on: ${asset_downloads.asset_display_url} = ${asset_themes.hr_url} ;;
+    sql_on: ${asset_downloads.asset_url_nopar_case_insensitive} = ${asset_themes.hr_url} ;;
     relationship: one_to_one
   }
 }
