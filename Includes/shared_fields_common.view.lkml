@@ -63,7 +63,7 @@ view: shared_fields_common {
   dimension: browser_type {
     description: "Browser types can be mobile or non-mobile."
     type: string
-    sql: ${TABLE}.device_class ;;
+    sql: ${TABLE}.br_type ;;
     group_label: "Browser"
   }
 

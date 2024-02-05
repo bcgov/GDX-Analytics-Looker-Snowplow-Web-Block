@@ -28,7 +28,7 @@ view: sessions_bdp {
     sql: ${TABLE}.useragent_family ;;
   }
   dimension: browser_type {
-    sql: ${TABLE}.br_type ;;
+    sql: ${TABLE}.device_class ;;
   }
   dimension: page_referrer {
     sql: ${TABLE}.referrer ;;
