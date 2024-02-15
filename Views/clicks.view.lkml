@@ -14,6 +14,13 @@ view: clicks {
     sql: ${TABLE}.collector_tstamp ;;
   }
 
+
+  dimension_group: fiscal {
+    type: time
+    timeframes: [fiscal_quarter_of_year, fiscal_quarter, fiscal_year]
+    sql: ${TABLE}.collector_tstamp ;;
+  }
+
   dimension: sbc_business_hours {
     type: yesno
     description: "Is the time between 7:30-5:00 M-F"
