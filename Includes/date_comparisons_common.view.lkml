@@ -42,6 +42,7 @@ view: date_comparisons_common {
     sql: {% date_start flexible_filter_date_range %} ;;
     #sql: CASE WHEN ({% date_start flexible_filter_date_range %}  IS NULL) THEN '2017-01-01'
     #      ELSE {% date_start flexible_filter_date_range %}  END;;
+    hidden: yes
   }
 
   # NOTE: to handle "any date" we need to give a latest possible date for date_end. This is tomorrow's date.
@@ -50,6 +51,7 @@ view: date_comparisons_common {
     sql: {% date_end flexible_filter_date_range %} ;;
     #sql: CASE WHEN ({% date_end flexible_filter_date_range %}  IS NULL) THEN (DATEADD(day,'1', DATE_TRUNC('day',GETDATE())))
     #      ELSE {% date_end flexible_filter_date_range %}  END;;
+    hidden: yes
   }
 
   # NEED TO ADD DOCUMENTATION FOR EACH OCCURENCE OF THIS BELOW
@@ -68,8 +70,13 @@ view: date_comparisons_common {
   dimension: period_difference {
     group_label: "Flexible Filter"
     type: number
-    sql:  DATEDIFF(DAY, ${date_start}, ${date_end})  ;;
-    }
+    sql:  CASE WHEN {% parameter comparison_period %} = 'No Comparison' THEN 0
+          WHEN {% parameter comparison_period %} = 'Previous Year' THEN DATEDIFF(DAY, DATEADD(YEAR, -1, ${date_start}), ${date_start})
+          WHEN {% parameter comparison_period %} = 'Previous Month' THEN DATEDIFF(DAY, DATEADD(MONTH, -1, ${date_start}), ${date_start})
+          WHEN {% parameter comparison_period %} = 'Previous Quarter' THEN DATEDIFF(DAY, DATEADD(QUARTER, -1, ${date_start}), ${date_start})
+      ELSE DATEDIFF(DAY, ${date_start}, ${date_end})  END ;;
+    hidden: yes
+  }
 
   # is_in_current_period_or_last_period determines which sessions occur on an after the start of the last_period
   # and before end of the current_period, as selected on the flexible_filter_date_range filter in an Explore.
@@ -109,7 +116,7 @@ view: date_comparisons_common {
   dimension: date_window {
     group_label: "Flexible Filter"
     label: "{% if comparison_period._parameter_value == \"'No Comparison'\" %}  {% else %} Date Window {% endif %}"
-    sql: CASE
+    sql: CASE WHEN {% parameter comparison_period %} = 'No Comparison' THEN ' '
             WHEN ${filter_start_raw} >= ${date_start} AND ${filter_start_raw} < ${date_end} THEN 'Current Period'
             WHEN ${filter_start_raw} >= DATEADD(DAY, -${period_difference}, ${date_start})
                   AND ${filter_start_raw} <  DATEADD(DAY, -${period_difference}, ${date_end}) THEN 'Last Period'
