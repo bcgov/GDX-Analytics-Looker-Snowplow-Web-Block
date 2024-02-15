@@ -21,6 +21,9 @@ connection: "redshift_pacific_time"
 # Set the week start day to Sunday. Default is Monday
 week_start_day: sunday
 
+# Set the fiscal offset to 3, to indicate an April 1 to March 31 fiscal year
+fiscal_month_offset: 3
+
 # include all views in this project
 include: "/Views/*.view"
 

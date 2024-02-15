@@ -100,6 +100,11 @@ view: page_views {
     sql: ${TABLE}.page_view_start_time ;;
     #X# group_label:"Page View Time"
   }
+  dimension_group: fiscal {
+    type: time
+    timeframes: [fiscal_quarter_of_year, fiscal_quarter, fiscal_year]
+    sql: ${TABLE}.page_view_start_time ;;
+  }
 
   dimension: bc_bid_page_view_start_week {
     label: "Week"
