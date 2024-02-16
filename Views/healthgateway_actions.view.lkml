@@ -17,6 +17,9 @@ view: healthgateway_actions {
           ga.root_id AS root_id,
           wp.id AS page_view_id,
           domain_sessionid AS session_id,
+          CASE WHEN name_tracker = 'rt' THEN domain_userid  -- this matches the column used in the page_views model for web
+                ELSE network_userid -- to pull the other for mobile apps
+            END AS user_id,
           COALESCE(events.page_urlhost,'') AS page_urlhost,
           events.page_url,
           action,
@@ -32,7 +35,8 @@ view: healthgateway_actions {
           CASE WHEN action = 'download_report' THEN 1 ELSE 0 end AS download_report_count,
           CASE WHEN action = 'download_card' THEN 1 ELSE 0 end AS download_card_count,
           CASE WHEN action = 'view_card' THEN 1 ELSE 0 end AS view_card_count,
-          ga.timestamp
+          ga.timestamp,
+          CASE WHEN name_tracker = 'rt' THEN dvce_type ELSE name_tracker END AS device_type
         FROM ga
           LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON ga.root_id = wp.root_id AND ga.root_tstamp = wp.root_tstamp
@@ -59,8 +63,7 @@ view: healthgateway_actions {
     sql: ${TABLE}.page_urlhost ;;
   }
   dimension: page_url {}
-
-
+  dimension: device_type {}
   dimension: action {}
 
   dimension: action_name {
@@ -101,6 +104,12 @@ view: healthgateway_actions {
     sql: ${TABLE}.session_id  ;;
   }
 
+  measure: user_count {
+    description: "Count of the outcome over distinct User IDs"
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.user_id ;;
+    sql: ${TABLE}.user_id  ;;
+  }
   measure: download_report_count {
     type: sum
     sql: ${TABLE}.download_report_count;;
