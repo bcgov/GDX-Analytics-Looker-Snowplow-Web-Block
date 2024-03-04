@@ -93,7 +93,7 @@ view: chatbot {
     dimension: link_click_url {
       type: string
       sql: ${TABLE}.link_click_url ;;
-      drill_fields: [page_views.chatbot_page_display_url]
+      drill_fields: [page_views.chatbot_page_display_url,source_intent]
       link: {
         label: "Visit Page"
         url: "{{ value }}"

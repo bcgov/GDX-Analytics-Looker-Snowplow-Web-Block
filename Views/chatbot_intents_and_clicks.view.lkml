@@ -135,7 +135,7 @@ view: chatbot_intents_and_clicks {
     dimension: link_click_url {
       type: string
       sql: ${TABLE}.link_click_url ;;
-      drill_fields: [page_views.chatbot_page_display_url]
+      drill_fields: [page_views.chatbot_page_display_url,source_intent]
       link: {
         label: "Visit Page"
         url: "{{ value }}"
@@ -172,7 +172,9 @@ view: chatbot_intents_and_clicks {
       group_label: "Intents"
     }
 
-    dimension: chip_text {}
+    dimension: chip_text {
+      drill_fields: [source_intent]
+    }
 
     dimension: frontend_id {}
     dimension: intent_confidence {
