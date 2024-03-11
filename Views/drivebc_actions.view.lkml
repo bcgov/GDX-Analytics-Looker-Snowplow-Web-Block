@@ -24,14 +24,15 @@ view: drivebc_actions {
       LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
           ON dba.root_id = wp.root_id AND dba.root_tstamp = wp.root_tstamp
       LEFT JOIN atomic.events ON dba.root_id = events.event_id AND dba.root_tstamp = events.collector_tstamp
+      WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+
       ;;
     distribution: "page_view_id"
     sortkeys: ["page_view_id","timestamp"]
-    persist_for: "2 hours"
-    #datagroup_trigger: datagroup_healthgateway_updated
-    #increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
+    datagroup_trigger: datagroup_25_55
+    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
     # to reprocess up to 3 hours of results
-    #increment_offset: 3
+    increment_offset: 3
   }
 
   extends: [date_comparisons_common]
