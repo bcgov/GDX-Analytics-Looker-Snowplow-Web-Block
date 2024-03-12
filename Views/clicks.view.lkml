@@ -117,6 +117,21 @@ view: clicks {
     }
   }
 
+  dimension: target_url_gov {
+    type: string
+    sql:  CASE WHEN ${TABLE}.target_url LIKE '#%' THEN ${page_url} || ${target_url}
+            WHEN ${TABLE}.target_url LIKE 'www2.gov.bc.ca%' THEN 'https://'|| ${target_url}
+            ELSE ${target_url}
+          END;;
+    group_label: "Target"
+    link: {
+      label: "Visit Link"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+    description: "For use when target_display_url isn't displaying correctly on links from CMF"
+  }
+
   dimension: target_url_fragment {
     type: string
     sql: SPLIT_PART(${TABLE}.target_url,'#',2) ;;
