@@ -444,6 +444,14 @@ dimension: chatbot_page_display_url {
          ELSE NULL END;;
     group_label: "Temporary Fixes"
   }
+  dimension: gov_search_terms_lower {
+    type: string
+    sql: CASE WHEN ${page_url} LIKE 'https://www2.gov.bc.ca/gov/search%' AND ${page_urlquery} LIKE '%q=%' THEN
+            LOWER(REPLACE(REPLACE(SPLIT_PART(SPLIT_PART(${page_urlquery}, 'q=', 2),'&',1),'+',' '),'%20',' '))
+         ELSE NULL END;;
+    group_label: "Temporary Fixes"
+  }
+
 
   # MEASURES
 
