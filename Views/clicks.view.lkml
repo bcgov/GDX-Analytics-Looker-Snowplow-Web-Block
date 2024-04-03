@@ -374,7 +374,7 @@ view: clicks {
   #was the click to a different domain name (url host) with the fix for Gov clicks -- see also target_url_gov
   dimension: offsite_click_gov {
     type:  yesno
-    sql: CASE WHEN ${TABLE}.page_urlhost = 'www2.gov.bc.ca' AND (${TABLE}.target_url LIKE '#%' OR ${TABLE}.target_url LIKE 'www2.gov.bc.ca%') THEN TRUE
+    sql: CASE WHEN ${TABLE}.page_urlhost = 'www2.gov.bc.ca' AND (${TABLE}.target_url LIKE '#%' OR ${TABLE}.target_url LIKE 'www2.gov.bc.ca%') THEN FALSE
         ELSE ${TABLE}.offsite_click
         END ;;
     group_label: "Target"
