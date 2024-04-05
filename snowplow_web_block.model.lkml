@@ -1166,8 +1166,22 @@ explore: idim_mobile_errors {
     sql_on: ${mobile_sessions.session_id} = ${idim_mobile_errors.session_id} ;;
     relationship: many_to_one
   }
-
-
+}
+explore: idim_actions {
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
+  join: mobile_screen_views {
+    type:  left_outer
+    sql_on: ${mobile_screen_views.screen_view_id} = ${idim_actions.screen_view_id} ;;
+    relationship: many_to_one
+  }
+  join: mobile_sessions {
+    type:  left_outer
+    sql_on: ${mobile_sessions.session_id} = ${idim_actions.session_id} ;;
+    relationship: many_to_one
+  }
 }
 
 explore: csrs_clicks {
