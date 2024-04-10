@@ -49,6 +49,8 @@ view: chatbot_intents_and_clicks {
           CASE WHEN action = 'link_click' THEN 1 ELSE 0 END AS link_click_count,
           CASE WHEN action = 'click_chip' THEN 1 ELSE 0 END AS chip_count,
           CASE WHEN action = 'click_footer' THEN 1 ELSE 0 END AS click_footer,
+          CASE WHEN action = 'feeback_thumbs_down' THEN 1 ELSE 0 END AS feeback_thumbs_down_count,
+          CASE WHEN action = 'feeback_thumbs_up' THEN 1 ELSE 0 END AS feeback_thumbs_up_count,
           CASE WHEN action = 'get_answer' THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
           CASE WHEN action = 'get_answer' THEN text ELSE NULL END AS intent_raw,
           CASE
@@ -232,6 +234,14 @@ view: chatbot_intents_and_clicks {
     measure: click_footer {
       type: sum
     }
+
+    measure: feeback_thumbs_down_count {
+      type: sum
+    }
+    measure: feeback_thumbs_up_count {
+      type: sum
+    }
+
     measure: extra_answer_count {
       type: sum
       sql: ${TABLE}.answer_count - ${TABLE}.question_count ;;
