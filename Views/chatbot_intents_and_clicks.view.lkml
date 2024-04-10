@@ -51,15 +51,15 @@ view: chatbot_intents_and_clicks {
           CASE WHEN action = 'click_footer' THEN 1 ELSE 0 END AS click_footer,
           CASE WHEN action = 'feeback_thumbs_down' THEN 1 ELSE 0 END AS feeback_thumbs_down_count,
           CASE WHEN action = 'feeback_thumbs_up' THEN 1 ELSE 0 END AS feeback_thumbs_up_count,
-          CASE WHEN action = 'get_answer' THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
-          CASE WHEN action = 'get_answer' THEN text ELSE NULL END AS intent_raw,
+          CASE WHEN action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
+          CASE WHEN action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up')  THEN text ELSE NULL END AS intent_raw,
           CASE
-                WHEN action = 'get_answer' AND SPLIT_PART(text,'^',2) <> '' THEN SPLIT_PART(text,'^',2)
-                WHEN action = 'get_answer' THEN '1'
+                WHEN action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') AND SPLIT_PART(text,'^',2) <> '' THEN SPLIT_PART(text,'^',2)
+                WHEN action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN '1'
                 ELSE NULL END AS intent_version, -- if there is something after "^" in an intent, it is the version. Otherwise, it is assumed to be version 1
 
-          CASE WHEN timestamp < '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '-',1),'^',1)
-               WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',1),'^',1)
+          CASE WHEN timestamp < '2020-10-06 20:37:00' AND action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN SPLIT_PART(SPLIT_PART(text, '-',1),'^',1)
+               WHEN timestamp >= '2020-10-06 20:37:00' AND action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',1),'^',1)
           ELSE NULL END AS intent_category,
           -- Intent Category counts
           CASE WHEN intent_category = 'Vaccines' THEN 1 ELSE 0 END AS vaccines_category_count,
@@ -72,11 +72,11 @@ view: chatbot_intents_and_clicks {
           CASE WHEN intent_category = 'Social Interactions' THEN 1 ELSE 0 END AS social_interactions_category_count,
 
           -- End Category counts
-          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '_',1),'^',1)
+          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN SPLIT_PART(SPLIT_PART(text, '_',1),'^',1)
             ELSE NULL END AS agency,
-          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',2),'^',1)
+          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',2),'^',1)
             ELSE NULL END AS intent_subcategory,
-          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '_',3),'^',1)
+          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN SPLIT_PART(SPLIT_PART(text, '_',3),'^',1)
             ELSE NULL END AS sample_question,
           CASE WHEN action <> 'link_click' THEN NULL
             WHEN hr_url IS NOT NULL AND SPLIT_PART(text, '#',2) = '' THEN hr_url
@@ -88,7 +88,7 @@ view: chatbot_intents_and_clicks {
           LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
           LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
           LEFT JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
-          WHERE action IN ('get_answer', 'link_click','ask_question','click_chip','open', 'click_footer')
+          WHERE action IN ('get_answer', 'link_click','ask_question','click_chip','open', 'click_footer','feeback_thumbs_down','feeback_thumbs_up')
           ;;
     distribution: "id"
     sortkeys: ["id","timestamp"]
