@@ -11,11 +11,16 @@ view: idim_mobile_errors {
         network_userid,
         session_id,
         mcv.id AS screen_view_id,
-        platform
+        platform,
+        version,
+        build,
+        mc.os_version
       FROM atomic.ca_bc_gov_idim_mobile_error_1 AS me
       JOIN atomic.events AS ev ON me.root_id = ev.event_id AND me.root_tstamp = ev.collector_tstamp AND event_name = 'mobile_error'
       JOIN atomic.com_snowplowanalytics_mobile_screen_1 AS mcv ON mcv.root_id = me.root_id AND mcv.root_tstamp = me.root_tstamp
       JOIN atomic.com_snowplowanalytics_snowplow_client_session_1 AS mcs ON mcs.root_id = me.root_id AND mcs.root_tstamp = me.root_tstamp
+      LEFT JOIN atomic.com_snowplowanalytics_mobile_application_1 AS ma ON ma.root_id = me.root_id AND ma.root_tstamp = me.root_tstamp
+      LEFT JOIN atomic.com_snowplowanalytics_snowplow_mobile_context_1 AS mc ON mc.root_id = me.root_id AND mc.root_tstamp = me.root_tstamp
       WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
       ;;
     distribution_style: all
@@ -36,7 +41,9 @@ view: idim_mobile_errors {
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
   }
 
-
+  dimension: os_version {
+    group_label: "Application"
+  }
   dimension: app_id {
     description: "The application identifier from which the event originated."
     type: string
@@ -60,6 +67,15 @@ view: idim_mobile_errors {
   dimension: error_code {}
   dimension: body {}
 
+  dimension: build {
+    group_label: "Application"
+  }
+  dimension: version {
+    group_label: "Application"
+  }
+  dimension: name_tracker {
+    group_label: "Application"
+  }
   measure: row_count {
     type: count
     group_label: "Counts"
