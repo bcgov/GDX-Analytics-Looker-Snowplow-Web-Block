@@ -44,6 +44,10 @@ view: idim_mobile_errors {
   dimension: os_version {
     group_label: "Application"
   }
+  dimension: os {
+    group_label: "Device and OS"
+    sql: CASE WHEN ${name_tracker}='android' THEN 'Android' ELSE ${name_tracker} END ;;
+  }
   dimension: app_id {
     description: "The application identifier from which the event originated."
     type: string
