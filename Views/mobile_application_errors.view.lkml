@@ -77,6 +77,10 @@ view: mobile_application_errors {
   dimension: name_tracker {
     group_label: "Application"
   }
+  dimension: os {
+    group_label: "Device and OS"
+    sql: CASE WHEN ${name_tracker}='android' THEN 'Android' ELSE ${name_tracker} END ;;
+  }
 
   dimension: message {}
   dimension: exception_name {}
@@ -84,12 +88,12 @@ view: mobile_application_errors {
 
 
   # A "faked" device type until the real data is populated
-  dimension: os {
-    sql: CASE WHEN ${useragent} LIKE '%android%' THEN 'Android'
-            WHEN ${useragent} LIKE '%Darwin%' THEN 'iOS'
-            END;;
-    group_label: "Device and OS"
-  }
+  #dimension: os {
+  #  sql: CASE WHEN ${useragent} LIKE '%android%' THEN 'Android'
+  #          WHEN ${useragent} LIKE '%Darwin%' THEN 'iOS'
+  #          END;;
+  #  group_label: "Device and OS"
+  #}
   dimension: dvce_screenwidth {
     group_label: "Device and OS"
   }
