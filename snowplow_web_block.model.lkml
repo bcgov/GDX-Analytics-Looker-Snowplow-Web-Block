@@ -21,6 +21,9 @@ connection: "redshift_pacific_time"
 # Set the week start day to Sunday. Default is Monday
 week_start_day: sunday
 
+# Set the fiscal offset to 3, to indicate an April 1 to March 31 fiscal year
+fiscal_month_offset: 3
+
 # include all views in this project
 include: "/Views/*.view"
 
@@ -303,6 +306,10 @@ explore: chatbot {
     field: page_views.page_urlhost
     user_attribute: urlhost
   }
+  access_filter: {
+    field: chatbot.which_bot
+    user_attribute: which_bot
+  }
 }
 
 explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes of making it faster
@@ -328,6 +335,10 @@ explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes
   access_filter: {
     field: chatbot_intents_and_clicks.page_urlhost
     user_attribute: urlhost
+  }
+  access_filter: {
+    field: chatbot_intents_and_clicks.which_bot
+    user_attribute: which_bot
   }
 }
 
@@ -937,13 +948,13 @@ explore: asset_downloads {
 
   join: cmslite_metadata {
     type: left_outer
-    sql_on: ${asset_downloads.asset_display_url} = ${cmslite_metadata.hr_url} ;;
+    sql_on: ${asset_downloads.asset_url_nopar_case_insensitive} = ${cmslite_metadata.hr_url} ;;
     relationship: one_to_one
   }
 
   join: asset_themes {
     type: left_outer
-    sql_on: ${asset_downloads.asset_display_url} = ${asset_themes.hr_url} ;;
+    sql_on: ${asset_downloads.asset_url_nopar_case_insensitive} = ${asset_themes.hr_url} ;;
     relationship: one_to_one
   }
 }
@@ -1155,8 +1166,22 @@ explore: idim_mobile_errors {
     sql_on: ${mobile_sessions.session_id} = ${idim_mobile_errors.session_id} ;;
     relationship: many_to_one
   }
-
-
+}
+explore: idim_actions {
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
+  join: mobile_screen_views {
+    type:  left_outer
+    sql_on: ${mobile_screen_views.screen_view_id} = ${idim_actions.screen_view_id} ;;
+    relationship: many_to_one
+  }
+  join: mobile_sessions {
+    type:  left_outer
+    sql_on: ${mobile_sessions.session_id} = ${idim_actions.session_id} ;;
+    relationship: many_to_one
+  }
 }
 
 explore: csrs_clicks {
@@ -1194,7 +1219,6 @@ explore: corp_calendar_searches {
 }
 
 explore: google_translate {
-  persist_for: "60 minutes"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -1209,31 +1233,6 @@ explore: google_translate {
   join: page_views {
     type: left_outer
     sql_on: ${page_views.page_view_id} = ${google_translate.page_view_id} ;;
-    relationship: many_to_one
-  }
-
-  join: cmslite_themes {
-    type: left_outer
-    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
-    relationship: one_to_one
-  }
-}
-
-explore: google_translate_test {
-  fields: [ALL_FIELDS*,
-    -page_views.is_external_referrer_theme,
-    -page_views.is_external_referrer_subtheme,
-    -page_views.refr_theme,
-    -page_views.refr_subtheme]
-
-  access_filter: {
-    field: page_views.page_urlhost
-    user_attribute: urlhost
-  }
-
-  join: page_views {
-    type: left_outer
-    sql_on: ${page_views.page_view_id} = ${google_translate_test.page_view_id} ;;
     relationship: many_to_one
   }
 

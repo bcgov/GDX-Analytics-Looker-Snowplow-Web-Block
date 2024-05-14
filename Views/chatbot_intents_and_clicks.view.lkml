@@ -3,18 +3,30 @@ include: "/Includes/date_comparisons_common.view"
 
 view: chatbot_intents_and_clicks {
   derived_table: {
-    sql: with chatbot_combined AS ( -- link together V1 and V2, filling in NULL for the newly added fields that aren't in V1
-          SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree,
-              ref_parent, action, agent, text, NULL AS frontend_id, NULL AS intent_confidence, NULL AS "sentiment.magnitude",
-              NULL AS "sentiment.score", NULL AS session_id
+    sql: with chatbot_combined AS ( -- link together V1, V2, and V3, filling in NULL for the newly added fields that aren't in V1 or V2
+          (
+          SELECT root_id, root_tstamp, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp,
+              action, agent, text, NULL AS frontend_id, NULL AS intent_confidence, NULL AS "sentiment.magnitude",
+              NULL AS "sentiment.score", NULL AS session_id, NULL AS source_intent
             FROM atomic.ca_bc_gov_chatbot_chatbot_1
-            -- WHERE text <> 'BOT_Chatbot_Welcome' OR text IS NULL
+            WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+          )
           UNION
-          SELECT schema_vendor, schema_name, schema_format, schema_version, root_id, root_tstamp, ref_root, ref_tree,
-              ref_parent, action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score",
-              session_id
+          (
+          SELECT root_id, root_tstamp, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp,
+              action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score",
+              session_id, NULL AS source_intent
             FROM atomic.ca_bc_gov_chatbot_chatbot_2
-            --WHERE text <> 'BOT_Chatbot_Welcome' OR text IS NULL
+            WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+          )
+         UNION
+          (
+          SELECT root_id, root_tstamp, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp,
+              action, agent, text, frontend_id, intent_confidence, "sentiment.magnitude",  "sentiment.score",
+              session_id, source_intent
+            FROM atomic.ca_bc_gov_chatbot_chatbot_3
+            WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+          )
         )
         SELECT wp.id,
           cb.root_id AS chat_event_id,
@@ -28,22 +40,26 @@ view: chatbot_intents_and_clicks {
           "sentiment.magnitude" AS sentiment_magnitude,
           "sentiment.score" AS sentiment_score,
           session_id,
-          CONVERT_TIMEZONE('UTC', 'America/Vancouver', cb.root_tstamp) AS timestamp,
+          COALESCE(SPLIT_PART(session_id,'_',1),'') AS which_bot,
+          source_intent,
+          "timestamp",
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
           CASE WHEN action = 'get_answer' THEN 1 ELSE 0 END AS answer_count,
           CASE WHEN action = 'open' THEN 1 ELSE 0 END AS open_count,
           CASE WHEN action = 'link_click' THEN 1 ELSE 0 END AS link_click_count,
           CASE WHEN action = 'click_chip' THEN 1 ELSE 0 END AS chip_count,
           CASE WHEN action = 'click_footer' THEN 1 ELSE 0 END AS click_footer,
-          CASE WHEN action = 'get_answer' THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
-          CASE WHEN action = 'get_answer' THEN text ELSE NULL END AS intent_raw,
+          CASE WHEN action = 'feeback_thumbs_down' THEN 1 ELSE 0 END AS feeback_thumbs_down_count,
+          CASE WHEN action = 'feeback_thumbs_up' THEN 1 ELSE 0 END AS feeback_thumbs_up_count,
+          CASE WHEN action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN SPLIT_PART(text,'^',1) ELSE NULL END AS intent,
+          CASE WHEN action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up')  THEN text ELSE NULL END AS intent_raw,
           CASE
-                WHEN action = 'get_answer' AND SPLIT_PART(text,'^',2) <> '' THEN SPLIT_PART(text,'^',2)
-                WHEN action = 'get_answer' THEN '1'
+                WHEN action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') AND SPLIT_PART(text,'^',2) <> '' THEN SPLIT_PART(text,'^',2)
+                WHEN action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN '1'
                 ELSE NULL END AS intent_version, -- if there is something after "^" in an intent, it is the version. Otherwise, it is assumed to be version 1
 
-          CASE WHEN timestamp < '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '-',1),'^',1)
-               WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',1),'^',1)
+          CASE WHEN timestamp < '2020-10-06 20:37:00' AND action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN SPLIT_PART(SPLIT_PART(text, '-',1),'^',1)
+               WHEN timestamp >= '2020-10-06 20:37:00' AND action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',1),'^',1)
           ELSE NULL END AS intent_category,
           -- Intent Category counts
           CASE WHEN intent_category = 'Vaccines' THEN 1 ELSE 0 END AS vaccines_category_count,
@@ -56,11 +72,11 @@ view: chatbot_intents_and_clicks {
           CASE WHEN intent_category = 'Social Interactions' THEN 1 ELSE 0 END AS social_interactions_category_count,
 
           -- End Category counts
-          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '_',1),'^',1)
+          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN SPLIT_PART(SPLIT_PART(text, '_',1),'^',1)
             ELSE NULL END AS agency,
-          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',2),'^',1)
+          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN SPLIT_PART(SPLIT_PART(SPLIT_PART(text, '_',2),'|',2),'^',1)
             ELSE NULL END AS intent_subcategory,
-          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action = 'get_answer' THEN SPLIT_PART(SPLIT_PART(text, '_',3),'^',1)
+          CASE WHEN timestamp >= '2020-10-06 20:37:00' AND action IN ('get_answer','feeback_thumbs_down','feeback_thumbs_up') THEN SPLIT_PART(SPLIT_PART(text, '_',3),'^',1)
             ELSE NULL END AS sample_question,
           CASE WHEN action <> 'link_click' THEN NULL
             WHEN hr_url IS NOT NULL AND SPLIT_PART(text, '#',2) = '' THEN hr_url
@@ -72,8 +88,7 @@ view: chatbot_intents_and_clicks {
           LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
           LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
           LEFT JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
-          WHERE action IN ('get_answer', 'link_click','ask_question','click_chip','open', 'click_footer')
-              AND {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+          WHERE action IN ('get_answer', 'link_click','ask_question','click_chip','open', 'click_footer','feeback_thumbs_down','feeback_thumbs_up')
           ;;
     distribution: "id"
     sortkeys: ["id","timestamp"]
@@ -103,6 +118,10 @@ view: chatbot_intents_and_clicks {
       type: string
       sql: ${TABLE}.page_urlhost ;;
     }
+    dimension: which_bot {
+      type: string
+      sql: ${TABLE}.which_bot ;;
+    }
     dimension: chat_event_id {
       type: string
       sql: ${TABLE}.chat_event_id ;;
@@ -111,10 +130,14 @@ view: chatbot_intents_and_clicks {
       type: string
       sql: ${TABLE}.action ;;
     }
+    dimension: source_intent {
+      type: string
+      sql: ${TABLE}.source_intent ;;
+    }
     dimension: link_click_url {
       type: string
       sql: ${TABLE}.link_click_url ;;
-      drill_fields: [page_views.chatbot_page_display_url]
+      drill_fields: [page_views.chatbot_page_display_url,source_intent]
       link: {
         label: "Visit Page"
         url: "{{ value }}"
@@ -151,7 +174,9 @@ view: chatbot_intents_and_clicks {
       group_label: "Intents"
     }
 
-    dimension: chip_text {}
+    dimension: chip_text {
+      drill_fields: [source_intent]
+    }
 
     dimension: frontend_id {}
     dimension: intent_confidence {
@@ -209,6 +234,14 @@ view: chatbot_intents_and_clicks {
     measure: click_footer {
       type: sum
     }
+
+    measure: feeback_thumbs_down_count {
+      type: sum
+    }
+    measure: feeback_thumbs_up_count {
+      type: sum
+    }
+
     measure: extra_answer_count {
       type: sum
       sql: ${TABLE}.answer_count - ${TABLE}.question_count ;;

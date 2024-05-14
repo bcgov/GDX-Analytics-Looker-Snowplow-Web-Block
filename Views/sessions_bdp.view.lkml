@@ -13,6 +13,26 @@ view: sessions_bdp {
     group_label: "Device"
   }
 
+  dimension: device_type {
+    description: "A label that describes the viewing device type as Mobile or Computer."
+    type: string
+    sql: ${TABLE}.operating_system_class ;;
+    drill_fields: [browser_family]
+    group_label: "Device"
+  }
+
+  dimension: browser_name {
+    sql: ${TABLE}.agent_name ;;
+  }
+  dimension: browser_family {
+    sql: ${TABLE}.useragent_family ;;
+  }
+  dimension: browser_type {
+    sql: ${TABLE}.device_class ;;
+  }
+  dimension: page_referrer {
+    sql: ${TABLE}.referrer ;;
+  }
 
 
   # NECESSARY for date_comparisons_common
@@ -102,33 +122,54 @@ view: sessions_bdp {
     group_label: "Engagement"
   }
 
-  dimension: time_engaged {
+  dimension: engaged_time {
     type: number
-    sql: ${TABLE}.time_engaged_in_s ;;
+    sql: ${TABLE}.engaged_time_in_s ;;
     group_label: "Engagement"
     value_format: "0\"s\""
   }
 
-  dimension: time_engaged_tier {
+  dimension: engaged_time_tier {
     type: tier
     tiers: [0, 10, 30, 60, 120, 240]
     style: integer
-    sql: ${time_engaged} ;;
+    sql: ${engaged_time} ;;
     group_label: "Engagement"
     value_format: "0\"s\""
   }
 
-  dimension: user_bounced {
+  dimension: absolute_time {
+    type: number
+    sql: ${TABLE}.absolute_time_in_s ;;
+    group_label: "Engagement"
+    value_format: "0\"s\""
+  }
+
+  dimension: absolute_time_tier {
+    type: tier
+    tiers: [0, 10, 30, 60, 120, 240]
+    style: integer
+    sql: ${absolute_time} ;;
+    group_label: "Engagement"
+    value_format: "0\"s\""
+  }
+
+  dimension: bounced_session {
     type: yesno
-    sql: ${page_views} = 1 AND ${time_engaged} = 0 ;;
+    sql: ${page_views} = 1 ;; #AND ${engaged_time} = 0 ;;
+    group_label: "Engagement"
+  }
+  dimension: bounced_user {
+    type: yesno
+    sql: ${page_views} = 1 ;; #AND ${engaged_time} = 0 ;;
     group_label: "Engagement"
   }
 
-  dimension: user_engaged {
-    type: yesno
-    sql: ${page_views} > 2 AND ${time_engaged} > 59 ;;
-    group_label: "Engagement"
-  }
+  #dimension: user_engaged {
+  #  type: yesno
+  #  sql: ${page_views} > 2 AND ${engaged_time} > 59 ;;
+  #  group_label: "Engagement"
+  #}
 
   # First Page
 
@@ -199,6 +240,7 @@ view: sessions_bdp {
     group_label: "First Page"
   }
 
+
   dimension: first_page_urlhost {
     description: "The host name of the page where a session began."
     type: string
@@ -235,6 +277,10 @@ view: sessions_bdp {
     type: number
     sql:  ${TABLE}.absolute_time_in_s ;;
     #sql: DATEDIFF(SECONDS, ${session_start_raw}, ${session_end_raw}) ;;
+  }
+
+  dimension: session_index {
+    sql: ${TABLE}.domain_sessionidx ;;
   }
 
   # MEASURES
@@ -292,34 +338,60 @@ view: sessions_bdp {
     type: count_distinct
     sql: ${domain_userid} ;;
     filters: {
-      field: user_bounced
+      field: bounced_user
+      value: "yes"
+    }
+    filters: {
+      field: session_index
+      value: "1"
+    }
+    group_label: "Counts"
+  }
+  measure: bounced_session_count {
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: {
+      field: bounced_session
       value: "yes"
     }
     group_label: "Counts"
   }
 
-  measure: engaged_user_count {
-    type: count_distinct
-    sql: ${domain_userid} ;;
-    filters: {
-      field: user_engaged
-      value: "yes"
-    }
-    group_label: "Counts"
-  }
+#  measure: engaged_user_count {
+#    type: count_distinct
+#    sql: ${domain_userid} ;;
+#    filters: {
+#      field: user_engaged
+#      value: "yes"
+#    }
+#    group_label: "Counts"
+#  }
 
   # Engagement
 
-  measure: total_time_engaged {
+  measure: engaged_time_total {
     type: sum
-    sql: ${time_engaged} ;;
+    sql: ${engaged_time} ;;
     value_format: "#,##0\"s\""
     group_label: "Engagement"
   }
 
-  measure: average_time_engaged {
+  measure: engaged_time_average {
     type: average
-    sql: ${time_engaged} ;;
+    sql: ${engaged_time} ;;
+    value_format: "0.00\"s\""
+    group_label: "Engagement"
+  }
+  measure: absolute_time_total {
+    type: sum
+    sql: ${absolute_time} ;;
+    value_format: "#,##0\"s\""
+    group_label: "Engagement"
+  }
+
+  measure: absolute_time_average {
+    type: average
+    sql: ${absolute_time} ;;
     value_format: "0.00\"s\""
     group_label: "Engagement"
   }

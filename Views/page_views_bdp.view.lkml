@@ -18,12 +18,30 @@ view: page_views_bdp {
     group_label: "Session"
   }
 
+  dimension: browser_name {
+    sql: ${TABLE}.agent_name ;;
+  }
   dimension: browser_family {
-    description: "The major family of browser, regardless of name or version. e.g., Chrome, Safari, Internet Explorer, etc."
-    type: string
     sql: ${TABLE}.useragent_family ;;
-    drill_fields: [os_family,browser_name,browser_version,useragent]
-    group_label: "Browser"
+  }
+  dimension: browser_type {
+    sql: ${TABLE}.device_class ;;
+  }
+  dimension: page_referrer {
+    sql: ${TABLE}.referrer ;;
+  }
+
+  dimension: page_referrer_display_url {
+    sql:  ${TABLE}.refr_urlscheme || '://' || ${TABLE}.refr_urlhost || regexp_replace(${TABLE}.refr_urlpath, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
+  }
+
+
+  dimension: device_type {
+    description: "A label that describes the viewing device type as Mobile or Computer."
+    type: string
+    sql: ${TABLE}.operating_system_class ;;
+    drill_fields: [browser_family]
+    group_label: "Device"
   }
 
   dimension: page_display_url {
