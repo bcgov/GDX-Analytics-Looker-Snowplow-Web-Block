@@ -38,6 +38,7 @@ view: openschool_actions {
         MIN(page_view_start_time) AS start_time,
         GREATEST(MAX(page_view_start_time), MAX(timestamp)) AS end_time,
         step_list.session_id,
+        course,
         CASE WHEN BOOL_OR(get_certificate) THEN 5 ELSE MAX(this_step) END AS last_step,
         CASE WHEN BOOL_OR(get_certificate) THEN 'Certificate'
              WHEN MAX(this_step) = 0 THEN 'Start'
@@ -52,7 +53,7 @@ view: openschool_actions {
         BOOL_OR(get_certificate) AS get_certificate
         FROM step_list
         LEFT JOIN action_list ON action_list.session_id = step_list.session_id
-        GROUP BY step_list.session_id
+        GROUP BY step_list.session_id, course
         HAVING last_step IS NOT NULL ;;
     distribution: "session_id"
     sortkeys: ["session_id","start_time"]
@@ -69,7 +70,7 @@ view: openschool_actions {
     sql: ${TABLE}.start_time ;;
   }
 
-  dimension: course {}
+  dimension: course { }
   dimension: last_step {}
   dimension: progress {
     order_by_field: last_step
