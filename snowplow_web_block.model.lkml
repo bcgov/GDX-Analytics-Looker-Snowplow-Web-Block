@@ -1387,6 +1387,20 @@ explore: tenancy_dispute_clicks {
   }
 }
 
+explore: bchep_action_debug {
+  label: "BCHEP Action Debug"
+  access_filter: {
+    field: bchep_action_debug.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: bchep_pin_debug {
+  label: "BCHEP PIN Debug"
+  access_filter: {
+    field: bchep_pin_debug.page_urlhost
+    user_attribute: urlhost
+  }
+}
 explore: covid19_self_assessment_action {}
 explore: covid19_self_assessment_recommendation {}
 
