@@ -1394,6 +1394,14 @@ explore: bchep_action_debug {
     user_attribute: urlhost
   }
 }
+
+explore: user_feedback {
+  access_filter: {
+    field: user_feedback.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
 explore: bchep_pin_debug {
   label: "BCHEP PIN Debug"
   access_filter: {
