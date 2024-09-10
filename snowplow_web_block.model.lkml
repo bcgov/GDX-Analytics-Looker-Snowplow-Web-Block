@@ -1395,6 +1395,29 @@ explore: bchep_action_debug {
   }
 }
 
+
+explore: bchep_action {
+  label: "BCHEP Action"
+  access_filter: {
+    field: bchep_action.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: bchep_action_progress {
+  label: "BCHEP Action Progress"
+  access_filter: {
+    field: bchep_action_progress.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: bchep_action_progress_step {
+  label: "BCHEP Action Progress Step"
+  access_filter: {
+    field: bchep_action_progress_step.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
 explore: user_feedback {
   access_filter: {
     field: user_feedback.page_urlhost
