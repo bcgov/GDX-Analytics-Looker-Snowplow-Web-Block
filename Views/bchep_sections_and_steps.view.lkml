@@ -1,4 +1,5 @@
 view: bchep_sections_and_steps {
+  label: "BCHEP Sections and Steps"
   derived_table: {
     sql:
       SELECT 'section' AS category, 'landing' AS label, 1 AS order
@@ -24,8 +25,9 @@ view: bchep_sections_and_steps {
       SELECT 'section' AS category, 'upgrade-plan' AS label, 11 AS order
         UNION
       SELECT 'section' AS category, 'energy-plan' AS label, 12 AS order
-        UNION
-      SELECT 'section' AS category, 'support' AS label, 13 AS order;;
+--        UNION
+--      SELECT 'section' AS category, 'support' AS label, 13 AS order
+      ;;
     }
 
 
