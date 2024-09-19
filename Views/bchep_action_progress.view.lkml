@@ -18,9 +18,11 @@ view: bchep_action_progress  {
           WHEN section = 'rating-estimate' THEN 6
           WHEN section = 'questionnaire-energy-report' THEN 7
           WHEN section = 'energy-report' THEN 8
-          WHEN section = 'questionnaire-energy-plan' THEN 9
-          WHEN section = 'energy-plan' THEN 10
-          WHEN section = 'support' THEN 11
+          WHEN section = 'questionnaire-upgrade-plan' THEN 9
+          WHEN section = 'questionnaire-energy-plan' THEN 10
+          WHEN section = 'upgrade-plan' THEN 11
+          WHEN section = 'energy-plan' THEN 12
+          WHEN section = 'support' THEN 13
           ELSE NULL END AS section_order,
 
           CONVERT_TIMEZONE('UTC', 'America/Vancouver', vba.root_tstamp) AS timestamp
