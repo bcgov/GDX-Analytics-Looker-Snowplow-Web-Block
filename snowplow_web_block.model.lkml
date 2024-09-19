@@ -1419,6 +1419,7 @@ explore: bchep_action_progress_step {
 }
 
 explore: bchep_sections_and_steps {
+  label: "BCHEP Sections and Steps"
 }
 
 explore: user_feedback {
