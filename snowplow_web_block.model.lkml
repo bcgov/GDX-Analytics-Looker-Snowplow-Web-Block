@@ -1418,6 +1418,9 @@ explore: bchep_action_progress_step {
   }
 }
 
+explore: bchep_sections_and_steps {
+}
+
 explore: user_feedback {
   access_filter: {
     field: user_feedback.page_urlhost
