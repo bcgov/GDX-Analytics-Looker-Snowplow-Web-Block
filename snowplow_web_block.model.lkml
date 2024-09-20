@@ -1364,6 +1364,10 @@ explore: drivebc_actions {
   }
 }
 
+explore: openschool_actions_foippa {
+  label: "OpenSchool Actions FOIPPA"
+}
+
 explore: openschool_actions {
   label: "OpenSchool Actions"
 }
