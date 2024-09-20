@@ -1364,6 +1364,14 @@ explore: drivebc_actions {
   }
 }
 
+explore: openschool_actions_foippa {
+  label: "OpenSchool Actions FOIPPA"
+}
+
+explore: openschool_actions {
+  label: "OpenSchool Actions"
+}
+
 explore: tenancy_dispute_clicks {
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
