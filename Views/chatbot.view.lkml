@@ -62,6 +62,7 @@ view: chatbot {
           --  ELSE text END AS link_click_url
           FROM chatbot_combined AS cb
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON cb.root_id = wp.root_id AND cb.root_tstamp = wp.root_tstamp
+
           ;;
     distribution: "id"
     sortkeys: ["id","timestamp"]
