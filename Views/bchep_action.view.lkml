@@ -90,4 +90,13 @@ view: bchep_action  {
     sql: ${TABLE}.session_id  ;;
   }
 
+  measure: uid_count {
+    description: "Count of the outcome over distinct UIDs"
+    label: "UID Count"
+    type: count_distinct
+    sql_distinct_key: ${TABLE}.uid ;;
+    sql: ${TABLE}.uid  ;;
+  }
+
+
 }
