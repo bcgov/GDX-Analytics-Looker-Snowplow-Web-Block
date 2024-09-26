@@ -1,4 +1,6 @@
 # Version: 1.3.0
+include: "/Includes/date_comparisons_common.view"
+
 view: chatbot {
   derived_table: {
     sql: with chatbot_combined AS ( -- link together V1, V2, and V3, filling in NULL for the newly added fields that aren't in V1 or V2
@@ -30,7 +32,7 @@ view: chatbot {
           "sentiment.magnitude" AS sentiment_magnitude,
           "sentiment.score" AS sentiment_score,
           session_id,
-          COALESCE(SPLIT_PART(session_id,'_',1),'') AS which_bot,
+          COALESCE(frontend_id, COALESCE(SPLIT_PART(session_id,'_',1),'')) AS which_bot,
           source_intent,
           "timestamp",
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
@@ -70,6 +72,12 @@ view: chatbot {
     increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
     # to reprocess up to 3 hours of results
     increment_offset: 3
+    }
+
+    extends: [date_comparisons_common]
+
+    dimension_group: filter_start {
+      sql: ${TABLE}.timestamp ;;
     }
 
     dimension_group: event {
