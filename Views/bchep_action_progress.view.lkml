@@ -28,10 +28,10 @@ view: bchep_action_progress  {
           CONVERT_TIMEZONE('UTC', 'America/Vancouver', vba.root_tstamp) AS timestamp
       FROM atomic.ca_bc_gov_vhers_bchep_action_1  AS vba
       LEFT JOIN atomic.events ON vba.root_id = events.event_id AND vba.root_tstamp = events.collector_tstamp
-      WHERE action = 'step-start'
+      WHERE
         --- We exclude Support from the list and ignore any sections not listed
         --- NOTE: this list needs to be reflected in the latest section dimension below
-        AND section IN ('landing','login','pin-request','returning-user-flow','energuide-upload','rating-estimate',
+        section IN ('landing','login','pin-request','returning-user-flow','energuide-upload','rating-estimate',
               'questionnaire-energy-report','energy-report','questionnaire-upgrade-plan','questionnaire-energy-plan',
               'upgrade-plan','energy-plan')
       )
