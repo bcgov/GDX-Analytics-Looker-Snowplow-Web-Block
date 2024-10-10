@@ -534,6 +534,12 @@ view: shared_fields_common {
   }
 
   ### Simple UTM Parsing
+  dimension: marketing_simple_valid {
+    # Does this utm_campaign have four "terms" separated by "_"
+    group_label: "Marketing - Simple"
+    type: yesno
+    sql:  CASE WHEN REGEXP_COUNT(${marketing_campaign},'_') = 3 THEN TRUE ELSE FALSE END;;
+  }
   dimension: marketing_date_simple {
     type: string
     sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',1) ;;
