@@ -14,7 +14,7 @@ view: workbc_careersearch_compare {
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON cc.root_id = wp.root_id AND cc.root_tstamp = wp.root_tstamp
           LEFT JOIN microservice.careertoolkit_workbc AS noc1 -- the "00" trick is temporarily needed until the lookup table gets fixed
-              ON noc1.noc = cc.noc_1 OR cc.noc_1 = '0' || noc1.noc OR cc.noc_1 = '00' || noc1.noc OR cc.noc_1 = '00' || noc1.noc
+              ON noc1.noc = cc.noc_1 OR cc.noc_1 = '0' || noc1.noc OR cc.noc_1 = '00' || noc1.noc OR cc.noc_1 = '000' || noc1.noc
 --          LEFT JOIN microservice.careertoolkit_workbc AS noc2 -- the "00" trick is temporarily needed until the lookup table gets fixed
 --              ON noc2.noc = cc.noc_2 OR cc.noc_2 = '0' || noc2.noc OR cc.noc_2 = '00' || noc2.noc OR cc.noc_2 = '00' || noc2.noc
 --          LEFT JOIN microservice.careertoolkit_workbc AS noc3 -- the "00" trick is temporarily needed until the lookup table gets fixed

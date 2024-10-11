@@ -15,9 +15,9 @@ view: workbc_careertoolkit {
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON ct.root_id = wp.root_id AND ct.root_tstamp = wp.root_tstamp
           LEFT JOIN microservice.careertoolkit_workbc AS cnoc -- the "00" trick is temporarily needed until the lookup table gets fixed
-              ON cnoc.noc = ct.current OR ct.current = '0' || cnoc.noc OR ct.current = '00' || cnoc.noc OR ct.current = '00' || cnoc.noc
+              ON cnoc.noc = ct.current OR ct.current = '0' || cnoc.noc OR ct.current = '00' || cnoc.noc OR ct.current = '000' || cnoc.noc
           LEFT JOIN microservice.careertoolkit_workbc AS onoc
-              ON onoc.noc = ct.option OR ct.option = '0' || onoc.noc OR ct.option = '00' || onoc.noc OR ct.option = '00' || onoc.noc
+              ON onoc.noc = ct.option OR ct.option = '0' || onoc.noc OR ct.option = '00' || onoc.noc OR ct.option = '000' || onoc.noc
           WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
           ;;
     distribution_style: all
