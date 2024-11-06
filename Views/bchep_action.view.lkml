@@ -13,6 +13,7 @@ view: bchep_action  {
           action,
           message,
           section,
+          dvce_ismobile AS is_mobile,
           CASE WHEN section = 'landing' THEN 1
             WHEN section = 'login' THEN 2
             WHEN section = 'pin-request' THEN 3
@@ -67,6 +68,9 @@ view: bchep_action  {
   dimension: step {}
   dimension: text {}
   dimension: uid {}
+  dimension: is_mobile {
+    type: yesno
+  }
   dimension: section_order {
     type: number
   }
