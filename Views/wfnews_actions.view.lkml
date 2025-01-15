@@ -47,11 +47,11 @@ view: wfnews_actions {
         ;;
     distribution: "page_view_id"
     sortkeys: ["page_view_id","timestamp"]
-    persist_for: "2 hours"
-    #datagroup_trigger: datagroup_healthgateway_updated
-    #increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
+    #persist_for: "2 hours"
+    datagroup_trigger: datagroup_25_55
+    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
     # to reprocess up to 3 hours of results
-    #increment_offset: 3
+    increment_offset: 3
   }
 
   extends: [date_comparisons_common]
