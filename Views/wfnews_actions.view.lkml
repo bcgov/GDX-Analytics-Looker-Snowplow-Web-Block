@@ -44,6 +44,8 @@ view: wfnews_actions {
           LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON wfa.root_id = wp.root_id AND wfa.root_tstamp = wp.root_tstamp
           LEFT JOIN atomic.events ON wfa.root_id = events.event_id AND wfa.root_tstamp = events.collector_tstamp
+        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+
         ;;
     distribution: "page_view_id"
     sortkeys: ["page_view_id","timestamp"]
