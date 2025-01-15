@@ -7,7 +7,7 @@ view: wfnews_actions {
           wfa.root_id AS root_id,
           wp.id AS page_view_id,
           domain_sessionid AS session_id,
-          COALESCE(events.page_urlhost,'') AS page_urlhost,
+          COALESCE(events.page_urlhost,'undefined') AS page_urlhost,
           events.page_url,
           action,
           area,
