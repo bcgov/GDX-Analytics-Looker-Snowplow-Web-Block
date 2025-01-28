@@ -453,6 +453,24 @@ dimension: chatbot_page_display_url {
   }
 
 
+
+# -- custom dimensions for https://erap.apps.gov.bc.ca/workforceprofiles/
+
+dimension: workforce_profiles_section {
+  sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'#/',2), '?', 1) = '' THEN 'Home' ELSE SPLIT_PART(SPLIT_PART(${page_url},'#/',2), '?', 1) END;;
+  group_label: "Workforce Profiles"
+}
+dimension: workforce_profiles_ministry {
+  sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'Ministry_Key=',2), '&', 1) = '' THEN 'None' ELSE SPLIT_PART(SPLIT_PART(${page_url},'Ministry_Key=',2), '&', 1) END;;
+  group_label: "Workforce Profiles"
+}
+dimension: workforce_profiles_group {
+  sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'Des_Grp=',2), '&', 1) = '' THEN 'None' ELSE SPLIT_PART(SPLIT_PART(${page_url},'Des_Grp=',2), '&', 1) END;;
+  group_label: "Workforce Profiles"
+}
+
+
+
   # MEASURES
 
   measure: row_count {
