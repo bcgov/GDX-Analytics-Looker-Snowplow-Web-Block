@@ -18,19 +18,21 @@ view: user_feedback{
           CASE WHEN action = 'Close' THEN 1 ELSE 0 END AS close_count,
           CASE WHEN action = 'Thumbs Up' THEN 1 ELSE 0 END AS thumbs_up_count,
           CASE WHEN action = 'Thumbs Down' THEN 1 ELSE 0 END AS thumbs_down_count,
-          CONVERT_TIMEZONE('UTC', 'America/Vancouver', fa.root_tstamp) AS timestamp
+          CONVERT_TIMEZONE('UTC', 'America/Vancouver', fa.root_tstamp) AS timestamp,
+          geo_latitude,
+          geo_longitude
       FROM atomic.ca_bc_gov_feedback_feedback_action_1 AS fa
       LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
       ON fa.root_id = wp.root_id AND fa.root_tstamp = wp.root_tstamp
       LEFT JOIN atomic.events ON fa.root_id = events.event_id AND fa.root_tstamp = events.collector_tstamp
+      WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
       ;;
     distribution: "page_view_id"
     sortkeys: ["page_view_id","timestamp"]
-    persist_for: "2 hours"
-    #datagroup_trigger: datagroup_healthgateway_updated
-    #increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
+    datagroup_trigger: datagroup_20_50
+    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
     # to reprocess up to 3 hours of results
-    #increment_offset: 3
+    increment_offset: 3
   }
 
   extends: [date_comparisons_common]
@@ -62,6 +64,29 @@ view: user_feedback{
     sql: ${TABLE}.timestamp ;;
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+  }
+
+  dimension: geo_latitude {
+    type: number
+    sql: ${TABLE}.geo_latitude ;;
+    group_label: "Location"
+    # use geo_location instead
+    hidden: yes
+  }
+
+  dimension: geo_longitude {
+    type: number
+    sql: ${TABLE}.geo_longitude ;;
+    group_label: "Location"
+    # use geo_location instead
+    hidden: yes
+  }
+
+  dimension: geo_location {
+    type: location
+    sql_latitude: ${geo_latitude} ;;
+    sql_longitude: ${geo_longitude} ;;
+    group_label: "Location"
   }
 
   measure: count {
