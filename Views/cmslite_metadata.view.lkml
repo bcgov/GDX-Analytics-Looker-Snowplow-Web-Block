@@ -9,7 +9,9 @@ view: cmslite_metadata {
             cdl.value AS cdl_language,
             published_date,
             cm.page_type,
-            cm.keywords
+            cm.keywords,
+            cm.parent_node_id,
+            cm.ancestor_nodes
           FROM cmslite.metadata AS cm
           LEFT JOIN cmslite.metadata_languages AS cml ON cm.node_id = cml.node_id
           LEFT JOIN cmslite.dcterms_languages AS cdl ON cdl.id = cml.id;;
@@ -34,7 +36,10 @@ view: cmslite_metadata {
     sql: ${TABLE}.language_code ;;
     description: "The language code specified in the CMS Lite page settings tab."
   }
-
+  dimension: lineage_nodes{
+    type:  string
+    sql: CONCAT(${TABLE}.ancestor_nodes,concat('|',concat(${TABLE}.parent_node_id,concat('|',${TABLE}.node_id)))) ;;
+  }
   dimension_group: published {
     type: time
     timeframes: [
