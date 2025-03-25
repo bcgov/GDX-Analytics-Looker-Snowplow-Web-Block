@@ -25,9 +25,12 @@ view: workbc_careersearch_find {
         FROM atomic.ca_bc_gov_workbc_find_career_1 AS fc
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON fc.root_id = wp.root_id AND fc.root_tstamp = wp.root_tstamp
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
           ;;
     distribution_style: all
-    persist_for: "2 hours"
+    datagroup_trigger: datagroup_15_45
+    increment_key: "event_hour"
+    increment_offset: 3
   }
 
   dimension: page_view_id {

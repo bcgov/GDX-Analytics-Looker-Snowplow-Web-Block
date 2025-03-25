@@ -11,17 +11,24 @@ view: clicks {
   extends: [shared_fields_common,shared_fields_no_session,date_comparisons_common]
 
   dimension_group: filter_start {
-    sql: ${TABLE}.collector_tstamp ;;
+    sql: ${TABLE}.derived_tstamp ;;
+  }
+
+
+  dimension_group: fiscal {
+    type: time
+    timeframes: [fiscal_quarter_of_year, fiscal_quarter, fiscal_year]
+    sql: ${TABLE}.derived_tstamp ;;
   }
 
   dimension: sbc_business_hours {
     type: yesno
     description: "Is the time between 7:30-5:00 M-F"
     label: "SBC Business Hours"
-    sql: CASE WHEN DATE_PART('dayofweek',${TABLE}.collector_tstamp) IN (1,2,3,4,5)
+    sql: CASE WHEN DATE_PART('dayofweek',${TABLE}.derived_tstamp) IN (1,2,3,4,5)
           AND (
-                DATE_PART('hour',${TABLE}.collector_tstamp) BETWEEN 8 AND 16
-                OR ( DATE_PART('hour',${TABLE}.collector_tstamp) = 7 AND DATE_PART('minute',${TABLE}.collector_tstamp) BETWEEN 30 AND 59)
+                DATE_PART('hour',${TABLE}.derived_tstamp) BETWEEN 8 AND 16
+                OR ( DATE_PART('hour',${TABLE}.derived_tstamp) = 7 AND DATE_PART('minute',${TABLE}.derived_tstamp) BETWEEN 30 AND 59)
               ) THEN TRUE
         ELSE FALSE END;;
   }
@@ -46,7 +53,7 @@ view: clicks {
     description: "The timestamp for the page view as recorded by the collector."
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
-    sql:  ${TABLE}.collector_tstamp ;;
+    sql:  ${TABLE}.derived_tstamp ;;
     group_label: "Click"
   }
 
@@ -108,6 +115,36 @@ view: clicks {
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
+  }
+
+  dimension: target_url_gov { # see also offsite_click_gov
+    type: string
+    sql:  CASE WHEN ${TABLE}.target_url LIKE '#%' THEN ${page_url} || ${target_url}
+            WHEN ${TABLE}.target_url LIKE 'www2.gov.bc.ca%' THEN 'https://'|| ${target_url}
+            ELSE ${target_url}
+          END;;
+    group_label: "Target"
+    link: {
+      label: "Visit Link"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+    description: "For use when target_url isn't displaying correctly on links from CMF"
+  }
+
+  dimension: target_display_url_gov { # see also offsite_click_gov
+    type: string
+    sql:  CASE WHEN ${TABLE}.target_display_url LIKE '#%' THEN ${page_url} || ${target_url}
+            WHEN ${TABLE}.target_display_url LIKE 'www2.gov.bc.ca%' THEN 'https://'|| ${target_url}
+            ELSE ${target_display_url}
+          END;;
+    group_label: "Target"
+    link: {
+      label: "Visit Link"
+      url: "{{ value }}"
+      icon_url: "https://looker.com/favicon.ico"
+    }
+    description: "For use when target_display_url isn't displaying correctly on links from CMF"
   }
 
   dimension: target_url_fragment {
@@ -348,6 +385,17 @@ view: clicks {
     sql: ${TABLE}.offsite_click ;;
     group_label: "Target"
   }
+
+  #was the click to a different domain name (url host) with the fix for Gov clicks -- see also target_url_gov
+  dimension: offsite_click_gov {
+    type:  yesno
+    sql: CASE WHEN ${TABLE}.page_urlhost = 'www2.gov.bc.ca' AND (${TABLE}.target_url LIKE '#%' OR ${TABLE}.target_url LIKE 'www2.gov.bc.ca%') THEN FALSE
+        ELSE ${TABLE}.offsite_click
+        END ;;
+    group_label: "Target"
+    description: "For use when offsite_click isn't displaying correctly on links from CMF"
+  }
+
 
 # Custom dimension for TIBC reporting
   dimension: tibc_click_conversion{

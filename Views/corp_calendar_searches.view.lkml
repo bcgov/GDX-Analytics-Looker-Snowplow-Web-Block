@@ -42,7 +42,7 @@ view: corp_calendar_searches {
           CASE WHEN "filters.this_day_only" = 't' THEN 1 ELSE 0 END AS this_day_only_count,
           CASE WHEN "filters.to_date" IS NOT NULL THEN 1 ELSE 0 END AS to_date_count
         FROM atomic.ca_bc_gov_bcs_calendar_action_1 AS ca
-          JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
+          LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON ca.root_id = wp.root_id AND ca.root_tstamp = wp.root_tstamp
           LEFT JOIN atomic.events ON ca.root_id = events.event_id AND ca.root_tstamp = events.collector_tstamp
                  WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key

@@ -1,4 +1,4 @@
-# Version:     2.4.0
+# Version:     2.5.0
 #
 # Copyright (c) 2016 Snowplow Analytics Ltd. All rights reserved.
 #
@@ -20,6 +20,9 @@
 connection: "redshift_pacific_time"
 # Set the week start day to Sunday. Default is Monday
 week_start_day: sunday
+
+# Set the fiscal offset to 3, to indicate an April 1 to March 31 fiscal year
+fiscal_month_offset: 3
 
 # include all views in this project
 include: "/Views/*.view"
@@ -189,9 +192,74 @@ explore: page_views {
     relationship: one_to_one
     sql_on: ${page_views.domain_userid} = ${language_cohorts_users.domain_userid} ;;
   }
+
+  join: ldb_sku {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${page_views.ldb_sku} = ${ldb_sku.sku} ;;
+  }
+
+
+}
+
+explore: ldb_summary {
+  label: "LDB Summary"
 }
 
 
+explore: page_views_bdp {
+  persist_for: "10 minutes"
+  # exclude when people are viewing files on locally downloaded or hosted copies of webpages
+  #sql_always_where: (${page_urlhost} <> 'localhost' OR ${page_urlhost} IS NULL)
+  #    AND ${page_url} NOT LIKE '%$/%'
+  #    AND ${page_url} NOT LIKE 'file://%' AND ${page_url} NOT LIKE '-file://%' AND ${page_url} NOT LIKE 'mhtml:file://%' ;;
+
+  # adding this access filter to be used by the CMS Lite embed code generator
+  #    to allow for page-level dashboards
+
+  access_filter: {
+    field: page_urlhost
+    user_attribute: urlhost
+  }
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
+  join: sessions_bdp {
+    type: left_outer
+    sql_on: ${sessions_bdp.session_id} = ${page_views_bdp.session_id};;
+    relationship: many_to_many
+  }
+  join: ldb_sku {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${page_views_bdp.ldb_sku} = ${ldb_sku.sku} ;;
+  }
+}
+
+explore: sessions_bdp {
+  persist_for: "10 minutes"
+
+  # exclude when people are viewing files on locally downloaded or hosted copies of webpages
+  # Note that we are using first_page here instead of page, as there is no "page" for sessions
+  #sql_always_where: (${first_page_urlhost} <> 'localhost' OR ${first_page_urlhost} IS NULL)
+  #    AND ${first_page_url} NOT LIKE '%$/%'
+  #    AND ${first_page_url} NOT LIKE 'file://%' AND ${first_page_url} NOT LIKE '-file://%' AND ${first_page_url} NOT LIKE 'mhtml:file://%';;
+
+  #join: users {
+  #  sql_on: ${sessions_bdp.domain_userid} = ${users.domain_userid} ;;
+  #  relationship: many_to_one
+  #}
+
+  access_filter: {
+    field: first_page_urlhost
+    user_attribute: urlhost
+  }
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
+}
 
 explore: myfs_estimates {
   persist_for: "10 minutes"
@@ -238,6 +306,10 @@ explore: chatbot {
     field: page_views.page_urlhost
     user_attribute: urlhost
   }
+  access_filter: {
+    field: chatbot.which_bot
+    user_attribute: which_bot
+  }
 }
 
 explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes of making it faster
@@ -264,7 +336,56 @@ explore: chatbot_intents_and_clicks { #view that only includes intents, in hopes
     field: chatbot_intents_and_clicks.page_urlhost
     user_attribute: urlhost
   }
+  access_filter: {
+    field: chatbot_intents_and_clicks.which_bot
+    user_attribute: which_bot
+  }
 }
+
+explore: chatbot_errors {
+  label: "Chatbot Errors"
+  persist_for: "2 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme
+    ]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${chatbot_errors.id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: chatbot_errors.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: feedbc_search {
+  label: "FeedBC Search"
+  persist_for: "1 hours"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme
+  ]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${feedbc_search.page_view_id} ;;
+    relationship: one_to_one
+  }
+
+  access_filter: {
+    field: feedbc_search.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
 
 explore: sessions {
   persist_for: "10 minutes"
@@ -593,7 +714,6 @@ explore: sbc_online_appointments_clicks{
 
 explore: workbc_careersearch_click{
   label: "WorkBC Career Search Tool Clicks"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -616,8 +736,7 @@ explore: workbc_careersearch_click{
   }
 }
 explore: workbc_careersearch_find {
-  label: "WorkBC Career Search Tool"
-  persist_for: "2 hours"
+  label: "WorkBC Career Search Find"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -641,7 +760,6 @@ explore: workbc_careersearch_find {
 }
 explore: workbc_careersearch_compare {
   label: "WorkBC Career Search Compare Tool"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -665,7 +783,6 @@ explore: workbc_careersearch_compare {
 }
 explore: workbc_careertoolkit {
   label: "WorkBC Career Transition Toolkit"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -690,7 +807,6 @@ explore: workbc_careertoolkit {
 
 explore: workbc_careereducation_find {
   label: "WorkBC Career Education Tool"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -715,7 +831,6 @@ explore: workbc_careereducation_find {
 
 explore: workbc_careereducation_click {
   label: "WorkBC Career Education Tool Clicks"
-  persist_for: "2 hours"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -737,8 +852,6 @@ explore: workbc_careereducation_click {
     user_attribute: urlhost
   }
 }
-
-
 
 
 explore: workbc_career_discovery_click{
@@ -835,13 +948,13 @@ explore: asset_downloads {
 
   join: cmslite_metadata {
     type: left_outer
-    sql_on: ${asset_downloads.asset_display_url} = ${cmslite_metadata.hr_url} ;;
+    sql_on: ${asset_downloads.asset_url_nopar_case_insensitive} = ${cmslite_metadata.hr_url} ;;
     relationship: one_to_one
   }
 
   join: asset_themes {
     type: left_outer
-    sql_on: ${asset_downloads.asset_display_url} = ${asset_themes.hr_url} ;;
+    sql_on: ${asset_downloads.asset_url_nopar_case_insensitive} = ${asset_themes.hr_url} ;;
     relationship: one_to_one
   }
 }
@@ -1043,6 +1156,32 @@ explore: idim_mobile_errors {
     field: app_id
     user_attribute: app_id
   }
+  join: mobile_screen_views {
+    type:  left_outer
+    sql_on: ${mobile_screen_views.screen_view_id} = ${idim_mobile_errors.screen_view_id} ;;
+    relationship: many_to_one
+  }
+  join: mobile_sessions {
+    type:  left_outer
+    sql_on: ${mobile_sessions.session_id} = ${idim_mobile_errors.session_id} ;;
+    relationship: many_to_one
+  }
+}
+explore: idim_actions {
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
+  join: mobile_screen_views {
+    type:  left_outer
+    sql_on: ${mobile_screen_views.screen_view_id} = ${idim_actions.screen_view_id} ;;
+    relationship: many_to_one
+  }
+  join: mobile_sessions {
+    type:  left_outer
+    sql_on: ${mobile_sessions.session_id} = ${idim_actions.session_id} ;;
+    relationship: many_to_one
+  }
 }
 
 explore: csrs_clicks {
@@ -1080,7 +1219,6 @@ explore: corp_calendar_searches {
 }
 
 explore: google_translate {
-  persist_for: "60 minutes"
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
     -page_views.is_external_referrer_subtheme,
@@ -1105,6 +1243,207 @@ explore: google_translate {
   }
 }
 
+explore: wfnews_actions {
+  label: "Wildfire News Actions"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  access_filter: {
+    field: wfnews_actions.page_urlhost
+    user_attribute: urlhost
+  }
+
+  join: page_views {
+    type: left_outer
+    sql_on: ${page_views.page_view_id} = ${wfnews_actions.page_view_id} ;;
+    relationship: many_to_one
+  }
+
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+}
+
+explore: pims_listing_clicks {
+  label: "PIMS Listing Clicks"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${pims_listing_clicks.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: pims_listing_clicks.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: pims_errors {
+  label: "PIMS Errors"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${pims_errors.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: pims_errors.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: pims_searches {
+  label: "PIMS Searches"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${pims_searches.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: pims_searches.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: drivebc_actions {
+  label: "DriveBC Actions"
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${drivebc_actions.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: drivebc_actions.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: openschool_actions_foippa {
+  label: "OpenSchool Actions FOIPPA"
+}
+
+explore: openschool_actions {
+  label: "OpenSchool Actions"
+}
+
+explore: tenancy_dispute_clicks {
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${tenancy_dispute_clicks.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: tenancy_dispute_clicks.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: bchep_action_debug {
+  label: "BCHEP Action Debug"
+  access_filter: {
+    field: bchep_action_debug.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+
+explore: bchep_action {
+  label: "BCHEP Action"
+  access_filter: {
+    field: bchep_action.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: bchep_action_progress {
+  label: "BCHEP Action Progress"
+  access_filter: {
+    field: bchep_action_progress.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: bchep_action_progress_step {
+  label: "BCHEP Action Progress Step"
+  access_filter: {
+    field: bchep_action_progress_step.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: bchep_sections_and_steps {
+  label: "BCHEP Sections and Steps"
+}
+
+explore: user_feedback {
+  access_filter: {
+    field: user_feedback.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: bchep_pin_debug {
+  label: "BCHEP PIN Debug"
+  access_filter: {
+    field: bchep_pin_debug.page_urlhost
+    user_attribute: urlhost
+  }
+}
 explore: covid19_self_assessment_action {}
 explore: covid19_self_assessment_recommendation {}
 
@@ -1134,27 +1473,29 @@ datagroup: datagroup_sbc_online_appointments {
 ##    of the last run before 3:15am so these are "paused" during that window
 ##    The common code looks like:
 ##        SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
-##                 THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
-##    This is because the triggers return either the hour or the half hour depending on when they are in their window.
+##                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+##            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 25
+##              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+##            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) >= 25 AND DATE_PART('minute',timezone('America/Vancouver', now())) < 55
+##              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+##            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+##            END ;;
+##    When it is before the first time cut, it will report the current hour.
+##        Between time cuts, it will report 30 minutes past the hour.
+##        After the second time cut it will report the next hour (and
+##            stay that way until it passes the first time cut in the next hour)
+
 
 datagroup: datagroup_healthgateway_updated {
   label: "Health Gateway Datagroup"
-  description: "Update every 30 minutes to drive the Health Gateway incremental PDT"
+  description: "Update every 30 minutes to drive the Health Gateway incremental PDT on the hour and half hour"
+# Note that for the 0 minute and 30 minute trigger, there is one fewer CASE to deal with
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
             WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 30
-              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
-            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
-}
-
-datagroup: datagroup_25_55 {
-  label: "25 and 55 Minute Datagroup"
-  description: "Update every 30 minutes to drive incrementals PDT at 25 and 55 past the hour"
-  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
-                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
-            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 25 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 55
-              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
-            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+            END ;;
 }
 
 datagroup: datagroup_05_35 {
@@ -1162,9 +1503,12 @@ datagroup: datagroup_05_35 {
   description: "Update every 30 minutes to drive incrementals PDT at 05 and 35 past the hour"
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
-            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 05 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 35
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 5
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
-            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) >= 5 AND DATE_PART('minute',timezone('America/Vancouver', now())) < 35
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+            END ;;
 }
 
 datagroup: datagroup_10_40 {
@@ -1172,7 +1516,49 @@ datagroup: datagroup_10_40 {
   description: "Update every 30 minutes to drive incrementals PDT at 10 and 40 past the hour"
   sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
                   THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
-            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 10 OR DATE_PART('minute',timezone('America/Vancouver', now())) >= 40
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 10
               THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
-            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes' END ;;
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) >= 10 AND DATE_PART('minute',timezone('America/Vancouver', now())) < 40
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+            END ;;
+}
+
+datagroup: datagroup_15_45 {
+  label: "15 and 45 Minute Datagroup"
+  description: "Update every 30 minutes to drive incrementals PDT at 15 and 45 past the hour"
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 15
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) >= 15 AND DATE_PART('minute',timezone('America/Vancouver', now())) < 45
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+            END ;;
+}
+
+datagroup: datagroup_20_50 {
+  label: "20 and 50 Minute Datagroup"
+  description: "Update every 30 minutes to drive incrementals PDT at 20 and 50 past the hour"
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 20
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) >= 20 AND DATE_PART('minute',timezone('America/Vancouver', now())) < 50
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+            END ;;
+}
+
+datagroup: datagroup_25_55 {
+  label: "25 and 55 Minute Datagroup"
+  description: "Update every 30 minutes to drive incrementals PDT at 25 and 55 past the hour"
+  sql_trigger: SELECT CASE WHEN DATE_PART('hour',timezone('America/Vancouver', now())) BETWEEN 3 AND 5
+                  THEN DATE(timezone('America/Vancouver', now())) + interval '150 minutes'
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) < 25
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now()))
+            WHEN DATE_PART('minute',timezone('America/Vancouver', now())) >= 25 AND DATE_PART('minute',timezone('America/Vancouver', now())) < 55
+              THEN DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '30 minutes'
+            ELSE DATE_TRUNC('hour',timezone('America/Vancouver', now())) +  interval '60 minutes'
+            END ;;
 }

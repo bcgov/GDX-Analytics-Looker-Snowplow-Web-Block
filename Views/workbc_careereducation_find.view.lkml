@@ -20,9 +20,12 @@ view: workbc_careereducation_find {
         FROM atomic.ca_bc_gov_workbc_find_resources_1 AS fr
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON fr.root_id = wp.root_id AND fr.root_tstamp = wp.root_tstamp
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
           ;;
     distribution_style: all
-    persist_for: "2 hours"
+    datagroup_trigger: datagroup_20_50
+    increment_key: "event_hour"
+    increment_offset: 3
   }
   dimension: page_view_id {
     description: "Unique page view ID"

@@ -14,8 +14,8 @@ view: cmslite_metadata {
             cm.ancestor_nodes
           FROM cmslite.metadata AS cm
           LEFT JOIN cmslite.metadata_languages AS cml ON cm.node_id = cml.node_id
-          LEFT JOIN cmslite.dcterms_languages AS cdl ON cdl.id = cml.id;;
-
+          LEFT JOIN cmslite.dcterms_languages AS cdl ON cdl.id = cml.id
+          ;;
     distribution_style: all
     persist_for: "24 hours"
     }

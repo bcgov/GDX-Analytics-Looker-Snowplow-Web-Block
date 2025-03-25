@@ -3,7 +3,7 @@ view: google_translate {
     sql:SELECT
           google_translate.root_id,
           google_translate.translation_data,
-          google_translate.root_tstamp,
+          CONVERT_TIMEZONE('UTC', 'America/Vancouver', google_translate.root_tstamp) AS timestamp,
           language_lookup.language_name,
           SPLIT_PART(google_translate.translation_data,'/',2) AS source_language,
           SPLIT_PART(google_translate.translation_data,'/',3) AS target_language_code,
@@ -12,9 +12,13 @@ view: google_translate {
         FROM atomic.ca_bc_gov_googtrans_google_translate_1 AS google_translate
         LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp ON google_translate.root_id = wp.root_id
         AND google_translate.root_tstamp = wp.root_tstamp
-        LEFT JOIN google.google_translate_languages AS language_lookup ON SPLIT_PART(google_translate.translation_data,'/',3) = language_lookup.language_code ;;
+        LEFT JOIN google.google_translate_languages AS language_lookup ON SPLIT_PART(google_translate.translation_data,'/',3) = language_lookup.language_code
+        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+        ;;
     distribution_style: all
-    persist_for: "2 hours"
+    datagroup_trigger: datagroup_20_50
+    increment_key: "event_hour" # this, linked with increment_offset, says to consider "timestamp" and
+    increment_offset: 3 # to reprocess up to 3 hours of results
   }
 
   # Dimensions
@@ -51,10 +55,9 @@ view: google_translate {
     sql: ${TABLE}.page_view_id ;;
   }
 
-  dimension: root_tstamp {
+  dimension: timestamp {
     description: "The timestamp of the translation event."
     type: string
-    sql: ${TABLE}.root_tstamp ;;
   }
 
   dimension: schema_vendor {
@@ -95,6 +98,12 @@ view: google_translate {
   dimension: ref_parents {
     hidden:  yes
     sql: ${TABLE}.ref_parents ;;
+  }
+
+  dimension_group: event {
+    sql: ${TABLE}.timestamp ;;
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
   }
 
   # Measures

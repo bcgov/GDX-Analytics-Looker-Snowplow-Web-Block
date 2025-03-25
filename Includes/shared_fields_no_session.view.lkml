@@ -1,3 +1,4 @@
+# Version 1.1.0
 view: shared_fields_no_session {
 
 # browser_view_height is not in Sessions
@@ -120,7 +121,8 @@ view: shared_fields_no_session {
     description: "The identifier for an engagement on engage.gov.bc.ca."
     type: string
     sql: CASE WHEN ${TABLE}.page_urlpath LIKE '/govtogetherbc/consultation/%'
-      THEN SPLIT_PART(${TABLE}.page_urlpath,'/',4)
+            OR ${TABLE}.page_urlpath LIKE '/govtogetherbc/engagement/%'
+          THEN SPLIT_PART(${TABLE}.page_urlpath,'/',4)
       ELSE SPLIT_PART(${TABLE}.page_urlpath,'/',2) END ;;
     group_label: "Page"
   }
@@ -413,4 +415,14 @@ view: shared_fields_no_session {
     drill_fields: [page_views.page_referrer,page_views.page_url]
   }
 
+  dimension: ldb_sku {
+    type: string
+    sql: CASE WHEN ${TABLE}.page_urlhost = 'www.bcliquorstores.com' AND ${TABLE}.page_section = 'product' THEN ${TABLE}.page_subsection ELSE NULL END;;
+    group_label: "LDB Custom Fields"
+  }
+
+
+  dimension: foi_recorduid { # Used for reporting on FOI record requests from the Open Info Portal
+    sql: REGEXP_SUBSTR(page_urlquery, 'recorduid=([A-Z]*-[0-9]*-[0-9]*)', 1,1,'pe');;
+  }
 }

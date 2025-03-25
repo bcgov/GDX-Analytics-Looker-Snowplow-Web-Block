@@ -15,14 +15,22 @@ view: workbc_careertoolkit {
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON ct.root_id = wp.root_id AND ct.root_tstamp = wp.root_tstamp
           LEFT JOIN microservice.careertoolkit_workbc AS cnoc -- the "00" trick is temporarily needed until the lookup table gets fixed
-              ON cnoc.noc = ct.current OR ct.current = '0' || cnoc.noc OR ct.current = '00' || cnoc.noc OR ct.current = '00' || cnoc.noc
+              ON cnoc.noc = ct.current OR ct.current = '0' || cnoc.noc OR ct.current = '00' || cnoc.noc OR ct.current = '000' || cnoc.noc
           LEFT JOIN microservice.careertoolkit_workbc AS onoc
-              ON onoc.noc = ct.option OR ct.option = '0' || onoc.noc OR ct.option = '00' || onoc.noc OR ct.option = '00' || onoc.noc
+              ON onoc.noc = ct.option OR ct.option = '0' || onoc.noc OR ct.option = '00' || onoc.noc OR ct.option = '000' || onoc.noc
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
           ;;
     distribution_style: all
-    persist_for: "2 hours"
+    datagroup_trigger: datagroup_15_45
+    increment_key: "event_hour"
+    increment_offset: 3
   }
 
+  dimension_group: event {
+    sql: ${TABLE}.timestamp ;;
+    type: time
+    timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
+  }
   dimension: page_view_id {
     description: "Unique page view ID"
     type: string

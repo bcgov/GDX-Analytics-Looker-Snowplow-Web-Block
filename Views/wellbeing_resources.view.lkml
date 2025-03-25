@@ -3,7 +3,61 @@ include: "/Includes/date_comparisons_common.view"
 view: wellbeing_resources {
   label: "wellbeing.gov.bc.ca Resources"
   derived_table: {
-    sql: SELECT
+    sql:
+    WITH atom AS (
+      (
+        SELECT
+            root_id,
+            root_tstamp,
+            results_count,
+            search_type,
+            audience,
+            keyword,
+            region,
+            topic,
+            "type" AS resource_type,
+            NULL AS delivery,
+            CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp
+          FROM atomic.ca_bc_gov_wellbeing_wellbeing_resources_1
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+      )
+      UNION
+      (
+          SELECT
+            root_id,
+            root_tstamp,
+            results_count,
+            search_type,
+            audience,
+            keyword,
+            region,
+            topic,
+            "type" AS resource_type,
+            NULL AS delivery,
+            CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp
+          FROM atomic.ca_bc_gov_wellbeing_wellbeing_resources_2
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+        )
+     UNION
+      (
+          SELECT
+            root_id,
+            root_tstamp,
+            results_count,
+            search_type,
+            audience,
+            keyword,
+            region,
+            topic,
+            "type" AS resource_type,
+            delivery,
+            CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp
+          FROM atomic.ca_bc_gov_wellbeing_wellbeing_resources_3
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+        )
+      )
+
+      SELECT
           atom.root_id AS root_id,
           wp.id AS page_view_id,domain_sessionid AS session_id,
           COALESCE(events.page_urlhost,'') AS page_urlhost,
@@ -14,7 +68,8 @@ view: wellbeing_resources {
           keyword,
           region,
           topic,
-          "type" AS resource_type,
+          resource_type,
+          delivery,
           --- Audiences
           CASE WHEN audience LIKE '%Child or youth%' THEN 1 ELSE 0 END AS child_or_youth_count,
           CASE WHEN audience LIKE '%Post-secondary student%' THEN 1 ELSE 0 END AS post_sec_count,
@@ -50,6 +105,9 @@ view: wellbeing_resources {
           CASE WHEN topic LIKE '%Understanding wellness%' THEN 1 ELSE 0 END AS wellness_topic_count,
           CASE WHEN topic LIKE '%Grief and loss%' THEN 1 ELSE 0 END AS grief_count,
           CASE WHEN topic LIKE '%In crisis%' THEN 1 ELSE 0 END AS crisis_count,
+          CASE WHEN topic LIKE '%Mental illness%' THEN 1 ELSE 0 END AS mentalillness_count,
+          CASE WHEN topic LIKE '%Support needs%' THEN 1 ELSE 0 END AS supportneeds_count,
+          CASE WHEN topic LIKE '%Victim support%' THEN 1 ELSE 0 END AS victimsupport_count,
           --- Resource Types
           CASE WHEN resource_type LIKE '%Counselling%' THEN 1 ELSE 0 END AS counselling_count,
           CASE WHEN resource_type LIKE '%Translation Services%' THEN 1 ELSE 0 END AS translation_count,
@@ -64,15 +122,17 @@ view: wellbeing_resources {
           CASE WHEN resource_type LIKE '%Treatment services%' THEN 1 ELSE 0 END AS treatment_count,
           CASE WHEN resource_type LIKE '%Mental health intake%' THEN 1 ELSE 0 END AS intake_count,
           CASE WHEN resource_type LIKE '%Peer support%' THEN 1 ELSE 0 END AS peer_count,
-
+           --- Resource Types
+          CASE WHEN delivery LIKE '%In Person"%' THEN 1 ELSE 0 END AS inperson_count,
+          CASE WHEN delivery LIKE '%Virtual & Telephone%' THEN 1 ELSE 0 END AS virtualtel_count,
           ---
-          CONVERT_TIMEZONE('UTC', 'America/Vancouver', atom.root_tstamp) AS timestamp
+          atom.timestamp
 
-        FROM atomic.ca_bc_gov_wellbeing_wellbeing_resources_1 AS atom
+        FROM atom
           LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON atom.root_id = wp.root_id AND atom.root_tstamp = wp.root_tstamp
           LEFT JOIN atomic.events ON atom.root_id = events.event_id AND atom.root_tstamp = events.collector_tstamp
-        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+--        WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
         ;;
     distribution_style: all
     datagroup_trigger: datagroup_10_40
@@ -106,6 +166,7 @@ view: wellbeing_resources {
   dimension: region {}
   dimension: topic {}
   dimension: resource_type {}
+  dimension: delivery {}
 
 
   dimension_group: event {
@@ -354,5 +415,30 @@ view: wellbeing_resources {
     label: "In crisis count"
     group_label: "Topic Counts"
   }
+  measure: mentalillness_count {
+    type: sum
+    label: "Mental illness count"
+    group_label: "Topic Counts"
+  }
+  measure: supportneeds_count {
+    type: sum
+    label: "Support needs count"
+    group_label: "Topic Counts"
+  }
+  measure: victimsupport_count {
+    type: sum
+    label: "Victim support count"
+    group_label: "Topic Counts"
+  }
 
+  measure: inperson_count {
+    type: sum
+    label: "In Person count"
+    group_label: "Delivery Counts"
+  }
+  measure: virtualtel_count {
+    type: sum
+    label: "Virtual & Telephone count"
+    group_label: "Delivery Counts"
+  }
 }
