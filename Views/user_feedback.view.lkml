@@ -2,7 +2,20 @@ include: "/Includes/date_comparisons_common.view"
 
 view: user_feedback{
   derived_table: {
-    sql: SELECT
+    sql:
+      WITH fa AS
+          (SELECT action, list, text, id, NULL AS trigger, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp, root_tstamp, root_id
+          FROM atomic.ca_bc_gov_feedback_feedback_action_1
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+            AND timestamp >= '2024-02-01'
+        UNION
+          SELECT action, list, text, id, trigger, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp, root_tstamp, root_id
+          FROM atomic.ca_bc_gov_feedback_feedback_action_2
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+            AND timestamp >= '2024-02-01'
+          )
+
+    SELECT
           fa.root_id AS root_id,
           wp.id AS page_view_id,
           domain_sessionid AS session_id,
@@ -11,21 +24,34 @@ view: user_feedback{
           page_urlscheme || '://' || page_urlhost || regexp_replace(page_urlpath, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','') AS page_display_url,
           action,
           fa.id,
+          trigger,
           list,
           text,
           CASE WHEN action = 'Load' THEN 1 ELSE 0 END AS load_count,
           CASE WHEN action = 'Back' THEN 1 ELSE 0 END AS back_count,
           CASE WHEN action = 'Close' THEN 1 ELSE 0 END AS close_count,
+          CASE WHEN action = 'Triggered' THEN 1 ELSE 0 END AS triggered_count,
           CASE WHEN action = 'Thumbs Up' THEN 1 ELSE 0 END AS thumbs_up_count,
           CASE WHEN action = 'Thumbs Down' THEN 1 ELSE 0 END AS thumbs_down_count,
-          CONVERT_TIMEZONE('UTC', 'America/Vancouver', fa.root_tstamp) AS timestamp,
+          CASE WHEN action = 'Rating 1' THEN 1 ELSE 0 END AS rating_1_count,
+          CASE WHEN action = 'Rating 2' THEN 1 ELSE 0 END AS rating_2_count,
+          CASE WHEN action = 'Rating 3' THEN 1 ELSE 0 END AS rating_3_count,
+          CASE WHEN action = 'Rating 4' THEN 1 ELSE 0 END AS rating_4_count,
+          CASE WHEN action = 'Rating 5' THEN 1 ELSE 0 END AS rating_5_count,
+          CASE WHEN action = 'Rating 1' THEN 1
+                WHEN action = 'Rating 2' THEN 2
+                WHEN action = 'Rating 3' THEN 3
+                WHEN action = 'Rating 4' THEN 4
+                WHEN action = 'Rating 5' THEN 5
+                ELSE NULL END as rating,
+          CASE WHEN action IN ('Thumbs Up', 'Thumbs Down', 'Rating 1', 'Rating 2', 'Rating 3', 'Rating 4', 'Rating 5') THEN 1 ELSE 0 END AS rating_count,
+          fa."timestamp",
           geo_latitude,
           geo_longitude
-      FROM atomic.ca_bc_gov_feedback_feedback_action_1 AS fa
+      FROM fa
       LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
       ON fa.root_id = wp.root_id AND fa.root_tstamp = wp.root_tstamp
       LEFT JOIN atomic.events ON fa.root_id = events.event_id AND fa.root_tstamp = events.collector_tstamp
-      WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
       ;;
     distribution: "page_view_id"
     sortkeys: ["page_view_id","timestamp"]
@@ -54,9 +80,13 @@ view: user_feedback{
 
 
   dimension: action {}
+  dimension: rating {
+    type: number
+  }
   dimension: id {}
   dimension: list {}
   dimension: text {}
+  dimension: trigger {}
   dimension: session_id {}
   dimension: page_display_url {}
 
@@ -98,6 +128,30 @@ view: user_feedback{
     type: sum
     sql: ${TABLE}.thumbs_up_count ;;
   }
+   measure: rating_count {
+    type: sum
+    sql: ${TABLE}.rating_count ;;
+  }
+  measure: rating_1_count {
+    type: sum
+    sql: ${TABLE}.rating_1_count ;;
+  }
+  measure: rating_2_count {
+    type: sum
+    sql: ${TABLE}.rating_2_count ;;
+  }
+  measure: rating_3_count {
+    type: sum
+    sql: ${TABLE}.rating_3_count ;;
+  }
+  measure: rating_4_count {
+    type: sum
+    sql: ${TABLE}.rating_4_count ;;
+  }
+  measure: rating_5_count {
+    type: sum
+    sql: ${TABLE}.rating_5_count ;;
+  }
 
   measure: thumbs_down_count {
     type: sum
@@ -116,6 +170,16 @@ view: user_feedback{
   measure: back_count {
     type: sum
     sql: ${TABLE}.back_count ;;
+  }
+  measure: triggered_count {
+    type: sum
+    sql: ${TABLE}.triggered_count ;;
+  }
+
+  measure: average_rating {
+    type: average
+    sql: ${TABLE}.rating/1.0;;
+    value_format: "0.0#"
   }
 
 
