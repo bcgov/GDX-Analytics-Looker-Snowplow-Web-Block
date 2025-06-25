@@ -1447,6 +1447,16 @@ explore: bchep_pin_debug {
 explore: covid19_self_assessment_action {}
 explore: covid19_self_assessment_recommendation {}
 
+
+
+explore: bcparks_action {
+  label: "BC Parks Action"
+  access_filter: {
+    field: bcparks_action.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
 ### Datagroups
 ## NOTE: These groups are set to run outside of the "overnight-defrag" window.
 ##        As such, no incremental jobs should run between 3:45 and 5:15 AM Pacific Time
