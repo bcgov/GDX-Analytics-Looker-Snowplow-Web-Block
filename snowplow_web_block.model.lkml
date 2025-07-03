@@ -1430,6 +1430,16 @@ explore: bchep_sections_and_steps {
   label: "BCHEP Sections and Steps"
 }
 
+
+explore: bchc_progress {
+  label: "BC Health Careers Action Progress"
+  access_filter: {
+    field: bchc_progress.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+
 explore: user_feedback {
   access_filter: {
     field: user_feedback.page_urlhost
