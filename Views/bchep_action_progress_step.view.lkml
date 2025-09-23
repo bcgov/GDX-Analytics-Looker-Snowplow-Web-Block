@@ -34,33 +34,37 @@ view: bchep_action_progress_step  {
             --WHEN step = 'addressIneligible' THEN 4
             WHEN step = 'access-newCodeRequest' THEN 4
             WHEN step = 'access-contactAddress' THEN 5
-            WHEN step = 'access-requestConfirmation' THEN 6
-            WHEN step = 'access-getStarted' THEN 7
-            WHEN step = 'energuideAssessment' THEN 8
+            WHEN step = 'get-code' THEN 6
+            WHEN step = 'access-requestConfirmation' THEN 7
+            WHEN step = 'access-getStarted' THEN 8
+            WHEN step = 'energuideAssessment' THEN 9
             -- WHEN step = 'returningUser' THEN 10
             -- WHEN step = '--energyScoreEstimate' THEN --
-            WHEN step = 'refineScore' THEN 9
-            WHEN step = 'yearBuilt' THEN 10
-            WHEN step = 'foundationType' THEN 11
-            WHEN step = 'basementType' THEN 12
-            WHEN step = 'storeys' THEN 13
-            WHEN step = 'floorAreas' THEN 14
-            WHEN step = 'replaced' THEN 15
-            WHEN step = 'roomHeating' THEN 16
-            WHEN step = 'heatPump' THEN 17
-            WHEN step = 'waterHeating' THEN 18
-            WHEN step = 'additional' THEN 19
-            WHEN step = 'glassPanes' THEN 20
-            WHEN step = 'inputConfirmation' THEN 21
-            WHEN step = 'reportLoading' THEN 22
-            WHEN step = 'EnergyReport' THEN 23
-            WHEN step = 'questionsIntro' THEN 24
-            WHEN step = 'upgradeGoals' THEN 25
-            WHEN step = 'propertyIssues' THEN 26
+            WHEN step = 'refineScore' THEN 10
+            WHEN step = 'yearBuilt' THEN 11
+            WHEN step = 'foundationType' THEN 12
+            WHEN step = 'basementType' THEN 13
+            WHEN step = 'storeys' THEN 14
+            WHEN step = 'floorAreas' THEN 15
+            WHEN step = 'replaced' THEN 16
+            WHEN step = 'roomHeating' THEN 17
+            WHEN step = 'heatPump' THEN 18
+            WHEN step = 'waterHeating' THEN 19
+            WHEN step = 'additional' THEN 20
+            WHEN step = 'glassPanes' THEN 21
+            WHEN step = 'inputConfirmation' THEN 22
+            WHEN step = 'reportLoading' THEN 23
+            WHEN step = 'EnergyReport' THEN 24
+            WHEN step = 'questionsIntro' THEN 25
+            WHEN step = 'upgradeGoals' THEN 26
+            WHEN step = 'propertyIssues' THEN 27
             --WHEN step = 'upgradePreference' THEN 29
-            WHEN step = 'upgradePlanLoading' THEN 27
+            WHEN step = 'upgradePlanLoading' THEN 28
             --WHEN step = 'noRefinement' THEN 31
-            WHEN step = 'upgradePlan' THEN 28
+            --WHEN step = 'upgradePlan' THEN 29
+            WHEN step = 'overview' THEN 29
+            WHEN step = 'upgrades-rebates' THEN 30
+            WHEN step = 'next-steps' THEN 31
             --WHEN step = 'getSupport' THEN 33
             --WHEN step = 'dataPrivacy' THEN 34
           ELSE NULL END AS step_order,
@@ -77,13 +81,14 @@ view: bchep_action_progress_step  {
     AND section IN ('landing','login','pin-request','energuide-upload',
           'questionnaire-energy-report','energy-report','questionnaire-upgrade-plan','questionnaire-energy-plan',
           'upgrade-plan','energy-plan')
-    -- Removed upgradePreference, noRefinement, getSupport, dataPrivacy, returningUser, addressIneligible
+    -- Removed upgradePreference, noRefinement, getSupport, dataPrivacy, returningUser, addressIneligible,upgradePlan
     AND step IN ('landing', 'welcome', 'addressConfirmation', 'access-contactAddress',
       'access-getStarted', 'access-newCodeRequest', 'access-requestConfirmation', 'energuideAssessment',
       'refineScore', 'yearBuilt', 'foundationType', 'basementType', 'storeys', 'floorAreas',
       'replaced', 'roomHeating', 'heatPump', 'waterHeating', 'additional', 'glassPanes', 'inputConfirmation',
       'reportLoading', 'EnergyReport', 'questionsIntro', 'upgradeGoals', 'propertyIssues',
-      'upgradePlanLoading', 'upgradePlan')
+      'upgradePlanLoading', 'get-code', 'overview', 'upgrades-rebates', 'next-steps'
+      )
     )
     SELECT
     page_urlhost,
@@ -137,33 +142,37 @@ dimension: latest_step {
       --WHEN ${TABLE}.step_order = 4 THEN 'addressIneligible'
       WHEN ${TABLE}.step_order = 4 THEN 'access-newCodeRequest'
       WHEN ${TABLE}.step_order = 5 THEN 'access-contactAddress'
-      WHEN ${TABLE}.step_order = 6 THEN 'access-requestConfirmation'
-      WHEN ${TABLE}.step_order = 7 THEN 'access-getStarted'
-      WHEN ${TABLE}.step_order = 8 THEN 'energuideAssessment'
+      WHEN ${TABLE}.step_order = 6 THEN 'get-code'
+      WHEN ${TABLE}.step_order = 7 THEN 'access-requestConfirmation'
+      WHEN ${TABLE}.step_order = 8 THEN 'access-getStarted'
+      WHEN ${TABLE}.step_order = 9 THEN 'energuideAssessment'
       -- WHEN ${TABLE}.step_order = 10 THEN 'returningUser'
 --      WHEN ${TABLE}.step_order = -- THEN '--energyScoreEstimate'
-      WHEN ${TABLE}.step_order = 9 THEN 'refineScore'
-      WHEN ${TABLE}.step_order = 10 THEN 'yearBuilt'
-      WHEN ${TABLE}.step_order = 11 THEN 'foundationType'
-      WHEN ${TABLE}.step_order = 12 THEN 'basementType'
-      WHEN ${TABLE}.step_order = 13 THEN 'storeys'
-      WHEN ${TABLE}.step_order = 14 THEN 'floorAreas'
-      WHEN ${TABLE}.step_order = 15 THEN 'replaced'
-      WHEN ${TABLE}.step_order = 16 THEN 'roomHeating'
-      WHEN ${TABLE}.step_order = 17 THEN 'heatPump'
-      WHEN ${TABLE}.step_order = 18 THEN 'waterHeating'
-      WHEN ${TABLE}.step_order = 19 THEN 'additional'
-      WHEN ${TABLE}.step_order = 20 THEN 'glassPanes'
-      WHEN ${TABLE}.step_order = 21 THEN 'inputConfirmation'
-      WHEN ${TABLE}.step_order = 22 THEN 'reportLoading'
-      WHEN ${TABLE}.step_order = 23 THEN 'EnergyReport'
-      WHEN ${TABLE}.step_order = 24 THEN 'questionsIntro'
-      WHEN ${TABLE}.step_order = 25 THEN 'upgradeGoals'
-      WHEN ${TABLE}.step_order = 26 THEN 'propertyIssues'
+      WHEN ${TABLE}.step_order = 10 THEN 'refineScore'
+      WHEN ${TABLE}.step_order = 11 THEN 'yearBuilt'
+      WHEN ${TABLE}.step_order = 12 THEN 'foundationType'
+      WHEN ${TABLE}.step_order = 13 THEN 'basementType'
+      WHEN ${TABLE}.step_order = 14 THEN 'storeys'
+      WHEN ${TABLE}.step_order = 15 THEN 'floorAreas'
+      WHEN ${TABLE}.step_order = 16 THEN 'replaced'
+      WHEN ${TABLE}.step_order = 17 THEN 'roomHeating'
+      WHEN ${TABLE}.step_order = 18 THEN 'heatPump'
+      WHEN ${TABLE}.step_order = 19 THEN 'waterHeating'
+      WHEN ${TABLE}.step_order = 20 THEN 'additional'
+      WHEN ${TABLE}.step_order = 21 THEN 'glassPanes'
+      WHEN ${TABLE}.step_order = 22 THEN 'inputConfirmation'
+      WHEN ${TABLE}.step_order = 23 THEN 'reportLoading'
+      WHEN ${TABLE}.step_order = 24 THEN 'EnergyReport'
+      WHEN ${TABLE}.step_order = 25 THEN 'questionsIntro'
+      WHEN ${TABLE}.step_order = 26 THEN 'upgradeGoals'
+      WHEN ${TABLE}.step_order = 27 THEN 'propertyIssues'
       --WHEN ${TABLE}.step_order = 29 THEN 'upgradePreference'
-      WHEN ${TABLE}.step_order = 27 THEN 'upgradePlanLoading'
+      WHEN ${TABLE}.step_order = 28 THEN 'upgradePlanLoading'
       --WHEN ${TABLE}.step_order = 31 THEN 'noRefinement'
-      WHEN ${TABLE}.step_order = 28 THEN 'upgradePlan'
+      --WHEN ${TABLE}.step_order = 28 THEN 'upgradePlan'
+      WHEN ${TABLE}.step_order = 29 THEN 'overview'
+      WHEN ${TABLE}.step_order = 30 THEN 'upgrades-rebates'
+      WHEN ${TABLE}.step_order = 31 THEN 'next-steps'
       --WHEN ${TABLE}.step_order = 33 THEN 'getSupport'
       --WHEN ${TABLE}.step_order = 34 THEN 'dataPrivacy'
     ELSE NULL END;;
