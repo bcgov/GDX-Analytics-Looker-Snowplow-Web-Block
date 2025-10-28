@@ -32,7 +32,11 @@ view: mobile_screen_views {
       FROM derived.mobile_screen_views
       -- Compare the dvce_created_tstamp (in UTC) to the current time to ensure that no calls
       --    from "the future" are included. Otherwise incremental PDTs won't work cleanly
+      --
+      --    Also filter out data older than 24 complete months. This is similar to the approach in
+      --    the main archive job.
       WHERE dvce_created_tstamp < CONVERT_TIMEZONE('America/Vancouver', 'UTC', GETDATE())
+        AND DATE_TRUNC('month', dvce_created_tstamp) >= DATEADD(month, -24, DATE_TRUNC('month', CONVERT_TIMEZONE('America/Vancouver', 'UTC', GETDATE())))
         AND {% incrementcondition %} dvce_created_tstamp {% endincrementcondition %} -- this matches the table column used by increment_key
 ;;
 
