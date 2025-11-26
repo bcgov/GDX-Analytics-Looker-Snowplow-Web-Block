@@ -598,24 +598,3 @@ dimension: workforce_profiles_group {
     sql: CASE WHEN page_views.dvce_type IN ('Mobile','Tablet') THEN 1 ELSE 0 END;;
   }
 }
-
-# If necessary, uncomment the line below to include explore_source.
-# include: "snowplow_web_block.model.lkml"
-explore: max_page_view_rollup {}
-view: max_page_view_rollup {
-  derived_table: {
-    explore_source: page_views {
-      column: page_view_id {}
-      column: page_title {}
-      column: max_page_view_index {}
-      derived_column: p_key {
-        sql: ROW_NUMBER() OVER (order by true) ;;
-      }
-    }
-  }
-  dimension: page_view_id {}
-  dimension: page_title {}
-  dimension: max_page_view_index {
-    type: number
-  }
-}
