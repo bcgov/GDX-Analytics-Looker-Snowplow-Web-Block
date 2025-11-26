@@ -20,7 +20,7 @@ view: page_views {
     sql: ${cmslite_themes.theme_id} <> ${cmslite_referrer_themes.theme_id} ;;
   }
 
-    dimension: is_external_referrer_subtheme {
+  dimension: is_external_referrer_subtheme {
     type:  yesno
     group_label: "Referrer"
     label: "Referrer is External Subtheme"
@@ -356,8 +356,8 @@ view: page_views {
   }
 
 # Custom Dimensions for Chatbot
-dimension: chatbot_page_display_url {
-  type: string
+  dimension: chatbot_page_display_url {
+    type: string
     label: "Chatbot Page Display URL"
     # when editing also see clicks.truncated_target_url_nopar_case_insensitive
     description: "Cleaned URL of the page without query string or standard file names like index.html for Chatbot"
@@ -369,7 +369,7 @@ dimension: chatbot_page_display_url {
       url: "{{ value }}"
       icon_url: "https://looker.com/favicon.ico"
     }
-}
+  }
 
   # Custom dimensions for LGIS
   dimension: lgis_section {
@@ -456,18 +456,18 @@ dimension: chatbot_page_display_url {
 
 # -- custom dimensions for https://erap.apps.gov.bc.ca/workforceprofiles/
 
-dimension: workforce_profiles_section {
-  sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'#/',2), '?', 1) = '' THEN 'Home' ELSE SPLIT_PART(SPLIT_PART(${page_url},'#/',2), '?', 1) END;;
-  group_label: "Workforce Profiles"
-}
-dimension: workforce_profiles_ministry {
-  sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'Ministry_Key=',2), '&', 1) = '' THEN 'None' ELSE SPLIT_PART(SPLIT_PART(${page_url},'Ministry_Key=',2), '&', 1) END;;
-  group_label: "Workforce Profiles"
-}
-dimension: workforce_profiles_group {
-  sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'Des_Grp=',2), '&', 1) = '' THEN 'None' ELSE SPLIT_PART(SPLIT_PART(${page_url},'Des_Grp=',2), '&', 1) END;;
-  group_label: "Workforce Profiles"
-}
+  dimension: workforce_profiles_section {
+    sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'#/',2), '?', 1) = '' THEN 'Home' ELSE SPLIT_PART(SPLIT_PART(${page_url},'#/',2), '?', 1) END;;
+    group_label: "Workforce Profiles"
+  }
+  dimension: workforce_profiles_ministry {
+    sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'Ministry_Key=',2), '&', 1) = '' THEN 'None' ELSE SPLIT_PART(SPLIT_PART(${page_url},'Ministry_Key=',2), '&', 1) END;;
+    group_label: "Workforce Profiles"
+  }
+  dimension: workforce_profiles_group {
+    sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'Des_Grp=',2), '&', 1) = '' THEN 'None' ELSE SPLIT_PART(SPLIT_PART(${page_url},'Des_Grp=',2), '&', 1) END;;
+    group_label: "Workforce Profiles"
+  }
 
 
 
@@ -596,26 +596,5 @@ dimension: workforce_profiles_group {
   measure: mobile_page_views {
     type: sum
     sql: CASE WHEN page_views.dvce_type IN ('Mobile','Tablet') THEN 1 ELSE 0 END;;
-  }
-}
-
-# If necessary, uncomment the line below to include explore_source.
-# include: "snowplow_web_block.model.lkml"
-explore: max_page_view_rollup {}
-view: max_page_view_rollup {
-  derived_table: {
-    explore_source: page_views {
-      column: page_view_id {}
-      column: page_title {}
-      column: max_page_view_index {}
-      derived_column: p_key {
-        sql: ROW_NUMBER() OVER (order by true) ;;
-      }
-    }
-  }
-  dimension: page_view_id {}
-  dimension: page_title {}
-  dimension: max_page_view_index {
-    type: number
   }
 }
