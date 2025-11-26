@@ -5,104 +5,48 @@ include: "/Includes/shared_fields_no_session.view"
 include: "/Includes/date_comparisons_common.view"
 
 
-view: page_views_bdp {
-  sql_table_name: derived.page_views_v1 ;;
+view: page_views {
+  sql_table_name: derived.page_views ;;
 
   extends: [shared_fields_common,shared_fields_no_session,date_comparisons_common]
 
-# OVERRIDES NEEDED FOR BDP #
-  dimension: session_id {
-    description: "A unique identifier for a given user session, based on IP and timestamp."
-    type: string
-    sql: ${TABLE}.domain_sessionid ;;
-    group_label: "Session"
-  }
-
-  dimension: browser_name {
-    sql: ${TABLE}.agent_name ;;
-  }
-  dimension: browser_family {
-    sql: ${TABLE}.useragent_family ;;
-  }
-  dimension: browser_type {
-    sql: ${TABLE}.device_class ;;
-  }
-  dimension: page_referrer {
-    sql: ${TABLE}.referrer ;;
-  }
-
-  dimension: page_referrer_display_url {
-    sql:  ${TABLE}.refr_urlscheme || '://' || ${TABLE}.refr_urlhost || regexp_replace(${TABLE}.refr_urlpath, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
-  }
-
-
-  dimension: device_type {
-    description: "A label that describes the viewing device type as Mobile or Computer."
-    type: string
-    sql: ${TABLE}.operating_system_class ;;
-    drill_fields: [browser_family]
-    group_label: "Device"
-  }
-
-  dimension: page_display_url {
-    sql:  ${TABLE}.page_urlscheme || '://' || ${TABLE}.page_urlhost || regexp_replace(${TABLE}.page_urlpath, 'index.(html|htm|aspx|php|cgi|shtml|shtm)$','');;
-  }
-
-  dimension: page_section {
-    sql: SPLIT_PART(${page_urlpath},'/',2);;
-  }
-  dimension: page_subsection {
-    sql: SPLIT_PART(${page_urlpath},'/',3);;
-  }
-
-  dimension: device_is_mobile {
-    description: "True if the viewing device is mobile; False otherwise."
-    type: yesno
-    sql: ${TABLE}.operating_system_class = 'Mobile' ;;
-    group_label: "Device"
-  }
-
-
-  dimension: geo_city_and_region { # Note: this should be synced up with the record in geo_cache.view
-    type: string
-    sql: CASE
-       WHEN (${TABLE}.geo_city = '' OR ${TABLE}.geo_city IS NULL) THEN ${TABLE}.geo_country
-       WHEN (${TABLE}.geo_country = 'CA' OR ${TABLE}.geo_country = 'US') THEN ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_region_name
-       ELSE ${TABLE}.geo_city || ' - ' || ${TABLE}.geo_country
-      END;;
-    suggest_explore: geo_cache
-    suggest_dimension: geo_cache.geo_city_and_region
-    group_label: "Location"
-  }
-
-
-
-
-# /OVERRIDES NEEDED FOR BDP #
-
   dimension: is_external_referrer_theme {
-    hidden: yes
-    sql: null ;;
+    type:  yesno
+    group_label: "Referrer"
+    label: "Referrer is External Theme"
+    description: "Referrer is not from the target pageview theme. This filter only compares
+    the theme ID of the target page to theme ID of the referrer page. This means that a non-government page
+    will have an empty string for theme ID and will be captured if this filter is set to Yes."
+    sql: ${cmslite_themes.theme_id} <> ${cmslite_referrer_themes.theme_id} ;;
   }
 
   dimension: is_external_referrer_subtheme {
-    hidden: yes
-    sql: null ;;
+    type:  yesno
+    group_label: "Referrer"
+    label: "Referrer is External Subtheme"
+    description: "Referrer is not from the target pageview subtheme. This filter only compares
+    the subtheme ID of the target page to subtheme ID of the referrer page. This means that a non-government page
+    will have an empty string for subtheme ID and will be captured if this filter is set to Yes."
+    sql: ${cmslite_themes.subtheme_id} <> ${cmslite_referrer_themes.subtheme_id} ;;
   }
 
 
   dimension: refr_theme {
-    hidden: yes
-    sql: null ;;
+    description: "The theme in CMSLite of the referrer."
+    group_label: "Referrer"
+    type: string
+    sql:  ${cmslite_referrer_themes.theme} ;;
   }
 
   dimension: refr_subtheme {
-    hidden: yes
-    sql: null ;;
+    description: "The subtheme in CMSLite of the referrer."
+    group_label: "Referrer"
+    type: string
+    sql:  ${cmslite_referrer_themes.subtheme} ;;
   }
 
   dimension_group: filter_start {
-    sql: CONVERT_TIMEZONE('UTC', 'America/Vancouver',${TABLE}.start_tstamp) ;;
+    sql: ${TABLE}.page_view_start_time ;;
   }
 
   # Modifying extended fields
@@ -153,14 +97,19 @@ view: page_views_bdp {
   dimension_group: page_view_start {
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
-    sql: CONVERT_TIMEZONE('UTC', 'America/Vancouver',${TABLE}.start_tstamp) ;;
+    sql: ${TABLE}.page_view_start_time ;;
     #X# group_label:"Page View Time"
+  }
+  dimension_group: fiscal {
+    type: time
+    timeframes: [fiscal_quarter_of_year, fiscal_quarter, fiscal_year]
+    sql: ${TABLE}.page_view_start_time ;;
   }
 
   dimension: bc_bid_page_view_start_week {
     label: "Week"
     type: date
-    sql: date_trunc('week', ${TABLE}.start_tstamp);;
+    sql: date_trunc('week', ${TABLE}.page_view_start_time);;
     description: "For BC Bid, weeks start on Monday"
     group_label: "BC Bid Dimensions"
   }
@@ -169,7 +118,7 @@ view: page_views_bdp {
     description: "The start time of the first page view of a given session."
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
-    sql: ${TABLE}.start_tstamp ;;
+    sql: ${TABLE}.page_view_start_time ;;
     drill_fields: [page_display_url, marketing_drills*]
     label: "Page View Start"
     group_label: "Page View Date (Marketing Drill)"
@@ -486,19 +435,41 @@ view: page_views_bdp {
     description: "The timestamp for the event that was recorded by the collector."
   }
 
-  parameter: dimension_selectors {
-    hidden: yes
+  # -- this is a tempoary dimension in place to try to cover the gap in search reporting from the bug in CMF
+
+  dimension: gov_search_terms {
+    type: string
+    sql: CASE WHEN ${page_url} LIKE 'https://www2.gov.bc.ca/gov/search%' AND ${page_urlquery} LIKE '%q=%' THEN
+            REPLACE(REPLACE(SPLIT_PART(SPLIT_PART(${page_urlquery}, 'q=', 2),'&',1),'+',' '),'%20',' ')
+         ELSE NULL END;;
+    group_label: "Temporary Fixes"
+  }
+  dimension: gov_search_terms_lower {
+    type: string
+    sql: CASE WHEN ${page_url} LIKE 'https://www2.gov.bc.ca/gov/search%' AND ${page_urlquery} LIKE '%q=%' THEN
+            LOWER(REPLACE(REPLACE(SPLIT_PART(SPLIT_PART(${page_urlquery}, 'q=', 2),'&',1),'+',' '),'%20',' '))
+         ELSE NULL END;;
+    group_label: "Temporary Fixes"
   }
 
 
-  dimension: HQ_report_group{
-    hidden: yes
-    sql: null ;;
+
+# -- custom dimensions for https://erap.apps.gov.bc.ca/workforceprofiles/
+
+  dimension: workforce_profiles_section {
+    sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'#/',2), '?', 1) = '' THEN 'Home' ELSE SPLIT_PART(SPLIT_PART(${page_url},'#/',2), '?', 1) END;;
+    group_label: "Workforce Profiles"
+  }
+  dimension: workforce_profiles_ministry {
+    sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'Ministry_Key=',2), '&', 1) = '' THEN 'None' ELSE SPLIT_PART(SPLIT_PART(${page_url},'Ministry_Key=',2), '&', 1) END;;
+    group_label: "Workforce Profiles"
+  }
+  dimension: workforce_profiles_group {
+    sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'Des_Grp=',2), '&', 1) = '' THEN 'None' ELSE SPLIT_PART(SPLIT_PART(${page_url},'Des_Grp=',2), '&', 1) END;;
+    group_label: "Workforce Profiles"
   }
 
 
-  # Page performance
-  # these fields have been removed from the new web model
 
   # MEASURES
 
@@ -618,47 +589,12 @@ view: page_views_bdp {
     group_label: "Engagement"
   }
 
-  dimension: primary_impact {
-    group_label: "IAB"
-  }
-  dimension: category {
-    group_label: "IAB"
-  }
-  dimension: reason {
-    group_label: "IAB"
-  }
-  dimension: spider_or_robot {
-    group_label: "IAB"
-    type: yesno
-  }
-
   measure: desktop_page_views {
     type: sum
-    sql: CASE WHEN page_views_bdp.dvce_type = 'Computer' THEN 1 ELSE 0 END;;
+    sql: CASE WHEN page_views.dvce_type = 'Computer' THEN 1 ELSE 0 END;;
   }
   measure: mobile_page_views {
     type: sum
-    sql: CASE WHEN page_views_bdp.dvce_type IN ('Mobile','Tablet') THEN 1 ELSE 0 END;;
-  }
-}
-
-# If necessary, uncomment the line below to include explore_source.
-# include: "snowplow_web_block.model.lkml"
-explore: max_page_view_rollup_bdp {}
-view: max_page_view_rollup_bdp {
-  derived_table: {
-    explore_source: page_views {
-      column: page_view_id {}
-      column: page_title {}
-      column: max_page_view_index {}
-      derived_column: p_key {
-        sql: ROW_NUMBER() OVER (order by true) ;;
-      }
-    }
-  }
-  dimension: page_view_id {}
-  dimension: page_title {}
-  dimension: max_page_view_index {
-    type: number
+    sql: CASE WHEN page_views.dvce_type IN ('Mobile','Tablet') THEN 1 ELSE 0 END;;
   }
 }
