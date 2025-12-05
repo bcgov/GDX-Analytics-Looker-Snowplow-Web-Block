@@ -9,6 +9,7 @@ view: bchep_action_debug  {
           wp.id AS page_view_id,
           domain_sessionid AS session_id,
           COALESCE(events.page_urlhost,'') AS page_urlhost,
+          events.geo_city,
           events.page_url,
           action,
           message,
@@ -55,6 +56,8 @@ view: bchep_action_debug  {
   dimension: step {}
   dimension: text {}
   dimension: uid {}
+  dimension: geo_city {}
+
 
   dimension_group: event {
     sql: ${TABLE}.timestamp ;;
