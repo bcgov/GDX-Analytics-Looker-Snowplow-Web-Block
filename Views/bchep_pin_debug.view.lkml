@@ -9,6 +9,7 @@ view: bchep_pin_debug  {
           wp.id AS page_view_id,
           domain_sessionid AS session_id,
           COALESCE(events.page_urlhost,'') AS page_urlhost,
+          events.geo_city,
           events.page_url,
           action,
           username,
@@ -60,6 +61,8 @@ view: bchep_pin_debug  {
   dimension: pid {}
   dimension: search {}
   dimension: title_number {}
+
+  dimension: geo_city {}
 
 
   dimension_group: event {

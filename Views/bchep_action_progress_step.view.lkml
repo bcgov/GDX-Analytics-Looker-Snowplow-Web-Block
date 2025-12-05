@@ -9,6 +9,7 @@ view: bchep_action_progress_step  {
         SELECT
           events.domain_sessionid AS session_id,
           COALESCE(events.page_urlhost,'') AS page_urlhost,
+          events.geo_city,
           section,
           dvce_ismobile AS is_mobile,
           CASE WHEN section = 'landing' THEN 1
@@ -94,6 +95,7 @@ view: bchep_action_progress_step  {
     page_urlhost,
     rl.session_id,
     is_mobile,
+    geo_city,
     --fs.section,
     --section,
     --section_order,
@@ -101,7 +103,7 @@ view: bchep_action_progress_step  {
     MAX(step_order) AS step_order
     FROM raw_list AS rl
     --JOIN final_step AS fs ON fs.session_id = rl.session_id AND fs.session_id_ranked = 1
-    GROUP BY 1,2,3
+    GROUP BY 1,2,3,4
 
 
     ;;
@@ -133,6 +135,8 @@ dimension: page_urlhost {
 dimension: is_mobile {
   type: yesno
 }
+dimension: geo_city {}
+
 dimension: latest_step {
   sql:
     CASE
