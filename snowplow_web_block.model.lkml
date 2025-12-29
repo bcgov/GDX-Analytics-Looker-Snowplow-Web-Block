@@ -1457,7 +1457,13 @@ explore: bchep_pin_debug {
 explore: covid19_self_assessment_action {}
 explore: covid19_self_assessment_recommendation {}
 
-
+explore: welcomebc_actions {
+  label: "WelcomeBC Actions"
+  access_filter: {
+    field: welcomebc_actions.page_urlhost
+    user_attribute: urlhost
+  }
+}
 
 explore: bcparks_action {
   label: "BC Parks Action"
