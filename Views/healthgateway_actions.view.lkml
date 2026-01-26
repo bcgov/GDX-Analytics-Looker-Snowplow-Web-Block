@@ -67,6 +67,13 @@ view: healthgateway_actions {
     type: string
     sql: ${TABLE}.page_urlhost ;;
   }
+
+  dimension: site { # This dimension groups together four values for URL Host into a custom dimension
+    type: string
+    sql: CASE WHEN ${TABLE}.page_urlhost IN ('healthgateway.gov.bc.ca', 'www.healthgateway.gov.bc.ca', 'secure.healthgateway.gov.bc.ca','classic.healthgateway.gov.bc.ca') THEN 'healthgateway.gov.bc.ca' ELSE ${TABLE}.page_urlhost END ;;
+  }
+
+
   dimension: page_url {}
   dimension: device_type {}
   dimension: action {}
