@@ -10,10 +10,15 @@ view: mobile_application_errors {
       ev.network_userid,
       ev.platform,
       mcs.session_id,
-      mcs.session_index
+      mcs.session_index,
+      build,
+      version,
+      mc.os_version
       FROM atomic.com_snowplowanalytics_snowplow_application_error_1 AS ae
       JOIN atomic.events AS ev ON ae.root_id = ev.event_id AND ae.root_tstamp = ev.collector_tstamp AND event_name = 'application_error'
       JOIN atomic.com_snowplowanalytics_snowplow_client_session_1 AS mcs ON mcs.root_id = ae.root_id AND mcs.root_tstamp = ae.root_tstamp
+      LEFT JOIN atomic.com_snowplowanalytics_mobile_application_1 AS ma ON ma.root_id = ae.root_id AND ma.root_tstamp = ae.root_tstamp
+      LEFT JOIN atomic.com_snowplowanalytics_snowplow_mobile_context_1 AS mc ON mc.root_id = ae.root_id AND mc.root_tstamp = ae.root_tstamp
       WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
       ;;
     distribution_style: all
@@ -42,16 +47,13 @@ view: mobile_application_errors {
     group_label: "Application"
   }
 
-  #dimension: build {
-  #  group_label: "Application"
-  #}
-  #dimension: version {
-  #  group_label: "Application"
-  #}
-  dimension: name_tracker { #missing column in table
+  dimension: build {
     group_label: "Application"
-    sql: NULL ;;
   }
+  dimension: version {
+    group_label: "Application"
+  }
+
   dimension: tracker_version { #missing column in table
     description: "The tracker version."
     type: string
@@ -71,7 +73,14 @@ view: mobile_application_errors {
   dimension: device_user_id {}
   dimension: network_userid {}
   dimension: session_index {}
-  dimension: platform {}
+  dimension: platform {  }
+  dimension: name_tracker {
+    group_label: "Application"
+  }
+  dimension: os {
+    group_label: "Device and OS"
+    sql: CASE WHEN ${name_tracker}='android' THEN 'Android' ELSE ${name_tracker} END ;;
+  }
 
   dimension: message {}
   dimension: exception_name {}
@@ -79,12 +88,12 @@ view: mobile_application_errors {
 
 
   # A "faked" device type until the real data is populated
-  dimension: os {
-    sql: CASE WHEN ${useragent} LIKE '%android%' THEN 'Android'
-            WHEN ${useragent} LIKE '%Darwin%' THEN 'iOS'
-            END;;
-    group_label: "Device and OS"
-  }
+  #dimension: os {
+  #  sql: CASE WHEN ${useragent} LIKE '%android%' THEN 'Android'
+  #          WHEN ${useragent} LIKE '%Darwin%' THEN 'iOS'
+  #          END;;
+  #  group_label: "Device and OS"
+  #}
   dimension: dvce_screenwidth {
     group_label: "Device and OS"
   }

@@ -100,6 +100,11 @@ view: page_views {
     sql: ${TABLE}.page_view_start_time ;;
     #X# group_label:"Page View Time"
   }
+  dimension_group: fiscal {
+    type: time
+    timeframes: [fiscal_quarter_of_year, fiscal_quarter, fiscal_year]
+    sql: ${TABLE}.page_view_start_time ;;
+  }
 
   dimension: bc_bid_page_view_start_week {
     label: "Week"
@@ -429,6 +434,42 @@ dimension: chatbot_page_display_url {
     sql: ${TABLE}.collector_tstamp ;;
     description: "The timestamp for the event that was recorded by the collector."
   }
+
+  # -- this is a tempoary dimension in place to try to cover the gap in search reporting from the bug in CMF
+
+  dimension: gov_search_terms {
+    type: string
+    sql: CASE WHEN ${page_url} LIKE 'https://www2.gov.bc.ca/gov/search%' AND ${page_urlquery} LIKE '%q=%' THEN
+            REPLACE(REPLACE(SPLIT_PART(SPLIT_PART(${page_urlquery}, 'q=', 2),'&',1),'+',' '),'%20',' ')
+         ELSE NULL END;;
+    group_label: "Temporary Fixes"
+  }
+  dimension: gov_search_terms_lower {
+    type: string
+    sql: CASE WHEN ${page_url} LIKE 'https://www2.gov.bc.ca/gov/search%' AND ${page_urlquery} LIKE '%q=%' THEN
+            LOWER(REPLACE(REPLACE(SPLIT_PART(SPLIT_PART(${page_urlquery}, 'q=', 2),'&',1),'+',' '),'%20',' '))
+         ELSE NULL END;;
+    group_label: "Temporary Fixes"
+  }
+
+
+
+# -- custom dimensions for https://erap.apps.gov.bc.ca/workforceprofiles/
+
+dimension: workforce_profiles_section {
+  sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'#/',2), '?', 1) = '' THEN 'Home' ELSE SPLIT_PART(SPLIT_PART(${page_url},'#/',2), '?', 1) END;;
+  group_label: "Workforce Profiles"
+}
+dimension: workforce_profiles_ministry {
+  sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'Ministry_Key=',2), '&', 1) = '' THEN 'None' ELSE SPLIT_PART(SPLIT_PART(${page_url},'Ministry_Key=',2), '&', 1) END;;
+  group_label: "Workforce Profiles"
+}
+dimension: workforce_profiles_group {
+  sql: CASE WHEN SPLIT_PART(SPLIT_PART(${page_url},'Des_Grp=',2), '&', 1) = '' THEN 'None' ELSE SPLIT_PART(SPLIT_PART(${page_url},'Des_Grp=',2), '&', 1) END;;
+  group_label: "Workforce Profiles"
+}
+
+
 
   # MEASURES
 
