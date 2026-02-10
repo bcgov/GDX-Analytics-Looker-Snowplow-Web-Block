@@ -1009,6 +1009,10 @@ explore: healthgateway_actions {
     field: healthgateway_actions.page_urlhost
     user_attribute: urlhost
   }
+  access_filter: {
+    field: healthgateway_actions.type
+    user_attribute: healthgateway_type
+  }
 }
 
 #explore: health_app_views {
