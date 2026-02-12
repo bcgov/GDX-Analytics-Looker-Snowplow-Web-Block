@@ -2,56 +2,14 @@
 include: "/Includes/date_comparisons_common.view"
 
 # ----------------------------------------
-# NOTE: We have moved away from using the derived.mobile_screen_views table
-#       directly, as the Timezone Conversion was causing unacceptable performance
-#       problems. We will resolve this in
-#           "GDXDSD-4640 - Analytics - Coordinate with Snowplow on plan for BDP "
+# NOTE: In GDXDSD-8308 we are moving back to the derived table to save disk space. This means that the timezone goes back to being in UTC for now. We will be updating the derived table to add a Pacific time column.
 
 view: mobile_screen_views {
-  derived_table: {
-    sql: SELECT CONVERT_TIMEZONE('UTC', 'America/Vancouver', dvce_created_tstamp) AS derived_dvce_created_tstamp,
-        dvce_created_tstamp,
-        screen_view_name,
-        screen_view_id,
-        app_id,
-        session_id,
-        geo_latitude,
-        geo_longitude,
-        build,
-        version,
-        useragent,
-        screen_view_previous_id,
-        screen_view_previous_name,
-        previous_session_id,
-        session_index,
-        user_id,
-        os_type,
-        os_version,
-        device_manufacturer,
-        device_model
-      FROM derived.mobile_screen_views
-      -- Compare the dvce_created_tstamp (in UTC) to the current time to ensure that no calls
-      --    from "the future" are included. Otherwise incremental PDTs won't work cleanly
-      --
-      --    Also filter out data older than 24 complete months. This is similar to the approach in
-      --    the main archive job.
-      WHERE dvce_created_tstamp < CONVERT_TIMEZONE('America/Vancouver', 'UTC', GETDATE())
-        AND DATE_TRUNC('month', dvce_created_tstamp) >= DATEADD(month, -12, DATE_TRUNC('month', CONVERT_TIMEZONE('America/Vancouver', 'UTC', GETDATE())))
-        AND {% incrementcondition %} dvce_created_tstamp {% endincrementcondition %} -- this matches the table column used by increment_key
-;;
-
-    datagroup_trigger:datagroup_25_55
-    distribution: "screen_view_id"
-    sortkeys: ["screen_view_id","derived_dvce_created_tstamp"]
-    increment_key: "screenview_start_utc_date" # For optimized performance, do the comparison against the "raw" timestamp,
-                                               # to avoid a WHERE clause with a calculation in it
-    increment_offset: 7 # go back 7 days, as mobile data more often comes later
-
-  }
+  sql_table_name: derived.mobile_screen_views ;;
 
   extends: [date_comparisons_common]
   dimension_group: filter_start {
-    sql: ${TABLE}.derived_dvce_created_tstamp ;;
+    sql: ${TABLE}.dvce_created_tstamp ;;
   }
 
   dimension_group: screenview_start_utc {
@@ -62,7 +20,7 @@ view: mobile_screen_views {
   dimension_group: screenview_start {
     type: time
     timeframes: [raw, time, minute, minute10, time_of_day, hour_of_day, hour, date, day_of_month, day_of_week, week, month, quarter, year]
-    sql: ${TABLE}.derived_dvce_created_tstamp ;;
+    sql: ${TABLE}.dvce_created_tstamp ;;
   }
 
   dimension: app_id {
