@@ -199,6 +199,11 @@ explore: page_views {
     sql_on: ${page_views.ldb_sku} = ${ldb_sku.sku} ;;
   }
 
+  join: edp_lookup {
+      type:  left_outer
+      sql_on: ${page_views.node_id} = ${edp_lookup.node_id} ;;
+      relationship: one_to_one
+  }
 
 }
 
@@ -407,6 +412,12 @@ explore: sessions {
     relationship: one_to_one
   }
 
+  join: edp_lookup {
+    type:  left_outer
+    sql_on: ${sessions.node_id} = ${edp_lookup.node_id} ;;
+    relationship: one_to_one
+  }
+
   access_filter: {
     field: node_id
     user_attribute: node_id
@@ -469,6 +480,12 @@ explore: clicks{
     type: left_outer
     sql_on:  ${clicks.page_display_url} = ${embc_language_matrix.translated_url} ;;
     relationship: many_to_one
+  }
+
+  join: edp_lookup {
+    type:  left_outer
+    sql_on: ${clicks.node_id} = ${edp_lookup.node_id} ;;
+    relationship: one_to_one
   }
   access_filter: {
     field: node_id
