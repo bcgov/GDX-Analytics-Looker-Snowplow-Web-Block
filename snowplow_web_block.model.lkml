@@ -199,9 +199,9 @@ explore: page_views {
     sql_on: ${page_views.ldb_sku} = ${ldb_sku.sku} ;;
   }
 
-  join: edp_lookup {
+  join: epd_lookup {
       type:  left_outer
-      sql_on: ${page_views.node_id} = ${edp_lookup.node_id} ;;
+      sql_on: ${page_views.node_id} = ${epd_lookup.node_id} ;;
       relationship: one_to_one
   }
 
@@ -412,9 +412,9 @@ explore: sessions {
     relationship: one_to_one
   }
 
-  join: edp_lookup {
+  join: epd_lookup {
     type:  left_outer
-    sql_on: ${sessions.node_id} = ${edp_lookup.node_id} ;;
+    sql_on: ${sessions.node_id} = ${epd_lookup.node_id} ;;
     relationship: one_to_one
   }
 
@@ -482,9 +482,9 @@ explore: clicks{
     relationship: many_to_one
   }
 
-  join: edp_lookup {
+  join: epd_lookup {
     type:  left_outer
-    sql_on: ${clicks.node_id} = ${edp_lookup.node_id} ;;
+    sql_on: ${clicks.node_id} = ${epd_lookup.node_id} ;;
     relationship: one_to_one
   }
   access_filter: {

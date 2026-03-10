@@ -1,4 +1,4 @@
-view: edp_lookup {
+view: epd_lookup {
   sql_table_name: microservice.epdlookup ;;
 
 
