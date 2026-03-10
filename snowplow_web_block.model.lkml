@@ -54,6 +54,12 @@ include: "//cmslite_metadata/Views/metadata.view"
 # Import CFMS POC to merge SBC TheQ data to Online Appointment booking
 include: "//cfms_block/Views/cfms_poc.view.lkml"
 
+
+# hidden epd_lookup_cache explore supports suggest_explore for the epd_lookup view
+explore: epd_lookup_cache {
+  hidden: yes
+}
+
 # hidden city_cache explore supports suggest_explore for the geo filters
 explore: geo_cache {
   hidden: yes
