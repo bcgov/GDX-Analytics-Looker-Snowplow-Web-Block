@@ -6,17 +6,17 @@ view: healthgateway_actions {
           (SELECT action, text, message, NULL AS actor, NULL AS dataset, NULL AS destination, NULL AS format, NULL AS origin, NULL AS rating, NULL AS "type", NULL AS url, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp, root_tstamp, root_id
           FROM atomic.ca_bc_gov_gateway_action_1
           WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
-            AND timestamp >= '2023-11-01'
+            AND timestamp >= '2026-03-19'
         UNION
           SELECT action, text, NULL AS message, actor, dataset, destination, format, origin, rating, "type", url, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp, root_tstamp, root_id
           FROM atomic.ca_bc_gov_gateway_action_2
           WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
-            AND timestamp >= '2023-11-01'
+            AND timestamp >= '2026-03-19'
         UNION
           SELECT action, text, NULL AS message, actor, dataset, destination, format, origin, rating, "type", url, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp, root_tstamp, root_id
           FROM atomic.ca_bc_gov_gateway_action_3
           WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
-            AND timestamp >= '2023-11-01'
+            AND timestamp >= '2026-03-19'
           )
         SELECT
           ga.root_id AS root_id,
@@ -41,11 +41,17 @@ view: healthgateway_actions {
           CASE WHEN action = 'download_card' THEN 1 ELSE 0 end AS download_card_count,
           CASE WHEN action = 'view_card' THEN 1 ELSE 0 end AS view_card_count,
           ga.timestamp,
-          CASE WHEN name_tracker = 'rt' THEN dvce_type ELSE name_tracker END AS device_type
+          CASE WHEN name_tracker = 'rt' THEN dvce_type ELSE name_tracker END AS device_type,
+          test.health_authority_boundaries.hlth_authority_name,
+          test.health_authority_boundaries.hlth_authority_id,
+          test.health_authority_boundaries.hlth_authority_code
         FROM ga
           LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON ga.root_id = wp.root_id AND ga.root_tstamp = wp.root_tstamp
           LEFT JOIN atomic.events ON ga.root_id = events.event_id AND ga.root_tstamp = events.collector_tstamp
+          LEFT JOIN test.health_authority_boundaries
+              ON geo_latitude IS NOT NULL AND geo_longitude IS NOT NULL
+              AND ST_Within(ST_Transform(ST_SetSRID(ST_Point(geo_longitude, geo_latitude), 4326), 3005), "SHAPE") IS TRUE
         ---WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
         ;;
     distribution: "page_view_id"
@@ -96,9 +102,15 @@ view: healthgateway_actions {
   dimension: rating {}
   dimension: type {}
   dimension: url {}
-
-
-
+  dimension: hlth_authority_name {
+    group_label: "Health Authority Info"
+  }
+  dimension: hlth_authority_code {
+    group_label: "Health Authority Info"
+  }
+  dimension: hlth_authority_id {
+    group_label: "Health Authority Info"
+  }
   dimension_group: event {
     sql: ${TABLE}.timestamp ;;
     type: time
