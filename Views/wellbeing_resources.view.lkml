@@ -16,6 +16,7 @@ view: wellbeing_resources {
             region,
             topic,
             "type" AS resource_type,
+            NULL AS delivery,
             CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp
           FROM atomic.ca_bc_gov_wellbeing_wellbeing_resources_1
           WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
@@ -32,8 +33,26 @@ view: wellbeing_resources {
             region,
             topic,
             "type" AS resource_type,
+            NULL AS delivery,
             CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp
           FROM atomic.ca_bc_gov_wellbeing_wellbeing_resources_2
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+        )
+     UNION
+      (
+          SELECT
+            root_id,
+            root_tstamp,
+            results_count,
+            search_type,
+            audience,
+            keyword,
+            region,
+            topic,
+            "type" AS resource_type,
+            delivery,
+            CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp
+          FROM atomic.ca_bc_gov_wellbeing_wellbeing_resources_3
           WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
         )
       )
@@ -50,6 +69,7 @@ view: wellbeing_resources {
           region,
           topic,
           resource_type,
+          delivery,
           --- Audiences
           CASE WHEN audience LIKE '%Child or youth%' THEN 1 ELSE 0 END AS child_or_youth_count,
           CASE WHEN audience LIKE '%Post-secondary student%' THEN 1 ELSE 0 END AS post_sec_count,
@@ -102,6 +122,9 @@ view: wellbeing_resources {
           CASE WHEN resource_type LIKE '%Treatment services%' THEN 1 ELSE 0 END AS treatment_count,
           CASE WHEN resource_type LIKE '%Mental health intake%' THEN 1 ELSE 0 END AS intake_count,
           CASE WHEN resource_type LIKE '%Peer support%' THEN 1 ELSE 0 END AS peer_count,
+           --- Resource Types
+          CASE WHEN delivery LIKE '%In Person"%' THEN 1 ELSE 0 END AS inperson_count,
+          CASE WHEN delivery LIKE '%Virtual & Telephone%' THEN 1 ELSE 0 END AS virtualtel_count,
           ---
           atom.timestamp
 
@@ -143,6 +166,7 @@ view: wellbeing_resources {
   dimension: region {}
   dimension: topic {}
   dimension: resource_type {}
+  dimension: delivery {}
 
 
   dimension_group: event {
@@ -405,5 +429,16 @@ view: wellbeing_resources {
     type: sum
     label: "Victim support count"
     group_label: "Topic Counts"
+  }
+
+  measure: inperson_count {
+    type: sum
+    label: "In Person count"
+    group_label: "Delivery Counts"
+  }
+  measure: virtualtel_count {
+    type: sum
+    label: "Virtual & Telephone count"
+    group_label: "Delivery Counts"
   }
 }

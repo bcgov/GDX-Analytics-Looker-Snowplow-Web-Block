@@ -533,6 +533,45 @@ view: shared_fields_common {
     drill_fields: [marketing_drills*]
   }
 
+  ### Simple UTM Parsing
+  dimension: marketing_simple_valid {
+    # Does this utm_campaign have four "terms" separated by "_"
+    group_label: "Marketing - Simple"
+    type: yesno
+    sql:  CASE WHEN REGEXP_COUNT(${marketing_campaign},'_') = 3 THEN TRUE ELSE FALSE END;;
+  }
+  dimension: marketing_date_simple {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',1) ;;
+    group_label: "Marketing - Simple"
+    drill_fields: [marketing_simple_drills*]
+  }
+
+  dimension: marketing_ministry_simple {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',2) ;;
+    group_label: "Marketing - Simple"
+    drill_fields: [marketing_simple_drills*]
+  }
+
+  dimension: marketing_campaign_id_simple {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',3) ;;
+    group_label: "Marketing - Simple"
+    drill_fields: [marketing_simple_drills*]
+  }
+
+  dimension: marketing_ad_type_simple {
+    type: string
+    sql: SPLIT_PART(${TABLE}.mkt_campaign,'_',4) ;;
+    group_label: "Marketing - Simple"
+    drill_fields: [marketing_simple_drills*]
+  }
+
+  set: marketing_simple_drills {
+    fields: [marketing_source, marketing_campaign, marketing_ministry_simple,marketing_campaign_id_simple, marketing_ad_type_simple]
+  }
+
   ### IP
 
   dimension: ip_address {

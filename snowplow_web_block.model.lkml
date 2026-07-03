@@ -54,6 +54,12 @@ include: "//cmslite_metadata/Views/metadata.view"
 # Import CFMS POC to merge SBC TheQ data to Online Appointment booking
 include: "//cfms_block/Views/cfms_poc.view.lkml"
 
+
+# hidden epd_lookup_cache explore supports suggest_explore for the epd_lookup view
+explore: epd_lookup_cache {
+  hidden: yes
+}
+
 # hidden city_cache explore supports suggest_explore for the geo filters
 explore: geo_cache {
   hidden: yes
@@ -199,6 +205,11 @@ explore: page_views {
     sql_on: ${page_views.ldb_sku} = ${ldb_sku.sku} ;;
   }
 
+  join: epd_lookup {
+      type:  left_outer
+      sql_on: ${page_views.node_id} = ${epd_lookup.node_id} ;;
+      relationship: one_to_one
+  }
 
 }
 
@@ -407,6 +418,12 @@ explore: sessions {
     relationship: one_to_one
   }
 
+  join: epd_lookup {
+    type:  left_outer
+    sql_on: ${sessions.node_id} = ${epd_lookup.node_id} ;;
+    relationship: one_to_one
+  }
+
   access_filter: {
     field: node_id
     user_attribute: node_id
@@ -469,6 +486,12 @@ explore: clicks{
     type: left_outer
     sql_on:  ${clicks.page_display_url} = ${embc_language_matrix.translated_url} ;;
     relationship: many_to_one
+  }
+
+  join: epd_lookup {
+    type:  left_outer
+    sql_on: ${clicks.node_id} = ${epd_lookup.node_id} ;;
+    relationship: one_to_one
   }
   access_filter: {
     field: node_id
@@ -1009,6 +1032,10 @@ explore: healthgateway_actions {
     field: healthgateway_actions.page_urlhost
     user_attribute: urlhost
   }
+  access_filter: {
+    field: healthgateway_actions.type
+    user_attribute: healthgateway_type
+  }
 }
 
 #explore: health_app_views {
@@ -1166,8 +1193,22 @@ explore: idim_mobile_errors {
     sql_on: ${mobile_sessions.session_id} = ${idim_mobile_errors.session_id} ;;
     relationship: many_to_one
   }
-
-
+}
+explore: idim_actions {
+  access_filter: {
+    field: app_id
+    user_attribute: app_id
+  }
+  join: mobile_screen_views {
+    type:  left_outer
+    sql_on: ${mobile_screen_views.screen_view_id} = ${idim_actions.screen_view_id} ;;
+    relationship: many_to_one
+  }
+  join: mobile_sessions {
+    type:  left_outer
+    sql_on: ${mobile_sessions.session_id} = ${idim_actions.session_id} ;;
+    relationship: many_to_one
+  }
 }
 
 explore: csrs_clicks {
@@ -1350,6 +1391,14 @@ explore: drivebc_actions {
   }
 }
 
+explore: openschool_actions_foippa {
+  label: "OpenSchool Actions FOIPPA"
+}
+
+explore: openschool_actions {
+  label: "OpenSchool Actions"
+}
+
 explore: tenancy_dispute_clicks {
   fields: [ALL_FIELDS*,
     -page_views.is_external_referrer_theme,
@@ -1402,8 +1451,107 @@ explore: bc_wallet_raw {
   }
 }
 
+explore: parenting_after_separation_actions {
+  fields: [ALL_FIELDS*,
+    -page_views.is_external_referrer_theme,
+    -page_views.is_external_referrer_subtheme,
+    -page_views.refr_theme,
+    -page_views.refr_subtheme]
+
+  join: page_views {
+    type:  left_outer
+    sql_on: ${page_views.page_view_id} = ${parenting_after_separation_actions.page_view_id} ;;
+    relationship: one_to_one
+  }
+  join: cmslite_themes {
+    type: left_outer
+    sql_on: ${page_views.node_id} = ${cmslite_themes.node_id} ;;
+    relationship: one_to_one
+  }
+  access_filter: {
+    field: parenting_after_separation_actions.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: bchep_action_debug {
+  label: "BCHEP Action Debug"
+  access_filter: {
+    field: bchep_action_debug.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+
+explore: bchep_action {
+  label: "BCHEP Action"
+  access_filter: {
+    field: bchep_action.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: bchep_action_progress {
+  label: "BCHEP Action Progress"
+  access_filter: {
+    field: bchep_action_progress.page_urlhost
+    user_attribute: urlhost
+  }
+}
+explore: bchep_action_progress_step {
+  label: "BCHEP Action Progress Step"
+  access_filter: {
+    field: bchep_action_progress_step.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: bchep_sections_and_steps {
+  label: "BCHEP Sections and Steps"
+}
+
+
+explore: bchc_progress {
+  label: "BC Health Careers Action Progress"
+  access_filter: {
+    field: bchc_progress.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+
+explore: user_feedback {
+  access_filter: {
+    field: user_feedback.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: bchep_pin_debug {
+  label: "BCHEP PIN Debug"
+  access_filter: {
+    field: bchep_pin_debug.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
 explore: covid19_self_assessment_action {}
 explore: covid19_self_assessment_recommendation {}
+
+explore: welcomebc_actions {
+  label: "WelcomeBC Actions"
+  access_filter: {
+    field: welcomebc_actions.page_urlhost
+    user_attribute: urlhost
+  }
+}
+
+explore: bcparks_action {
+  label: "BC Parks Action"
+  access_filter: {
+    field: bcparks_action.page_urlhost
+    user_attribute: urlhost
+  }
+}
 
 ### Datagroups
 ## NOTE: These groups are set to run outside of the "overnight-defrag" window.

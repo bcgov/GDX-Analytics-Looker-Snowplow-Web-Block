@@ -20,7 +20,7 @@ view: workbc_career_discovery_click {
           JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
               ON sc.root_id = wp.root_id AND sc.root_tstamp = wp.root_tstamp
           LEFT JOIN microservice.careertoolkit_workbc AS noc -- the "00" trick is temporarily needed until the lookup table gets fixed
-              ON sc.click_type IN ('preview','find_jobs','career_profile') AND (noc.noc = sc.text OR sc.text = '0' || noc.noc OR sc.text = '00' || noc.noc OR sc.text = '00' || noc.noc)
+              ON sc.click_type IN ('preview','find_jobs','career_profile') AND (noc.noc = sc.text OR sc.text = '0' || noc.noc OR sc.text = '00' || noc.noc OR sc.text = '000' || noc.noc)
 
 
       ;;

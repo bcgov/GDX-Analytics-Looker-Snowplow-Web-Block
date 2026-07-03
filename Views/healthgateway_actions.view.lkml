@@ -6,12 +6,17 @@ view: healthgateway_actions {
           (SELECT action, text, message, NULL AS actor, NULL AS dataset, NULL AS destination, NULL AS format, NULL AS origin, NULL AS rating, NULL AS "type", NULL AS url, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp, root_tstamp, root_id
           FROM atomic.ca_bc_gov_gateway_action_1
           WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
-            AND timestamp >= '2022-02-01'
+            AND timestamp >= '2023-11-01'
         UNION
           SELECT action, text, NULL AS message, actor, dataset, destination, format, origin, rating, "type", url, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp, root_tstamp, root_id
           FROM atomic.ca_bc_gov_gateway_action_2
           WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
-            AND timestamp >= '2022-02-01'
+            AND timestamp >= '2023-11-01'
+        UNION
+          SELECT action, text, NULL AS message, actor, dataset, destination, format, origin, rating, "type", url, CONVERT_TIMEZONE('UTC', 'America/Vancouver', root_tstamp) AS timestamp, root_tstamp, root_id
+          FROM atomic.ca_bc_gov_gateway_action_3
+          WHERE {% incrementcondition %} timestamp {% endincrementcondition %} -- this matches the table column used by increment_key
+            AND timestamp >= '2023-11-01'
           )
         SELECT
           ga.root_id AS root_id,
@@ -62,6 +67,13 @@ view: healthgateway_actions {
     type: string
     sql: ${TABLE}.page_urlhost ;;
   }
+
+  dimension: site { # This dimension groups together four values for URL Host into a custom dimension
+    type: string
+    sql: CASE WHEN ${TABLE}.page_urlhost IN ('healthgateway.gov.bc.ca', 'www.healthgateway.gov.bc.ca', 'secure.healthgateway.gov.bc.ca','classic.healthgateway.gov.bc.ca') THEN 'healthgateway.gov.bc.ca' ELSE ${TABLE}.page_urlhost END ;;
+  }
+
+
   dimension: page_url {}
   dimension: device_type {}
   dimension: action {}

@@ -40,7 +40,7 @@ view: chatbot_intents_and_clicks {
           "sentiment.magnitude" AS sentiment_magnitude,
           "sentiment.score" AS sentiment_score,
           session_id,
-          COALESCE(SPLIT_PART(session_id,'_',1),'') AS which_bot,
+          COALESCE(frontend_id, COALESCE(SPLIT_PART(session_id,'_',1),'')) AS which_bot,
           source_intent,
           "timestamp",
           CASE WHEN action = 'ask_question' THEN 1 ELSE 0 END AS question_count,
@@ -89,6 +89,7 @@ view: chatbot_intents_and_clicks {
           LEFT JOIN cmslite.themes ON action = 'link_click' AND text LIKE 'https://www2.gov.bc.ca/gov/content?id=%' AND themes.node_id = SPLIT_PART(SPLIT_PART(SPLIT_PART(text, 'https://www2.gov.bc.ca/gov/content?id=', 2), '?',1 ), '#',1)
           LEFT JOIN atomic.events ON cb.root_id = events.event_id AND cb.root_tstamp = events.collector_tstamp
           WHERE action IN ('get_answer', 'link_click','ask_question','click_chip','open', 'click_footer','feeback_thumbs_down','feeback_thumbs_up')
+
           ;;
     distribution: "id"
     sortkeys: ["id","timestamp"]
