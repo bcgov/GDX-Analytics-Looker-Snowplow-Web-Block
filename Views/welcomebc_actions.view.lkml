@@ -13,12 +13,15 @@ view: welcomebc_actions {
         LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
           ON wc.root_id = wp.root_id AND wc.root_tstamp = wp.root_tstamp
         LEFT JOIN atomic.events AS ev ON wc.root_id = ev.event_id AND wc.root_tstamp = ev.collector_tstamp
-        LEFT JOIN gdx_analytics.restored_atomic_ca_bc_gov AS ra
+        LEFT JOIN test.restored_atomic_ca_bc_gov AS ra
           ON wc.root_id = ra.root_id AND wc.root_tstamp = ra.root_tstamp
+        WHERE {% incrementcondition %} timestamp {% endincrementcondition %}
 
       ;;
     distribution_style: all
-    persist_for: "2 hours"
+    datagroup_trigger: datagroup_25_55
+    increment_key: "event_hour"
+    increment_offset: 3
   }
 
   dimension: page_view_id {
