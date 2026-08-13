@@ -1,18 +1,20 @@
 view: welcomebc_actions {
   derived_table: {
-    sql: SELECT wp.id AS page_view_id,
+    sql: SELECT COALESCE(wp.id,ra.page_view_id) AS page_view_id,
           action,
           message,
           text,
-          domain_sessionid AS session_id,
-          COALESCE(ev.page_urlhost,'') AS page_urlhost,
-          COALESCE(ev.page_url,'') AS page_url,
+          COALESCE(ev.domain_sessionid, ra.domain_sessionid) AS session_id,
+          COALESCE(ev.page_urlhost,ra.page_urlhost) AS page_urlhost,
+          COALESCE(ev.page_url,ra.page_url) AS page_url,
           CONVERT_TIMEZONE('UTC', 'America/Vancouver', wc.root_tstamp) AS timestamp,
           (ev.user_ipaddress LIKE '142.22.%' OR ev.user_ipaddress LIKE '142.23.%' OR ev.user_ipaddress LIKE '142.24.%' OR ev.user_ipaddress LIKE '142.25.%' OR ev.user_ipaddress LIKE '142.26.%' OR ev.user_ipaddress LIKE '142.27.%' OR ev.user_ipaddress LIKE '142.28.%' OR ev.user_ipaddress LIKE '142.29.%' OR ev.user_ipaddress LIKE '142.30.%' OR ev.user_ipaddress LIKE '142.31.%' OR ev.user_ipaddress LIKE '142.32.%' OR ev.user_ipaddress LIKE '142.33.%' OR ev.user_ipaddress LIKE '142.34.%' OR ev.user_ipaddress LIKE '142.35.%' OR ev.user_ipaddress LIKE '142.36.%') AS is_government -- is the IP a BC Gov IP
         FROM atomic.ca_bc_gov_welcomebc_action_1 AS wc
-        JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
+        LEFT JOIN atomic.com_snowplowanalytics_snowplow_web_page_1 AS wp
           ON wc.root_id = wp.root_id AND wc.root_tstamp = wp.root_tstamp
         LEFT JOIN atomic.events AS ev ON wc.root_id = ev.event_id AND wc.root_tstamp = ev.collector_tstamp
+        LEFT JOIN gdx_analytics.restored_atomic_ca_bc_gov AS ra
+          ON wc.root_id = ra.root_id AND wc.root_tstamp = ra.root_tstamp
 
       ;;
     distribution_style: all
@@ -23,13 +25,6 @@ view: welcomebc_actions {
     description: "Unique page view ID"
     type: string
     sql: ${TABLE}.page_view_id ;;
-  }
-
-  dimension: root_id {
-    description: "Unique ID of the event"
-    primary_key: yes
-    type: string
-    sql: ${TABLE}.root_id ;;
   }
 
   dimension: is_government {
